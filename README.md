@@ -4,6 +4,7 @@ Repositório de estudos da pós-graduação em **Engenharia de IA Aplicada**. Ca
 
 ## Projetos
 
-| Projeto | Descrição |
-|---------|-----------|
-| [neural-network](./neural-network/) | Rede neural com TensorFlow.js que classifica usuários em categorias (premium, medium, basic) |
+| Projeto                                                      | Descrição                                                                                                                                    |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [01-neural-network](./01-neural-network/)                    | Rede neural com TensorFlow.js que classifica usuários em categorias (premium, medium, basic)                                                 |
+| [02-Sistemas-Recomendacao](./02-Sistemas-Recomendacao/)      | Sistema de recomendação de produtos para e-commerce usando TensorFlow.js com Web Worker, arquitetura MVC e codificação one-hot de features   |
