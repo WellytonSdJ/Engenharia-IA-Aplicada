@@ -29,15 +29,13 @@ export const config: ModelConfig = {
   models: [
     // top 4 para a listagem ordenada por preço
     "arcee-ai/trinity-large-preview:free",
-
-    // // top 3 para listagem de throughput
-    // "nvidia/nemotron-3-nano-30b-a3b:free",
-    // //  top 3 teste 07-06-26
-    // "nvidia/nemotron-3-ultra-550b-a55b:free",
+    // teste
+    "nvidia/nemotron-3-ultra-550b-a55b:free",
   ],
   temperature: 0.2,
   maxTokens: 100,
-  systemPrompt: "You are a helpful assistant.",
+  systemPrompt:
+    "Voce é um assistente inteligente que responde perguntas de forma clara e objetiva.",
   provider: {
     sort: {
       by: "throughput",

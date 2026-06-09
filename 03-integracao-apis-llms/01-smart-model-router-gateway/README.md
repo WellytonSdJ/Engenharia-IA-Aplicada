@@ -26,13 +26,8 @@ OpenRouter API ──► Modelo LLM selecionado
 
 ## Configuração
 
-Copie o arquivo de exemplo e preencha a chave da API:
+Crie um arquivo `.env` na raiz do projeto com a chave da API:
 
-```bash
-cp .env.example .env
-```
-
-`.env`:
 ```
 OPENROUTER_API_KEY=sua-chave-aqui
 ```
@@ -42,10 +37,10 @@ OPENROUTER_API_KEY=sua-chave-aqui
 | Parâmetro | Padrão | Descrição |
 |---|---|---|
 | `port` | `3000` | Porta do servidor |
-| `models` | `arcee-ai/trinity-large-preview:free` | Lista de modelos candidatos |
+| `models` | `arcee-ai/trinity-large-preview:free`, `nvidia/nemotron-3-ultra-550b-a55b:free` | Lista de modelos candidatos |
 | `temperature` | `0.2` | Criatividade das respostas |
 | `maxTokens` | `100` | Limite de tokens por resposta |
-| `systemPrompt` | `You are a helpful assistant.` | Prompt de sistema |
+| `systemPrompt` | `Voce é um assistente inteligente...` | Prompt de sistema |
 | `provider.sort.by` | `throughput` | Critério de roteamento: `price`, `throughput` ou `latency` |
 
 ## Execução
@@ -96,30 +91,6 @@ Testes E2E utilizam o runner nativo do Node.js (`node:test`). Requerem `OPENROUT
 # Executar testes
 npm test
 
-# Desenvolvimento (com hot-reload)
+# Executar em modo watch
 npm run test:dev
 ```
-
-### Cenários cobertos
-
-| Teste | Critério de roteamento | Modelo esperado |
-|---|---|---|
-| Modelo mais barato | `price` | `arcee-ai/trinity-large-preview:free` |
-| Maior throughput | `throughput` | `nvidia/nemotron-3-nano-30b-a3b:free` |
-
-## Estrutura do projeto
-
-```
-src/
-├── config.ts             # Configurações e variáveis de ambiente
-├── index.ts              # Entry point — inicializa servidor
-├── openrouterService.ts  # Client OpenRouter e lógica de geração
-└── server.ts             # Definição das rotas Fastify
-
-tests/
-└── router.e2e.test.ts    # Testes E2E de roteamento
-```
-
-## Como o roteamento funciona
-
-O OpenRouter recebe a lista de `models` e o critério `provider.sort.by`, então seleciona automaticamente o modelo disponível que melhor atende ao critério no momento da requisição. Isso permite failover e otimização dinâmica sem lógica manual de seleção.
