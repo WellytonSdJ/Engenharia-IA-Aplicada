@@ -1,18 +1,28 @@
 # Song Highlights — Chatbot Musical com Memória
 
-Chatbot de recomendação musical via CLI construído com **LangGraph**, **LangChain** e **OpenRouter**. O bot conversa naturalmente com o usuário, extrai preferências musicais em tempo real usando saída estruturada (Zod) e as persiste em SQLite para enriquecer sessões futuras.
+Chatbot de recomendação musical via CLI construído com **LangGraph**, **LangChain** e **OpenRouter**. O bot conversa naturalmente, extrai preferências musicais em tempo real com saída estruturada (Zod), persiste o histórico em PostgreSQL via LangGraph e armazena preferências estruturadas em SQLite.
 
 ## O que o projeto faz
 
-- Inicia a conversa saudando o usuário com base em preferências já salvas (ou pedindo que ele se apresente, se for a primeira vez)
-- Extrai em tempo real informações como nome, idade, gêneros e bandas favoritas, humor e contexto de escuta
-- Salva as preferências extraídas em SQLite após cada mensagem relevante
-- Sumariza a conversa periodicamente para consolidar o histórico
-- Roda como CLI interativo com `readline`, com suporte a múltiplos usuários via flag `--user`
+- Inicia a conversa carregando preferências já salvas do banco (nome, gêneros, bandas favoritas)
+- Extrai informações do usuário em tempo real usando saída estruturada com Zod
+- Salva preferências extraídas em SQLite mesclando com dados anteriores
+- Sumariza e poda o histórico automaticamente a cada N mensagens, mantendo apenas as últimas 2
+- Persiste checkpoints da conversa em PostgreSQL para retomar sessões
+
+## Dois mecanismos de memória
+
+O projeto usa dois tipos de persistência com responsabilidades distintas:
+
+| Mecanismo | Tecnologia | Responsabilidade |
+|-----------|-----------|-----------------|
+| **Checkpointer** | PostgreSQL (`PostgresSaver`) | Histórico de mensagens da conversa; permite retomar o thread entre sessões |
+| **Store** | PostgreSQL (`PostgresStore`) | Memória de longo prazo gerenciada pelo LangGraph |
+| **PreferencesService** | SQLite / Knex | Preferências estruturadas (nome, idade, gêneros, bandas) — legíveis como texto pelo chatNode |
 
 ## Arquitetura — Grafo de Estados (LangGraph)
 
-O fluxo conversacional é modelado como um `StateGraph` com três nós e roteamento condicional:
+O fluxo conversacional é um `StateGraph` com três nós e roteamento condicional:
 
 ```
 START
@@ -27,27 +37,39 @@ chat ──── extractedPreferences? ──► savePreferences ──── n
 
 ### Nós
 
-| Nó | Responsabilidade |
-|----|-----------------|
-| `chat` | Gera resposta conversacional + extrai preferências do usuário usando saída estruturada (Zod) |
-| `savePreferences` | Persiste as preferências extraídas no banco SQLite via `PreferencesService` |
-| `summarize` | Resume a conversa e atualiza o perfil consolidado do usuário no banco |
+| Nó | O que faz |
+|----|----------|
+| `chat` | Carrega contexto do usuário no SQLite, monta prompts, chama o LLM com saída estruturada (Zod), retorna resposta + preferências extraídas + flag de sumarização |
+| `savePreferences` | Persiste as preferências extraídas no SQLite via `mergePreferences` (acumula gêneros e bandas com deduplicação) |
+| `summarize` | Chama o LLM para sumarizar a conversa, salva o sumário no SQLite via `storeSummary` e remove mensagens antigas com `RemoveMessage` (mantém as últimas 2) |
 
-### Roteamento condicional
+### Roteamento condicional (`edgeConditions.ts`)
 
-- **`routeAfterChat`:** se `extractedPreferences` estiver preenchido → `savePreferences`; se `needsSummarization` estiver ativo → `summarize`; caso contrário → END
-- **`routeAfterSavePreferences`:** se `needsSummarization` → `summarize`; caso contrário → END
+```typescript
+// Após chat:
+extractedPreferences → savePreferences
+needsSummarization   → summarize
+(nenhum)             → END
+
+// Após savePreferences:
+needsSummarization → summarize
+(nenhum)           → END
+```
+
+### Gatilho de sumarização
+
+A sumarização é ativada quando `messages.length >= config.maxMessagesToSummary` (atualmente `2`). Após sumarizar, o nó remove todas as mensagens exceto as últimas 2 usando `RemoveMessage` do LangGraph.
 
 ### Estado do grafo
 
 ```typescript
 {
-  messages: BaseMessage[]        // histórico da conversa (gerenciado pelo LangGraph)
-  userContext?: string           // preferências carregadas do banco no início da sessão
-  extractedPreferences?: object  // preferências extraídas pelo nó chat
-  needsSummarization?: boolean   // flag que dispara o nó de sumarização
-  conversationSummary?: object   // resultado da sumarização
-  userId?: string                // identificador da sessão/usuário
+  messages: BaseMessage[]         // histórico (gerenciado pelo LangGraph + checkpointer)
+  userContext?: string            // preferências carregadas do SQLite no início
+  extractedPreferences?: object   // preferências extraídas nesta mensagem
+  needsSummarization?: boolean    // flag que dispara o nó summarize
+  conversationSummary?: object    // último sumário gerado
+  userId?: string                 // identificador da sessão/usuário
 }
 ```
 
@@ -55,18 +77,19 @@ chat ──── extractedPreferences? ──► savePreferences ──── n
 
 ```
 src/
-├── config.ts                          # Configuração: chave de API, modelos, banco de dados
-├── index.ts                           # CLI interativo com readline
+├── config.ts                          # Configuração: API key, modelos, banco, maxMessagesToSummary
+├── index.ts                           # CLI interativo com readline e flag --user
 ├── graph/
-│   ├── graph.ts                       # Definição do StateGraph e compilação
+│   ├── graph.ts                       # StateGraph compilado com checkpointer e store
 │   ├── factory.ts                     # Instancia serviços e monta o grafo
 │   └── nodes/
-│       ├── chatNode.ts                # Nó principal de conversação
-│       ├── summarizationNode.ts       # Nó de sumarização da conversa
-│       ├── savePreferencesNode.ts     # Nó de persistência das preferências
+│       ├── chatNode.ts                # Nó de conversação com extração de preferências
+│       ├── summarizationNode.ts       # Nó de sumarização e poda do histórico
+│       ├── savePreferencesNode.ts     # Nó de persistência das preferências no SQLite
 │       └── edgeConditions.ts          # Funções de roteamento condicional
 ├── services/
-│   ├── openrouterService.ts           # Cliente LLM com ChatOpenAI + OpenRouter
+│   ├── memoryService.ts               # PostgresSaver + PostgresStore (LangGraph)
+│   ├── openrouterService.ts           # ChatOpenAI com OpenRouter + saída estruturada
 │   └── preferencesService.ts          # CRUD de preferências no SQLite com Knex
 └── prompts/
     └── v1/
@@ -78,41 +101,50 @@ tests/
 
 ## Saída estruturada com Zod
 
-O nó `chat` não retorna texto livre — o LLM é instruído a responder em JSON validado pelos schemas Zod definidos em `prompts/v1/chatResponse.ts`:
+O LLM não retorna texto livre — é instruído a responder em JSON validado por schemas Zod:
 
 ```typescript
-// Resposta do nó chat
+// Nó chat — prompts/v1/chatResponse.ts
 ChatResponseSchema = z.object({
-  message: z.string(),                  // resposta conversacional para o usuário
-  preferences: UserPreferencesSchema,   // dados extraídos desta mensagem
-  shouldSavePreferences: z.boolean(),   // se deve persistir as preferências
+  message: z.string(),                    // resposta conversacional ao usuário
+  preferences: UserPreferencesSchema,     // dados extraídos desta mensagem
+  shouldSavePreferences: z.boolean(),     // se deve acionar savePreferences
 })
 
-// Preferências extraídas
 UserPreferencesSchema = z.object({
   name, age, favoriteGenres, favoriteBands,
   mood, listeningContext, additionalInfo
 })
+
+// Nó summarize — prompts/v1/summarization.ts
+SummarySchema = z.object({
+  name, age, favoriteGenres, favoriteBands,
+  keyPreferences: z.string(),    // sumário em 2-4 frases
+  importantContext?: z.string()
+})
 ```
 
-O mesmo padrão é usado no nó `summarize` com `SummarySchema`.
+## Dependência entre serviços (injeção)
 
-## Persistência — PreferencesService
+Os nós recebem os serviços via injeção de dependência. O `factory.ts` é responsável por instanciar tudo:
 
-Usa **Knex** com **better-sqlite3** para armazenar um perfil por usuário na tabela `user_preferences`:
+```typescript
+// factory.ts
+export async function buildGraph(dbPath = './preferences.db') {
+  const llmClient = new OpenRouterService(config)
+  const memoryService = await createMemoryService()       // PostgreSQL
+  const preferencesService = new PreferencesService(dbPath) // SQLite
 
-| Coluna | Tipo | Descrição |
-|--------|------|-----------|
-| `user_id` | string (unique) | Identificador da sessão |
-| `name` | string | Nome do usuário |
-| `age` | integer | Idade |
-| `favorite_genres` | JSON | Lista de gêneros favoritos |
-| `favorite_bands` | JSON | Lista de bandas/artistas favoritos |
-| `key_preferences` | text | Sumário das preferências principais |
-| `important_context` | text | Outros contextos relevantes |
-| `updated_at` | timestamp | Última atualização |
+  const graph = buildChatGraph(llmClient, preferencesService, memoryService)
+  return { graph, preferencesService }
+}
+```
 
-Ao salvar, as preferências são **mescladas** com as existentes — gêneros e bandas são acumulados com deduplicação via `Set`.
+O grafo é compilado com `checkpointer` e `store` do LangGraph:
+
+```typescript
+graph.compile({ checkpointer: memoryService.checkpointer, store: memoryService.store })
+```
 
 ## Configuração
 
@@ -122,23 +154,28 @@ Crie um `.env` na raiz do projeto:
 OPENROUTER_API_KEY=sua-chave-aqui
 ```
 
-Parâmetros principais em `src/config.ts`:
+Parâmetros em `src/config.ts`:
 
-| Parâmetro | Padrão | Descrição |
-|-----------|--------|-----------|
-| `models` | `upstage/solar-pro-3:free` | Modelo LLM usado |
+| Parâmetro | Valor padrão | Descrição |
+|-----------|-------------|-----------|
+| `models` | `arcee-ai/trinity-large-preview:free` | Modelo LLM usado |
 | `provider.sort.by` | `throughput` | Critério de roteamento no OpenRouter |
 | `temperature` | `0.7` | Criatividade das respostas |
+| `maxMessagesToSummary` | `2` | Nº de mensagens que dispara a sumarização |
+| `memory.dbUri` | PostgreSQL local | URI de conexão para checkpointer e store |
 
 ## Execução
 
 ```bash
 npm install
 
-# Iniciar conversa como usuário anônimo (novo thread a cada execução)
+# Subir PostgreSQL via Docker
+npm run docker:up
+
+# Iniciar conversa como usuário anônimo
 node --experimental-strip-types --env-file .env src/index.ts
 
-# Iniciar como usuário identificado (retoma preferências salvas)
+# Iniciar como usuário identificado (retoma sessão e preferências)
 npm run chat:erickwendel
 npm run chat:ana
 ```
@@ -150,11 +187,11 @@ npm test           # executa todos os testes E2E
 npm run test:watch # modo watch
 ```
 
-Os testes usam o runner nativo do Node.js (`node:test`) e verificam: extração e salvamento de preferências, múltiplas trocas de mensagem, recuperação de contexto entre sessões e manutenção do histórico.
+Os testes usam o runner nativo do Node.js (`node:test`) e verificam extração de preferências, múltiplas trocas de mensagem, persistência e manutenção do histórico.
 
 ## LangGraph Studio
 
-O projeto inclui `langgraph.json` para visualização e debug do grafo no LangGraph Studio:
+O projeto inclui `langgraph.json` para visualizar e debugar o grafo no LangGraph Studio:
 
 ```bash
 npm run langgraph:serve
