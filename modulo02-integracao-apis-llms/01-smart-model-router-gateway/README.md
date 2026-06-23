@@ -2,6 +2,35 @@
 
 Gateway HTTP que roteia requisições para modelos LLM via [OpenRouter](https://openrouter.ai/), selecionando automaticamente o melhor modelo com base em critérios configuráveis (preço, throughput ou latência).
 
+## Requisitos
+
+### Software
+
+| Requisito | Versão mínima | Observação |
+|-----------|--------------|------------|
+| **Node.js** | 22.6.0+ | Suporte nativo a TypeScript via `--experimental-strip-types`; recomendado 24.x |
+| **npm** | 10+ | Incluído no Node.js |
+
+> Node.js 22.6+ executa arquivos `.ts` diretamente sem compilação — não é necessário instalar `ts-node` ou executar `tsc`.
+
+### Contas e APIs
+
+| Serviço | Obrigatório | Como obter |
+|---------|------------|-----------|
+| **OpenRouter** | Sim | Crie uma conta em [openrouter.ai](https://openrouter.ai/) e gere uma API key |
+
+### Variáveis de ambiente
+
+Crie `.env` copiando `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+| Variável | Obrigatória | Descrição |
+|----------|------------|-----------|
+| `OPENROUTER_API_KEY` | Sim | Chave de acesso à API OpenRouter |
+
 ## Arquitetura
 
 ```

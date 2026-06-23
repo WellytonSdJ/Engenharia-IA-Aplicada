@@ -146,6 +146,57 @@ O grafo é compilado com `checkpointer` e `store` do LangGraph:
 graph.compile({ checkpointer: memoryService.checkpointer, store: memoryService.store })
 ```
 
+## Requisitos
+
+### Software
+
+| Requisito        | Versão mínima | Observação                                                   |
+|------------------|--------------|--------------------------------------------------------------|
+| **Node.js**      | 24.10.0+     | Obrigatório — usa `--experimental-strip-types` nativo        |
+| **npm**          | 10+          | Incluído no Node.js                                          |
+| **Docker**       | 20+          | Para subir o PostgreSQL via `docker-compose`                 |
+| **Docker Compose** | 2+         | Incluído no Docker Desktop                                   |
+
+> O projeto declara `"engines": { "node": ">=24.10.0" }` no `package.json`. Versões anteriores não são suportadas.
+
+### Contas e APIs
+
+| Serviço        | Obrigatório | Como obter |
+|----------------|------------|-----------|
+| **OpenRouter** | Sim        | Crie uma conta em [openrouter.ai](https://openrouter.ai/) e gere uma API key |
+| **LangSmith**  | Não        | Opcional — habilita rastreamento de chamadas LLM em [smith.langchain.com](https://smith.langchain.com/) |
+
+### Variáveis de ambiente
+
+Crie `.env` copiando `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+| Variável                  | Obrigatória | Descrição                                          |
+|---------------------------|------------|----------------------------------------------------|
+| `OPENROUTER_API_KEY`      | Sim        | Chave de acesso à API OpenRouter                   |
+| `OPENROUTER_HTTP_REFERER` | Não        | Referer enviado nas requisições (padrão: `http://localhost:3000`) |
+| `OPENROUTER_X_TITLE`      | Não        | Nome do app enviado ao OpenRouter                  |
+| `LANGSMITH_API_KEY`       | Não        | Habilita rastreamento com LangSmith                |
+| `LANGCHAIN_TRACING_V2`    | Não        | Ativar rastreamento (`true`/`false`)               |
+| `LANGCHAIN_PROJECT`       | Não        | Nome do projeto no LangSmith                       |
+
+### Banco de dados
+
+O projeto usa **dois bancos** com responsabilidades distintas:
+
+| Banco        | Uso                           | Como provisionar                        |
+|--------------|------------------------------|-----------------------------------------|
+| **PostgreSQL** | Checkpointer + Store LangGraph (histórico de mensagens) | `npm run docker:up` (sobe via Docker)  |
+| **SQLite**   | Preferências estruturadas do usuário | Criado automaticamente em `preferences.db` |
+
+A URI do PostgreSQL está em `src/config.ts`:
+```
+postgresql://postgres:mysecretpassword@localhost:5432/song_recommender
+```
+
 ## Configuração
 
 Crie um `.env` na raiz do projeto:

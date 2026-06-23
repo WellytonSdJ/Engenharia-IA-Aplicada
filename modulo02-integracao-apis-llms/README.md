@@ -9,6 +9,18 @@ Integração de aplicações Node.js com APIs de modelos de linguagem (LLMs), co
 | 01 | [smart-model-router-gateway](./01-smart-model-router-gateway/) | Gateway HTTP que roteia para o melhor modelo LLM via OpenRouter com base em critérios configuráveis |
 | 02 | [song-highlights](./02-song-highlights/) | Chatbot musical CLI com grafo de estados LangGraph, extração de preferências com Zod e persistência em SQLite |
 
+## Requisitos gerais
+
+| Requisito | Versão mínima | Projetos |
+| --- | --- | --- |
+| **Node.js** | 22.6.0+ (projeto 01) / 24.10.0+ (projeto 02) | Ambos |
+| **npm** | 10+ | Ambos |
+| **Docker + Docker Compose** | 20+ / 2+ | Apenas projeto 02 |
+| **Conta OpenRouter** | — | Ambos |
+| **Conta LangSmith** | — | Projeto 02 (opcional) |
+
+> Cada projeto tem seu próprio `README.md` com requisitos detalhados, variáveis de ambiente e instruções de execução.
+
 ## Conceitos abordados
 
 - Integração com a API OpenRouter para acesso a múltiplos modelos LLM
