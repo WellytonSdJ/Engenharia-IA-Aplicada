@@ -8,7 +8,7 @@
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f postgres",
-    "chat:erickwendel": "node --experimental-strip-types --env-file .env src/index.ts --user erickwendel",
+    "chat:wellyton": "node --experimental-strip-types --env-file .env src/index.ts --user wellyton",
     "chat:ana": "node --experimental-strip-types --env-file .env src/index.ts --user ana",
     "test": "node --experimental-strip-types --env-file .env --test tests/**/*.test.ts",
     "test:dev": "node --experimental-strip-types --env-file .env --test --watch tests/**/*.test.ts",
@@ -23,7 +23,7 @@
     "song-recommender",
     "openrouter"
   ],
-  "author": "erickwendel",
+  "author": "wellyton",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^24.10.13",
@@ -36,7 +36,8 @@
     "@huggingface/inference": "^4.13.12",
     "@huggingface/transformers": "^3.8.1",
     "@langchain/community": "^1.1.14",
-    "@langchain/core": "^1.1.22",
+    "@langchain/core": "^1.2.1",
+    "@langchain/langgraph": "^1.4.5",
     "@langchain/langgraph-checkpoint-postgres": "^1.0.0",
     "@langchain/langgraph-checkpoint-sqlite": "^1.0.1",
     "@libsql/client": "^0.17.0",

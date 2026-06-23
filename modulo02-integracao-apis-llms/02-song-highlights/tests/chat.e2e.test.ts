@@ -1,13 +1,13 @@
-import { describe, it, before, after } from 'node:test';
-import assert from 'node:assert/strict';
-import { HumanMessage } from '@langchain/core/messages';
-import { buildGraph } from '../src/graph/factory.ts';
-import { unlinkSync, existsSync } from 'node:fs';
+import { describe, it, before, after } from "node:test";
+import assert from "node:assert/strict";
+import { HumanMessage } from "@langchain/core/messages";
+import { buildGraph } from "../src/graph/factory.ts";
+import { unlinkSync, existsSync } from "node:fs";
 
-describe('Chat de Recomendação Musical - Testes E2E', () => {
+describe("Chat de Recomendação Musical - Testes E2E", () => {
   let graph: any;
   let preferencesService: any;
-  const testDbPath = './test-preferences.db';
+  const testDbPath = "./test-preferences.db";
 
   before(async () => {
     if (existsSync(testDbPath)) {
@@ -244,32 +244,28 @@ describe('Chat de Recomendação Musical - Testes E2E', () => {
   //   );
   // });
 
-
-
-  it('Deve manter histórico da conversa', async () => {
-    const userId = 'test-taylor';
+  it("Deve manter histórico da conversa", async () => {
+    const userId = "test-taylor";
     const threadId = `${userId}-${Date.now()}`;
     const config = {
       configurable: { thread_id: threadId },
-      context: { userId }
+      context: { userId },
     };
 
     await graph.invoke(
       {
         messages: [
-          new HumanMessage('Oi, sou Taylor e adoro música pop'),
-          new HumanMessage('Sou o Erick!'),
-          new HumanMessage('30 anos'),
-          new HumanMessage('Gosto de Guitarra'),
-          new HumanMessage('Pode recomendar algo animado?'),
-          new HumanMessage('Pode recomendar algo animado?'),
-          new HumanMessage('Pode recomendar algo animado?'),
+          new HumanMessage("Oi, sou Taylor e adoro música pop"),
+          new HumanMessage("Sou o Wellyton!"),
+          new HumanMessage("30 anos"),
+          new HumanMessage("Gosto de Guitarra"),
+          new HumanMessage("Pode recomendar algo animado?"),
+          new HumanMessage("Pode recomendar algo animado?"),
+          new HumanMessage("Pode recomendar algo animado?"),
         ],
         userId,
       },
-      config
+      config,
     );
-
   });
-
 });

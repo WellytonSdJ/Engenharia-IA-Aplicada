@@ -14,11 +14,11 @@ Chatbot de recomendação musical via CLI construído com **LangGraph**, **LangC
 
 O projeto usa dois tipos de persistência com responsabilidades distintas:
 
-| Mecanismo | Tecnologia | Responsabilidade |
-|-----------|-----------|-----------------|
-| **Checkpointer** | PostgreSQL (`PostgresSaver`) | Histórico de mensagens da conversa; permite retomar o thread entre sessões |
-| **Store** | PostgreSQL (`PostgresStore`) | Memória de longo prazo gerenciada pelo LangGraph |
-| **PreferencesService** | SQLite / Knex | Preferências estruturadas (nome, idade, gêneros, bandas) — legíveis como texto pelo chatNode |
+| Mecanismo              | Tecnologia                   | Responsabilidade                                                                             |
+| ---------------------- | ---------------------------- | -------------------------------------------------------------------------------------------- |
+| **Checkpointer**       | PostgreSQL (`PostgresSaver`) | Histórico de mensagens da conversa; permite retomar o thread entre sessões                   |
+| **Store**              | PostgreSQL (`PostgresStore`) | Memória de longo prazo gerenciada pelo LangGraph                                             |
+| **PreferencesService** | SQLite / Knex                | Preferências estruturadas (nome, idade, gêneros, bandas) — legíveis como texto pelo chatNode |
 
 ## Arquitetura — Grafo de Estados (LangGraph)
 
@@ -37,11 +37,11 @@ chat ──── extractedPreferences? ──► savePreferences ──── n
 
 ### Nós
 
-| Nó | O que faz |
-|----|----------|
-| `chat` | Carrega contexto do usuário no SQLite, monta prompts, chama o LLM com saída estruturada (Zod), retorna resposta + preferências extraídas + flag de sumarização |
-| `savePreferences` | Persiste as preferências extraídas no SQLite via `mergePreferences` (acumula gêneros e bandas com deduplicação) |
-| `summarize` | Chama o LLM para sumarizar a conversa, salva o sumário no SQLite via `storeSummary` e remove mensagens antigas com `RemoveMessage` (mantém as últimas 2) |
+| Nó                | O que faz                                                                                                                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat`            | Carrega contexto do usuário no SQLite, monta prompts, chama o LLM com saída estruturada (Zod), retorna resposta + preferências extraídas + flag de sumarização |
+| `savePreferences` | Persiste as preferências extraídas no SQLite via `mergePreferences` (acumula gêneros e bandas com deduplicação)                                                |
+| `summarize`       | Chama o LLM para sumarizar a conversa, salva o sumário no SQLite via `storeSummary` e remove mensagens antigas com `RemoveMessage` (mantém as últimas 2)       |
 
 ### Roteamento condicional (`edgeConditions.ts`)
 
@@ -130,41 +130,44 @@ Os nós recebem os serviços via injeção de dependência. O `factory.ts` é re
 
 ```typescript
 // factory.ts
-export async function buildGraph(dbPath = './preferences.db') {
-  const llmClient = new OpenRouterService(config)
-  const memoryService = await createMemoryService()       // PostgreSQL
-  const preferencesService = new PreferencesService(dbPath) // SQLite
+export async function buildGraph(dbPath = "./preferences.db") {
+  const llmClient = new OpenRouterService(config);
+  const memoryService = await createMemoryService(); // PostgreSQL
+  const preferencesService = new PreferencesService(dbPath); // SQLite
 
-  const graph = buildChatGraph(llmClient, preferencesService, memoryService)
-  return { graph, preferencesService }
+  const graph = buildChatGraph(llmClient, preferencesService, memoryService);
+  return { graph, preferencesService };
 }
 ```
 
 O grafo é compilado com `checkpointer` e `store` do LangGraph:
 
 ```typescript
-graph.compile({ checkpointer: memoryService.checkpointer, store: memoryService.store })
+graph.compile({
+  checkpointer: memoryService.checkpointer,
+  store: memoryService.store,
+});
 ```
 
 ## Requisitos
 
 ### Software
 
-| Requisito        | Versão mínima | Observação                                                   |
-|------------------|--------------|--------------------------------------------------------------|
-| **Node.js**      | 24.10.0+     | Obrigatório — usa `--experimental-strip-types` nativo        |
-| **npm**          | 10+          | Incluído no Node.js                                          |
-| **Docker**       | 20+          | Para subir o PostgreSQL via `docker-compose`                 |
-| **Docker Compose** | 2+         | Incluído no Docker Desktop                                   |
+| Requisito          | Versão mínima | Observação                                            |
+| ------------------ | ------------- | ----------------------------------------------------- |
+| **Node.js**        | 24.10.0+      | Obrigatório — usa `--experimental-strip-types` nativo |
+| **npm**            | 10+           | Incluído no Node.js                                   |
+| **Docker**         | 20+           | Para subir o PostgreSQL via `docker-compose`          |
+| **Docker Compose** | 2+            | Incluído no Docker Desktop                            |
 
 > O projeto declara `"engines": { "node": ">=24.10.0" }` no `package.json`. Versões anteriores não são suportadas.
 
 ### Contas e APIs
 
-| Serviço        | Obrigatório | Como obter |
-|----------------|------------|-----------|
-| **OpenRouter** | Sim        | Crie uma conta em [openrouter.ai](https://openrouter.ai/) e gere uma API key |
-| **LangSmith**  | Não        | Opcional — habilita rastreamento de chamadas LLM em [smith.langchain.com](https://smith.langchain.com/) |
+| Serviço        | Obrigatório | Como obter                                                                                              |
+| -------------- | ----------- | ------------------------------------------------------------------------------------------------------- |
+| **OpenRouter** | Sim         | Crie uma conta em [openrouter.ai](https://openrouter.ai/) e gere uma API key                            |
+| **LangSmith**  | Não         | Opcional — habilita rastreamento de chamadas LLM em [smith.langchain.com](https://smith.langchain.com/) |
 
 ### Variáveis de ambiente
 
@@ -174,25 +177,26 @@ Crie `.env` copiando `.env.example`:
 cp .env.example .env
 ```
 
-| Variável                  | Obrigatória | Descrição                                          |
-|---------------------------|------------|----------------------------------------------------|
-| `OPENROUTER_API_KEY`      | Sim        | Chave de acesso à API OpenRouter                   |
-| `OPENROUTER_HTTP_REFERER` | Não        | Referer enviado nas requisições (padrão: `http://localhost:3000`) |
-| `OPENROUTER_X_TITLE`      | Não        | Nome do app enviado ao OpenRouter                  |
-| `LANGSMITH_API_KEY`       | Não        | Habilita rastreamento com LangSmith                |
-| `LANGCHAIN_TRACING_V2`    | Não        | Ativar rastreamento (`true`/`false`)               |
-| `LANGCHAIN_PROJECT`       | Não        | Nome do projeto no LangSmith                       |
+| Variável                  | Obrigatória | Descrição                                                         |
+| ------------------------- | ----------- | ----------------------------------------------------------------- |
+| `OPENROUTER_API_KEY`      | Sim         | Chave de acesso à API OpenRouter                                  |
+| `OPENROUTER_HTTP_REFERER` | Não         | Referer enviado nas requisições (padrão: `http://localhost:3000`) |
+| `OPENROUTER_X_TITLE`      | Não         | Nome do app enviado ao OpenRouter                                 |
+| `LANGSMITH_API_KEY`       | Não         | Habilita rastreamento com LangSmith                               |
+| `LANGCHAIN_TRACING_V2`    | Não         | Ativar rastreamento (`true`/`false`)                              |
+| `LANGCHAIN_PROJECT`       | Não         | Nome do projeto no LangSmith                                      |
 
 ### Banco de dados
 
 O projeto usa **dois bancos** com responsabilidades distintas:
 
-| Banco        | Uso                           | Como provisionar                        |
-|--------------|------------------------------|-----------------------------------------|
-| **PostgreSQL** | Checkpointer + Store LangGraph (histórico de mensagens) | `npm run docker:up` (sobe via Docker)  |
-| **SQLite**   | Preferências estruturadas do usuário | Criado automaticamente em `preferences.db` |
+| Banco          | Uso                                                     | Como provisionar                           |
+| -------------- | ------------------------------------------------------- | ------------------------------------------ |
+| **PostgreSQL** | Checkpointer + Store LangGraph (histórico de mensagens) | `npm run docker:up` (sobe via Docker)      |
+| **SQLite**     | Preferências estruturadas do usuário                    | Criado automaticamente em `preferences.db` |
 
 A URI do PostgreSQL está em `src/config.ts`:
+
 ```
 postgresql://postgres:mysecretpassword@localhost:5432/song_recommender
 ```
@@ -207,13 +211,13 @@ OPENROUTER_API_KEY=sua-chave-aqui
 
 Parâmetros em `src/config.ts`:
 
-| Parâmetro | Valor padrão | Descrição |
-|-----------|-------------|-----------|
-| `models` | `arcee-ai/trinity-large-preview:free` | Modelo LLM usado |
-| `provider.sort.by` | `throughput` | Critério de roteamento no OpenRouter |
-| `temperature` | `0.7` | Criatividade das respostas |
-| `maxMessagesToSummary` | `2` | Nº de mensagens que dispara a sumarização |
-| `memory.dbUri` | PostgreSQL local | URI de conexão para checkpointer e store |
+| Parâmetro              | Valor padrão                          | Descrição                                 |
+| ---------------------- | ------------------------------------- | ----------------------------------------- |
+| `models`               | `arcee-ai/trinity-large-preview:free` | Modelo LLM usado                          |
+| `provider.sort.by`     | `throughput`                          | Critério de roteamento no OpenRouter      |
+| `temperature`          | `0.7`                                 | Criatividade das respostas                |
+| `maxMessagesToSummary` | `2`                                   | Nº de mensagens que dispara a sumarização |
+| `memory.dbUri`         | PostgreSQL local                      | URI de conexão para checkpointer e store  |
 
 ## Execução
 
@@ -227,7 +231,7 @@ npm run docker:up
 node --experimental-strip-types --env-file .env src/index.ts
 
 # Iniciar como usuário identificado (retoma sessão e preferências)
-npm run chat:erickwendel
+npm run chat:wellyton
 npm run chat:ana
 ```
 
