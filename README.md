@@ -7,11 +7,15 @@ Repositório de estudos da pós-graduação em **Engenharia de IA Aplicada**. Ca
 ```
 engenharia-ia-aplicada/
 ├── modulo01-fundamentos-de-ia-e-llms-para-programadores/
-│   ├── 01-neural-network/          # Classificador com TensorFlow.js
-│   └── 02-Sistemas-Recomendacao/   # Recomendação de produtos no browser
+│   ├── 01-neural-network/              # Classificador com TensorFlow.js
+│   └── 02-Sistemas-Recomendacao/       # Recomendação de produtos no browser
 └── modulo02-integracao-apis-llms/
     ├── 01-smart-model-router-gateway/  # Gateway HTTP com roteamento de modelos
-    └── 02-song-highlights/             # Chatbot musical com memória (LangGraph)
+    ├── 02-langchain-intro/             # Primeiro grafo LangGraph (sem LLM)
+    ├── 03-medical-appointment/         # Prompt chaining + structured output
+    ├── 04-song-highlights/             # Chatbot musical com memória (LangGraph)
+    ├── 05-safeguard-prompt-injection/  # Guardrails e segurança com LLM
+    └── 06-rag-neo4j-students/          # RAG com Neo4j e Cypher
 ```
 
 ## Módulos
@@ -27,26 +31,13 @@ Introdução prática a redes neurais com TensorFlow.js, cobrindo arquitetura de
 
 ### Módulo 02 — Integração com APIs de LLMs
 
-Integração de aplicações Node.js com APIs de modelos de linguagem, abordando roteamento inteligente, grafos de estado com LangGraph e persistência de memória.
+Integração de aplicações Node.js com APIs de modelos de linguagem, do roteamento inteligente até RAG com banco de grafos, passando por LangGraph, prompt chaining e segurança.
 
 | Projeto | Descrição |
 | ------- | --------- |
 | [01-smart-model-router-gateway](./modulo02-integracao-apis-llms/01-smart-model-router-gateway/) | Gateway HTTP com Fastify que roteia requisições para o melhor modelo LLM via OpenRouter (por preço, throughput ou latência) |
-| [02-song-highlights](./modulo02-integracao-apis-llms/02-song-highlights/) | Chatbot musical CLI com grafo de estados LangGraph, extração de preferências com Zod e persistência em SQLite |
-
-## Stack
-
-- **TensorFlow.js** — redes neurais e sistemas de recomendação no browser e Node.js
-- **Node.js** + **TypeScript** — backend e integrações com APIs (execução nativa de `.ts` sem compilação)
-- **LangGraph** — grafos de estado para fluxos conversacionais com LLMs (nós, edges condicionais, checkpointer, store)
-- **LangChain** — integração com modelos de linguagem e saída estruturada (`withStructuredOutput`)
-- **Fastify** — servidor HTTP com validação de schema via JSON Schema
-- **OpenRouter** — acesso a múltiplos modelos LLM com roteamento automático
-- **Zod** — validação e tipagem de saídas estruturadas dos LLMs
-- **PostgreSQL** — persistência de sessão do LangGraph (checkpointer e store)
-- **SQLite / knex** — persistência leve de preferências de usuário entre sessões
-- **Web Workers** — treinamento de modelos no browser sem bloquear a UI
-
-## Conceitos de segurança abordados
-
-- **Prompt injection** — vetores de ataque em sistemas com LLM, mitigações via structured output e separação de contextos (módulo 02)
+| [02-langchain-intro](./modulo02-integracao-apis-llms/02-langchain-intro/) | Primeiro grafo LangGraph: StateGraph + Zod state + nós puros + edges condicionais, sem chamadas ao LLM |
+| [03-medical-appointment](./modulo02-integracao-apis-llms/03-medical-appointment/) | Prompt chaining com LangGraph: LLM extrai intent, código agenda/cancela, LLM gera resposta — Zod structured output e factory pattern |
+| [04-song-highlights](./modulo02-integracao-apis-llms/04-song-highlights/) | Chatbot musical CLI com grafo LangGraph, checkpointer Postgres, extração de preferências com Zod e persistência em SQLite |
+| [05-safeguard-prompt-injection](./modulo02-integracao-apis-llms/05-safeguard-prompt-injection/) | Demonstração de ataques de prompt injection e defesa com guardrails baseados em LLM; RBAC admin vs member via MCP |
+| [06-rag-neo4j-students](./modulo02-integracao-apis-llms/06-rag-neo4j-students/) | API de análise de vendas que c
