@@ -64,11 +64,13 @@ this.db = knex({
 ### Dois modos de escrita
 
 **`mergePreferences`** — chamado pelo `savePreferencesNode` quando o LLM extrai preferências novas na conversa:
+
 - Acumula gêneros e bandas via `Set` (sem duplicatas)
 - Concatena contexto novo ao existente (não substitui)
 - Mantém `name` e `age` existentes se a nova extração vier `null`
 
 **`storeSummary`** — chamado pelo `summarizationNode` após sumarização:
+
 - Sobrescreve completamente com o resumo gerado pelo LLM
 - O LLM já recebeu o resumo anterior como input, então o output é um merge inteligente
 
@@ -90,7 +92,7 @@ preferencias_previamente_armazenadas: userContext || 'Nenhuma'
 ## Comparação
 
 | | Postgres (checkpointer) | SQLite (preferences) |
-|---|---|---|
+| --- | --- | --- |
 | **Gerenciado por** | LangGraph | Knex / aplicação |
 | **Escopo** | Por thread_id | Por userId |
 | **Persiste entre sessões?** | Não (thread tem timestamp) | Sim |
@@ -104,7 +106,7 @@ preferencias_previamente_armazenadas: userContext || 'Nenhuma'
 ## Referências no projeto
 
 | Conceito | Arquivo |
-|---|---|
+| --- | --- |
 | Checkpointer + Store | [src/services/memoryService.ts](../src/services/memoryService.ts) |
 | SQLite / preferências | [src/services/preferencesService.ts](../src/services/preferencesService.ts) |
 | Injeção no grafo | [src/graph/factory.ts](../src/graph/factory.ts) |

@@ -39,6 +39,7 @@ messages: withLangGraph(z.custom<BaseMessage[]>(), MessagesZodMeta)
 ```
 
 Com esse reducer:
+
 - Um nó retornando `messages: [new AIMessage("oi")]` **adiciona** ao array existente
 - Um nó retornando `messages: [new RemoveMessage({ id: "xyz" })]` **remove** a mensagem com aquele id
 - Sem esse reducer, o nó substituiria o array inteiro
@@ -81,12 +82,14 @@ Isso evita acoplamento direto e facilita testes — você pode passar mocks.
 Aresta define para onde o grafo vai após cada nó. Há dois tipos:
 
 **Estáticas** — sempre vão para o mesmo nó:
+
 ```ts
 .addEdge(START, 'chat')       // entrada sempre vai pro chat
 .addEdge('summarize', END)    // summarize sempre encerra
 ```
 
 **Condicionais** — a função de roteamento decide o destino com base no state:
+
 ```ts
 .addConditionalEdges('chat', routeAfterChat, {
   savePreferences: 'savePreferences',
@@ -106,7 +109,7 @@ export const routeAfterChat = (state: GraphState): string =>
 
 ### Fluxo do projeto
 
-```
+```text
 START
   └─> chat
         ├─ (tem extractedPreferences?) ──> savePreferences
@@ -179,10 +182,32 @@ O `context` é útil quando o mesmo grafo é usado por múltiplos usuários simu
 
 ---
 
+## LangSmith — observabilidade do grafo
+
+LangSmith é a plataforma de observabilidade do LangChain. Sem ele, você é "cego" ao que acontece dentro do grafo — qual nó executou, qual prompt foi enviado, qual foi a resposta, onde deu erro.
+
+Com LangSmith você vê, para cada invocação:
+
+- Quais nós foram executados e em que ordem
+- O state antes e depois de cada nó
+- O prompt exato enviado ao modelo
+- A resposta recebida e se passou na validação Zod
+- Latência por nó e custo de tokens
+
+Para habilitar, basta definir as variáveis de ambiente (configuração opcional no projeto):
+
+```bash
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=...
+LANGCHAIN_PROJECT=song-highlights
+```
+
+---
+
 ## Referências no projeto
 
 | Conceito | Arquivo |
-|---|---|
+| --- | --- |
 | Definição do state e grafo | [src/graph/graph.ts](../src/graph/graph.ts) |
 | Nós do grafo | [src/graph/nodes/](../src/graph/nodes/) |
 | Edge conditions | [src/graph/nodes/edgeConditions.ts](../src/graph/nodes/edgeConditions.ts) |

@@ -28,6 +28,7 @@ new AIMessage("Experimente Kind of Blue do Miles Davis")
 ```
 
 Essa tipagem importa porque:
+
 - O LangGraph usa `HumanMessage.isInstance(msg)` para distinguir quem falou
 - O reducer de mensagens do LangGraph trata `RemoveMessage` como instrução especial de deleção
 - Cada tipo serializa diferente quando vai para a API do modelo
@@ -110,10 +111,45 @@ Sem `MessagesZodMeta`, o LangGraph substituiria o array inteiro a cada update. C
 
 ---
 
+---
+
+## OpenRouter — usando LangChain com um gateway de modelos
+
+O projeto não chama a OpenAI diretamente. Usa o **OpenRouter**, que é um gateway que expõe dezenas de modelos (OpenAI, Anthropic, Mistral, etc.) com uma única API compatível com o formato OpenAI.
+
+```ts
+// openrouterService.ts
+this.llmClient = new ChatOpenAI({
+  configuration: {
+    baseURL: 'https://openrouter.ai/api/v1',  // redireciona para o OpenRouter
+  },
+  modelKwargs: {
+    models: this.config.models,       // lista de modelos aceitos
+    provider: this.config.provider,   // critério de roteamento (throughput, price, latency)
+  },
+})
+```
+
+O OpenRouter faz **fallback automático**: se o primeiro modelo da lista falhar ou estiver lento, tenta o próximo. O critério de roteamento (`by: "throughput"`) determina qual modelo da lista é escolhido em cada requisição.
+
+---
+
+## Temperatura
+
+Parâmetro que controla criatividade vs. consistência do modelo. Vai de 0 a 2 na maioria dos modelos:
+
+- **0** — respostas determinísticas e consistentes. Útil para extração de dados e validação.
+- **0.7** (valor do projeto) — equilíbrio entre criatividade e coerência. Bom para chat.
+- **alto** — respostas mais variadas e criativas. Pode ser inconsistente.
+
+Para structured output, valores mais baixos tendem a gerar JSON mais confiável.
+
+---
+
 ## Referências no projeto
 
 | Conceito | Arquivo |
-|---|---|
+| --- | --- |
 | `ChatOpenAI` + `withStructuredOutput` | [src/services/openrouterService.ts](../src/services/openrouterService.ts) |
 | `HumanMessage`, `AIMessage`, `RemoveMessage` | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts), [src/graph/nodes/summarizationNode.ts](../src/graph/nodes/summarizationNode.ts) |
 | `SystemMessage`, `HumanMessage` no invoke | [src/services/openrouterService.ts](../src/services/openrouterService.ts) |

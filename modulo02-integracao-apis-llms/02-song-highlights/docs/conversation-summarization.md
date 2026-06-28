@@ -3,6 +3,7 @@
 ## O problema que resolve
 
 LLMs têm uma janela de contexto finita. Numa conversa longa, você tem duas opções ruins:
+
 1. Mandar o histórico completo a cada mensagem → custo alto, eventualmente estoura o limite
 2. Descartar mensagens antigas → o modelo perde contexto e parece "amnésico"
 
@@ -14,11 +15,12 @@ Sumarização é o meio-termo: você comprime o histórico em um resumo estrutur
 
 O padrão mais robusto não é sumarizar do zero a cada vez. É sumarização incremental: você passa o resumo anterior junto com a nova conversa, e o LLM faz o merge.
 
-```
+```text
 [Resumo anterior] + [Novas mensagens] → [Resumo atualizado]
 ```
 
 Vantagens:
+
 - Informações de sessões antigas não se perdem
 - O custo da sumarização é proporcional à conversa nova, não ao histórico total
 - Se o usuário menciona algo que contraria o resumo anterior, o LLM pode corrigir
@@ -67,7 +69,7 @@ Quando `needsSummarization` é `true`, a edge condition do `routeAfterChat` (ou 
 
 ## O que o summarizationNode faz
 
-```
+```text
 1. Converte state.messages → array { role, content }
 2. Busca resumo anterior do state (conversationSummary)
 3. Chama LLM com histórico + resumo anterior → retorna ConversationSummary (Zod)
@@ -115,7 +117,7 @@ O resumo é estruturado (não texto livre) porque precisa ser mesclado com as pr
 O resumo é salvo em dois lugares com propósitos diferentes:
 
 | | `state.conversationSummary` | SQLite via `preferencesService` |
-|---|---|---|
+| --- | --- | --- |
 | Escopo | Thread atual (Postgres checkpointer) | Persistente entre sessões |
 | Usado em | Próxima sumarização incremental | Carregado no system prompt no início da sessão |
 | Quem lê | `summarizationNode` | `chatNode` e `index.ts` |
@@ -138,7 +140,7 @@ preferencias_previamente_armazenadas: userContext || 'Nenhuma'
 ## Referências no projeto
 
 | Conceito | Arquivo |
-|---|---|
+| --- | --- |
 | Nó de sumarização | [src/graph/nodes/summarizationNode.ts](../src/graph/nodes/summarizationNode.ts) |
 | Prompts e schema | [src/prompts/v1/summarization.ts](../src/prompts/v1/summarization.ts) |
 | Trigger de sumarização | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts) |
