@@ -19,6 +19,8 @@ export const ChatResponseSchema = z.object({
 export type ChatResponse = z.infer<typeof ChatResponseSchema>;
 export type UserPreferences = z.infer<typeof UserPreferencesSchema>;
 
+// O prompt é serializado como JSON string — estrutura explícita melhora o seguimento de instruções
+// em modelos que entendem bem JSON (vs. texto puro em markdown)
 export const getSystemPrompt = (userContext?: string) => {
   return JSON.stringify({
     role: 'Assistente musical entusiasta e amigável - caloroso, animado, conversacional (2-4 frases)',
@@ -97,6 +99,7 @@ export const getSystemPrompt = (userContext?: string) => {
   });
 };
 
+// Separa histórico e mensagem atual em campos distintos para o LLM distinguir contexto de input
 export const getUserPromptTemplate = (
   userMessage: string,
   conversationHistory?: string

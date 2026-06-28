@@ -28,9 +28,24 @@ Integração de aplicações Node.js com APIs de modelos de linguagem (LLMs), co
 - Servidor HTTP com Fastify e validação de schema
 - Execução de TypeScript nativa com Node.js (sem compilação)
 - Testes E2E com `node:test` (runner nativo do Node.js)
-- Grafos de estado com LangGraph (`StateGraph`, nós, edges condicionais)
-- Saída estruturada de LLMs com validação por Zod
+- Grafos de estado com LangGraph (`StateGraph`, nós, edges condicionais, reducers)
+- Checkpointer e Store do LangGraph para persistência de sessão no Postgres
+- Saída estruturada de LLMs com validação por Zod (`withStructuredOutput`)
 - Extração de entidades de conversas em tempo real
 - Persistência de preferências de usuário em SQLite com Knex
+- Sumarização incremental de conversas para compressão de histórico
 - Prompt engineering para extração de dados e sumarização de conversas
 - Gerenciamento de sessões por `thread_id` no LangGraph
+- Prompt injection: vetores de ataque e mitigações em sistemas com LLMs
+
+## Documentação de conceitos (projeto 02)
+
+Documentação aprofundada dos conceitos aplicados disponível em [`02-song-highlights/docs/`](./02-song-highlights/docs/):
+
+| Documento | Conteúdo |
+| --- | --- |
+| [langchain.md](./02-song-highlights/docs/langchain.md) | Abstrações core, ChatOpenAI, structured output, integração com LangGraph |
+| [langgraph.md](./02-song-highlights/docs/langgraph.md) | StateGraph, nós, edges, reducers, checkpointer, store, Runtime |
+| [conversation-summarization.md](./02-song-highlights/docs/conversation-summarization.md) | Sumarização incremental, trigger por contagem, RemoveMessage |
+| [persistence.md](./02-song-highlights/docs/persistence.md) | Postgres (LangGraph) vs SQLite (preferências), quando usar cada um |
+| [prompt-injection.md](./02-song-highlights/docs/prompt-injection.md) | O que é, vetores de ataque, mitigações, exposições no projeto |

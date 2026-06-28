@@ -5,20 +5,25 @@ export type ModelConfig = {
 
   provider: {
     sort: {
+      // OpenRouter aceita "throughput", "price", "latency" como critérios de roteamento
       by: string;
       partition: string;
     };
   };
 
+  // Lista de model IDs do OpenRouter — o primeiro é o primário, os demais são fallback
   models: string[];
   temperature: number;
 
   memory: {
+    // URI do Postgres usado pelo LangGraph para checkpointer e store
     dbUri: string;
   };
+  // Quantidade de mensagens no state que dispara a sumarização automática
   maxMessagesToSummary: number;
 };
 
+// Falha rápido na inicialização se a variável obrigatória não estiver definida
 console.assert(
   process.env.OPENROUTER_API_KEY,
   "OPENROUTER_API_KEY is not set in environment variables",

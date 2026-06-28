@@ -11,6 +11,7 @@ export const SummarySchema = z.object({
 
 export type ConversationSummary = z.infer<typeof SummarySchema>;
 
+// Prompt separado do chatResponse — o sumarizador tem papel diferente: extração estruturada, não conversa
 export const getSummarizationSystemPrompt = () => {
   return JSON.stringify({
     role: 'Sumarizador de conversação para preferências musicais',
@@ -40,6 +41,7 @@ export const getSummarizationUserPrompt = (
   conversationHistory: Array<{ role: string; content: string }>,
   previousSummary?: ConversationSummary
 ) => {
+  // sumario_anterior permite sumarização incremental — o LLM mescla ao invés de reescrever do zero
   return JSON.stringify({
     conversa: conversationHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n'),
     sumario_anterior: previousSummary || 'Nenhum',

@@ -9,6 +9,7 @@ export class PreferencesService {
   private isSetup = false;
 
   constructor(dbPath: string) {
+    // SQLite via better-sqlite3 — leve, sem servidor, ideal para preferências por usuário
     this.db = knex({
       client: 'better-sqlite3',
       connection: {
@@ -19,6 +20,7 @@ export class PreferencesService {
   }
 
   async setup(): Promise<void> {
+    // Idempotente — múltiplas chamadas são seguras graças ao flag isSetup
     if (this.isSetup) return;
 
     const hasTable = await this.db.schema.hasTable('user_preferences');
@@ -29,6 +31,7 @@ export class PreferencesService {
         table.string('user_id').unique().notNullable();
         table.string('name');
         table.integer('age');
+        // Arrays são armazenados como JSON string — deserializados em getSummary
         table.json('favorite_genres');
         table.json('favorite_bands');
         table.text('key_preferences');
@@ -45,6 +48,7 @@ export class PreferencesService {
 
     const existing = await this.getSummary(userId);
 
+    // Set garante deduplicação ao acumular gêneros/bandas entre sessões
     const mergedGenres = prefs.favoriteGenres?.length
       ? [...new Set([...(existing?.favoriteGenres || []), ...prefs.favoriteGenres])]
       : existing?.favoriteGenres;
@@ -53,6 +57,7 @@ export class PreferencesService {
       ? [...new Set([...(existing?.favoriteBands || []), ...prefs.favoriteBands])]
       : existing?.favoriteBands;
 
+    // Concatena contexto novo ao existente em vez de substituir
     const contextParts = [
       existing?.importantContext,
       prefs.mood && `Mood: ${prefs.mood}`,
@@ -71,6 +76,7 @@ export class PreferencesService {
       updated_at: this.db.fn.now(),
     };
 
+    // upsert: insere se não existe, atualiza todos os campos se já existe (baseado em user_id)
     await this.db('user_preferences')
       .insert(data)
       .onConflict('user_id')
@@ -91,6 +97,7 @@ export class PreferencesService {
       updated_at: this.db.fn.now(),
     };
 
+    // Sobrescreve completamente com o resumo do LLM — diferente do mergePreferences que acumula
     await this.db('user_preferences')
       .insert(data)
       .onConflict('user_id')
@@ -106,6 +113,7 @@ export class PreferencesService {
 
     if (!row) return null;
 
+    // Desserializa os campos JSON armazenados como string
     return {
       name: row.name || undefined,
       age: row.age || undefined,
@@ -120,6 +128,7 @@ export class PreferencesService {
     const summary = await this.getSummary(userId);
     if (!summary) return undefined;
 
+    // Formata o resumo como texto simples para injetar diretamente no system prompt
     const parts: string[] = [];
 
     if (summary.name) parts.push(`Nome: ${summary.name}`);

@@ -3,6 +3,7 @@ import { stdin, stdout } from 'node:process';
 import { HumanMessage } from '@langchain/core/messages';
 import { buildGraph } from './graph/factory.ts';
 
+// Lê --user <id> da linha de comando para identificar o usuário na sessão
 function parseArgs(): { userId?: string } {
   const args = process.argv.slice(2);
   const userIndex = args.indexOf('--user');
@@ -27,6 +28,9 @@ async function main(): Promise<void> {
 
     const { userId } = parseArgs();
     const actualUserId = userId || 'anonymous';
+
+    // thread_id isola o histórico de checkpoints por sessão no Postgres
+    // context.userId é disponibilizado para os nós via runtime.context
     const threadId = `${actualUserId}-${Date.now()}`;
     const config = {
       configurable: { thread_id: threadId },
@@ -36,12 +40,14 @@ async function main(): Promise<void> {
     console.log(`👤 Usuário: ${actualUserId}`);
     console.log(`💬 Thread da Conversa: ${threadId}\n`);
 
+    // Carrega preferências persistidas de sessões anteriores (SQLite)
     const userContext = await preferencesService.getBasicInfo(actualUserId);
     if (userContext) {
       console.log(`📚 Informações do usuário carregadas:\n${userContext}\n`);
     }
 
     try {
+      // A mensagem de abertura muda dependendo se já existe contexto do usuário
       const initialMessage = userContext
         ? 'Inicie a conversa de forma casual mencionando o que você sabe sobre mim e recomende uma música!'
         : 'Olá! Me apresente de forma amigável e pergunte sobre meu nome e preferências musicais.';
@@ -71,6 +77,7 @@ async function main(): Promise<void> {
       }
 
       try {
+        // userContext não é passado aqui — o chatNode busca do preferencesService se necessário
         const result = await graph.invoke(
           {
             messages: [new HumanMessage(userInput)],

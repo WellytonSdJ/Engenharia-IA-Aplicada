@@ -21,10 +21,13 @@ export function createChatNode(
     const userId = String(
       runtime?.context?.userId || state.userId || "unknown",
     );
+
+    // userContext vem do state se já foi carregado (primeira mensagem), senão busca do SQLite
     const userContext =
       state.userContext ?? (await preferencesService.getBasicInfo(userId));
     const systemPrompt = getSystemPrompt(userContext);
 
+    // Serializa o histórico para texto — o LLM recebe como parte do user prompt
     const conversationHistory = state.messages
       .map(
         (msg) =>
@@ -32,9 +35,11 @@ export function createChatNode(
       )
       .join("\n");
 
+    // A última mensagem do state é sempre a do usuário atual
     const userMessage = state.messages.at(-1)?.text as string;
     const userPrompt = getUserPromptTemplate(userMessage, conversationHistory);
 
+    // Retorno já validado pelo ChatResponseSchema — inclui message, preferences e shouldSavePreferences
     const result = await llmClient.generateStructured(
       systemPrompt,
       userPrompt,
@@ -58,10 +63,12 @@ export function createChatNode(
     // This gives: initial 2 + 4 new messages = 6 messages total
 
     const totalMessages = state.messages.length;
+    // O threshold é configurável em config.maxMessagesToSummary — não hardcoded aqui
     const needsSummarization = totalMessages >= config.maxMessagesToSummary;
 
     return {
       messages: [new AIMessage(response.message)],
+      // Só propaga preferences se o LLM decidiu que vale salvar — evita ruído no state
       extractedPreferences: response.shouldSavePreferences
         ? response.preferences
         : undefined,

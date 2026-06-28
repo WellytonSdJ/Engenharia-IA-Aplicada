@@ -38,10 +38,15 @@ Integração de aplicações Node.js com APIs de modelos de linguagem, abordando
 
 - **TensorFlow.js** — redes neurais e sistemas de recomendação no browser e Node.js
 - **Node.js** + **TypeScript** — backend e integrações com APIs (execução nativa de `.ts` sem compilação)
-- **LangGraph** — grafos de estado para fluxos conversacionais com LLMs
-- **LangChain** — integração com modelos de linguagem e saída estruturada
+- **LangGraph** — grafos de estado para fluxos conversacionais com LLMs (nós, edges condicionais, checkpointer, store)
+- **LangChain** — integração com modelos de linguagem e saída estruturada (`withStructuredOutput`)
 - **Fastify** — servidor HTTP com validação de schema via JSON Schema
 - **OpenRouter** — acesso a múltiplos modelos LLM com roteamento automático
 - **Zod** — validação e tipagem de saídas estruturadas dos LLMs
-- **SQLite / knex** — persistência leve de preferências de usuário
+- **PostgreSQL** — persistência de sessão do LangGraph (checkpointer e store)
+- **SQLite / knex** — persistência leve de preferências de usuário entre sessões
 - **Web Workers** — treinamento de modelos no browser sem bloquear a UI
+
+## Conceitos de segurança abordados
+
+- **Prompt injection** — vetores de ataque em sistemas com LLM, mitigações via structured output e separação de contextos (módulo 02)
