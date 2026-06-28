@@ -47,23 +47,3 @@ Integração de aplicações Node.js com APIs de modelos de linguagem (LLMs), co
 ## Documentação de conceitos (projeto 02)
 
 Documentação aprofundada dos conceitos aplicados disponível em [`02-song-highlights/docs/`](./02-song-highlights/docs/):
-
-| Documento | Conteúdo |
-| --- | --- |
-| [langchain.md](./02-song-highlights/docs/langchain.md) | Abstrações core, ChatOpenAI, structured output, integração com LangGraph |
-| [langgraph.md](./02-song-highlights/docs/langgraph.md) | StateGraph, nós, edges, reducers, checkpointer, store, Runtime |
-| [conversation-summarization.md](./02-song-highlights/docs/conversation-summarization.md) | Sumarização incremental, trigger por contagem, RemoveMessage |
-| [persistence.md](./02-song-highlights/docs/persistence.md) | Postgres (LangGraph) vs SQLite (preferências), quando usar cada um |
-| [prompt-injection.md](./02-song-highlights/docs/prompt-injection.md) | O que é, vetores de ataque, mitigações, exposições no projeto |
-
-## Documentação de conceitos (projeto 03)
-
-Documentação aprofundada dos conceitos aplicados disponível em [`03-safeguard-prompt-injection/docs/`](./03-safeguard-prompt-injection/docs/):
-
-| Documento | Conteúdo |
-| --- | --- |
-| [prompt-injection.md](./03-safeguard-prompt-injection/docs/prompt-injection.md) | Demonstração prática dos ataques: override direto, instrução indireta, por que system prompt não protege |
-| [guardrails.md](./03-safeguard-prompt-injection/docs/guardrails.md) | O que são guardrails, safeguard model vs. executor, defesa determinística vs. probabilística, fail closed |
-| [mcp.md](./03-safeguard-prompt-injection/docs/mcp.md) | Model Context Protocol: servidor de filesystem, STDIO transport, por que MCP amplifica o risco de injection |
-| [rbac.md](./03-safeguard-prompt-injection/docs/rbac.md) | Role-Based Access Control: admin/member, por que RBAC via prompt falha, RBAC via código |
-| [langgraph.md](./03-safeguard-prompt-injection/docs/langgraph.md) | Grafo de segurança: guardrails_check → chat/blocked, SafeguardStateAnnotation, roteamento condicional |
