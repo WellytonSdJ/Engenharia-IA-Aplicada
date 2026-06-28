@@ -1,18 +1,18 @@
 import { z } from 'zod/v3';
 
 export const UserPreferencesSchema = z.object({
-  name: z.string().optional().describe('Nome do usuário'),
-  age: z.number().optional().describe('Idade do usuário'),
-  favoriteGenres: z.array(z.string()).optional().describe('Gêneros musicais favoritos'),
-  favoriteBands: z.array(z.string()).optional().describe('Bandas ou artistas favoritos'),
-  mood: z.string().optional().describe('Humor ou sentimento atual'),
-  listeningContext: z.string().optional().describe('Quando/onde ouve música'),
-  additionalInfo: z.string().optional().describe('Outras preferências relevantes mencionadas'),
+  name: z.string().nullable().describe('Nome do usuário'),
+  age: z.number().nullable().describe('Idade do usuário'),
+  favoriteGenres: z.array(z.string()).nullable().describe('Gêneros musicais favoritos'),
+  favoriteBands: z.array(z.string()).nullable().describe('Bandas ou artistas favoritos'),
+  mood: z.string().nullable().describe('Humor ou sentimento atual'),
+  listeningContext: z.string().nullable().describe('Quando/onde ouve música'),
+  additionalInfo: z.string().nullable().describe('Outras preferências relevantes mencionadas'),
 });
 
 export const ChatResponseSchema = z.object({
   message: z.string().describe('A resposta conversacional para o usuário'),
-  preferences: UserPreferencesSchema.optional().describe('Preferências extraídas desta mensagem'),
+  preferences: UserPreferencesSchema.nullable().describe('Preferências extraídas desta mensagem, ou null se nenhuma'),
   shouldSavePreferences: z.boolean().describe('Se as preferências extraídas devem ser salvas'),
 });
 

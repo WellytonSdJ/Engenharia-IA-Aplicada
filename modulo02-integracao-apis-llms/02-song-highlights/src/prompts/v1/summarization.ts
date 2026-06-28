@@ -1,12 +1,12 @@
 import { z } from 'zod/v3';
 
 export const SummarySchema = z.object({
-  name: z.string().optional().describe('Nome do usuário'),
-  age: z.number().optional().describe('Idade do usuário'),
-  favoriteGenres: z.array(z.string()).optional().describe('Gêneros musicais favoritos mencionados'),
-  favoriteBands: z.array(z.string()).optional().describe('Bandas ou artistas favoritos mencionados'),
+  name: z.string().nullable().describe('Nome do usuário'),
+  age: z.number().nullable().describe('Idade do usuário'),
+  favoriteGenres: z.array(z.string()).nullable().describe('Gêneros musicais favoritos mencionados'),
+  favoriteBands: z.array(z.string()).nullable().describe('Bandas ou artistas favoritos mencionados'),
   keyPreferences: z.string().describe('Sumário conciso das preferências musicais, padrões de humor e hábitos'),
-  importantContext: z.string().optional().describe('Qualquer outro contexto importante sobre o usuário'),
+  importantContext: z.string().nullable().describe('Qualquer outro contexto importante sobre o usuário'),
 });
 
 export type ConversationSummary = z.infer<typeof SummarySchema>;
