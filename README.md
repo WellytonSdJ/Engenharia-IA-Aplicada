@@ -40,4 +40,21 @@ Integração de aplicações Node.js com APIs de modelos de linguagem, do roteam
 | [03-medical-appointment](./modulo02-integracao-apis-llms/03-medical-appointment/) | Prompt chaining com LangGraph: LLM extrai intent, código agenda/cancela, LLM gera resposta — Zod structured output e factory pattern |
 | [04-song-highlights](./modulo02-integracao-apis-llms/04-song-highlights/) | Chatbot musical CLI com grafo LangGraph, checkpointer Postgres, extração de preferências com Zod e persistência em SQLite |
 | [05-safeguard-prompt-injection](./modulo02-integracao-apis-llms/05-safeguard-prompt-injection/) | Demonstração de ataques de prompt injection e defesa com guardrails baseados em LLM; RBAC admin vs member via MCP |
-| [06-rag-neo4j-students](./modulo02-integracao-apis-llms/06-rag-neo4j-students/) | API de análise de vendas que c
+| [06-rag-neo4j-students](./modulo02-integracao-apis-llms/06-rag-neo4j-students/) | API de análise de vendas que converte linguagem natural em Cypher, executa no Neo4j e retorna respostas analíticas com autocorreção e multi-step |
+
+## Stack
+
+- **TensorFlow.js** — redes neurais e sistemas de recomendação no browser e Node.js
+- **Node.js** + **TypeScript** — backend e integrações com APIs (execução nativa de `.ts` sem compilação)
+- **LangGraph** — grafos de estado para fluxos conversacionais com LLMs (nós, edges condicionais, checkpointer, store)
+- **LangChain** — integração com modelos de linguagem e saída estruturada (`withStructuredOutput`)
+- **Fastify** — servidor HTTP com validação de schema via JSON Schema
+- **OpenRouter** — acesso a múltiplos modelos LLM com roteamento automático
+- **Zod** — validação e tipagem de saídas estruturadas dos LLMs
+- **PostgreSQL** — persistência de sessão do LangGraph (checkpointer e store)
+- **SQLite / knex** — persistência leve de preferências de usuário entre sessões
+- **Web Workers** — treinamento de modelos no browser sem bloquear a UI
+
+## Conceitos de segurança abordados
+
+- **Prompt injection** — vetores de ataque em sistemas com LLM, mitigações via structured output e separação de contextos (módulo 02)
