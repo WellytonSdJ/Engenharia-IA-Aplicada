@@ -58,3 +58,21 @@ Integração de aplicações Node.js com APIs de modelos de linguagem, do roteam
 ## Conceitos de segurança abordados
 
 - **Prompt injection** — vetores de ataque em sistemas com LLM, mitigações via structured output e separação de contextos (módulo 02)
+
+## Ferramentas auxiliares
+
+### ntl (npm-task-list)
+
+Utilitário de CLI que lê os scripts do `package.json` de cada projeto e exibe um menu interativo para rodá-los (setas + Enter), sem precisar digitar `npm run <nome>` de cor. Não é uma dependência dos projetos — é só uma conveniência de terminal.
+
+Uso: entre na pasta do projeto desejado e rode:
+
+```bash
+ntl
+```
+
+Se o comando não for reconhecido, instale globalmente (necessário apenas uma vez por máquina):
+
+```bash
+npm install -g ntl
+```
