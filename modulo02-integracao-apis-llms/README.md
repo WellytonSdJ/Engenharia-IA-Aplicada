@@ -48,6 +48,17 @@ Integração de aplicações Node.js com APIs de modelos de linguagem (LLMs), co
 - Self-correction: autocorreção automática de queries com erro usando o schema real do banco
 - Decomposição multi-step: quebra de perguntas complexas em sub-queries independentes
 
+## Documentação de conceitos (projeto 01)
+
+Documentação aprofundada dos conceitos aplicados disponível em [`01-smart-model-router-gateway/docs/`](./01-smart-model-router-gateway/docs/):
+
+| Documento | Conteúdo |
+| --- | --- |
+| [model-routing.md](./01-smart-model-router-gateway/docs/model-routing.md) | Roteamento de modelos: escolha do LLM em tempo de requisição por preço, throughput ou latência |
+| [openrouter-sdk.md](./01-smart-model-router-gateway/docs/openrouter-sdk.md) | `@openrouter/sdk`: acesso unificado a múltiplos provedores de LLM |
+| [fastify.md](./01-smart-model-router-gateway/docs/fastify.md) | Servidor HTTP com validação de schema nativa (sem Zod) |
+| [testes-e2e-injecao-dependencia.md](./01-smart-model-router-gateway/docs/testes-e2e-injecao-dependencia.md) | Testes E2E com `node:test` e injeção de dependência via `configOverride` |
+
 ## Documentação de conceitos (projeto 02)
 
 Documentação aprofundada dos conceitos aplicados disponível em [`02-langchain-intro/docs/`](./02-langchain-intro/docs/):
@@ -91,3 +102,14 @@ Documentação aprofundada dos conceitos aplicados disponível em [`05-safeguard
 | [mcp.md](./05-safeguard-prompt-injection/docs/mcp.md) | Model Context Protocol: servidor de filesystem, STDIO transport, por que MCP amplifica o risco de injection |
 | [rbac.md](./05-safeguard-prompt-injection/docs/rbac.md) | Role-Based Access Control: admin/member, por que RBAC via prompt falha, RBAC via código |
 | [langgraph.md](./05-safeguard-prompt-injection/docs/langgraph.md) | Grafo de segurança: guardrails_check → chat/blocked, SafeguardStateAnnotation, roteamento condicional |
+
+## Documentação de conceitos (projeto 06)
+
+Documentação aprofundada dos conceitos aplicados disponível em [`06-rag-neo4j-students/docs/`](./06-rag-neo4j-students/docs/):
+
+| Documento | Conteúdo |
+| --- | --- |
+| [rag-com-grafos.md](./06-rag-neo4j-students/docs/rag-com-grafos.md) | O que é RAG, por que usar um banco de grafos (Neo4j) em vez de busca vetorial |
+| [text-to-cypher.md](./06-rag-neo4j-students/docs/text-to-cypher.md) | Conversão de linguagem natural em Cypher: o núcleo do sistema, riscos e validação |
+| [langgraph-pipeline.md](./06-rag-neo4j-students/docs/langgraph-pipeline.md) | Pipeline de 6 nós no LangGraph orquestrando geração, execução e resposta |
+| [multi-step.md](./06-rag-neo4j-students/docs/multi-step.md) | Decomposição de perguntas complexas em sub-queries independentes |
