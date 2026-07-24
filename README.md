@@ -9,13 +9,15 @@ engenharia-ia-aplicada/
 ├── modulo01-fundamentos-de-ia-e-llms-para-programadores/
 │   ├── 01-neural-network/              # Classificador com TensorFlow.js
 │   └── 02-Sistemas-Recomendacao/       # Recomendação de produtos no browser
-└── modulo02-integracao-apis-llms/
-    ├── 01-smart-model-router-gateway/  # Gateway HTTP com roteamento de modelos
-    ├── 02-langchain-intro/             # Primeiro grafo LangGraph (sem LLM)
-    ├── 03-medical-appointment/         # Prompt chaining + structured output
-    ├── 04-song-highlights/             # Chatbot musical com memória (LangGraph)
-    ├── 05-safeguard-prompt-injection/  # Guardrails e segurança com LLM
-    └── 06-rag-neo4j-students/          # RAG com Neo4j e Cypher
+├── modulo02-integracao-apis-llms/
+│   ├── 01-smart-model-router-gateway/  # Gateway HTTP com roteamento de modelos
+│   ├── 02-langchain-intro/             # Primeiro grafo LangGraph (sem LLM)
+│   ├── 03-medical-appointment/         # Prompt chaining + structured output
+│   ├── 04-song-highlights/             # Chatbot musical com memória (LangGraph)
+│   ├── 05-safeguard-prompt-injection/  # Guardrails e segurança com LLM
+│   └── 06-rag-neo4j-students/          # RAG com Neo4j e Cypher
+└── modulo03-mcp-na-pratica/
+    └── 01-multiple-mcp-tools/          # Agente autônomo com múltiplos servidores MCP + tool nativa
 ```
 
 ## Módulos
@@ -42,6 +44,14 @@ Integração de aplicações Node.js com APIs de modelos de linguagem, do roteam
 | [05-safeguard-prompt-injection](./modulo02-integracao-apis-llms/05-safeguard-prompt-injection/) | Demonstração de ataques de prompt injection e defesa com guardrails baseados em LLM; RBAC admin vs member via MCP |
 | [06-rag-neo4j-students](./modulo02-integracao-apis-llms/06-rag-neo4j-students/) | API de análise de vendas que converte linguagem natural em Cypher, executa no Neo4j e retorna respostas analíticas com autocorreção e multi-step |
 
+### Módulo 03 — MCP na Prática
+
+Aprofundamento em Model Context Protocol (MCP): múltiplos servidores MCP simultâneos, agentes com autonomia real de orquestração, MCP do zero, modernização de APIs legadas, segurança/governança e publicação de servidores MCP.
+
+| Projeto | Descrição |
+| ------- | --------- |
+| [01-multiple-mcp-tools](./modulo03-mcp-na-pratica/01-multiple-mcp-tools/) | Agente autônomo que resolve um pipeline de dados (CSV → JSON → MongoDB → relatório) combinando 2 servidores MCP (filesystem + MongoDB) com uma tool nativa do LangChain, orquestrado por `createAgent` em vez de nós de grafo explícitos |
+
 ## Stack
 
 - **TensorFlow.js** — redes neurais e sistemas de recomendação no browser e Node.js
@@ -54,6 +64,7 @@ Integração de aplicações Node.js com APIs de modelos de linguagem, do roteam
 - **PostgreSQL** — persistência de sessão do LangGraph (checkpointer e store)
 - **SQLite / knex** — persistência leve de preferências de usuário entre sessões
 - **Web Workers** — treinamento de modelos no browser sem bloquear a UI
+- **MCP (Model Context Protocol)** — `@langchain/mcp-adapters` conectando LLMs a servidores externos (filesystem, MongoDB) via STDIO
 
 ## Conceitos de segurança abordados
 
