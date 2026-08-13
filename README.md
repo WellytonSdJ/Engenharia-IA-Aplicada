@@ -17,7 +17,11 @@ engenharia-ia-aplicada/
 │   ├── 05-safeguard-prompt-injection/  # Guardrails e segurança com LLM
 │   └── 06-rag-neo4j-students/          # RAG com Neo4j e Cypher
 └── modulo03-mcp-na-pratica/
-    └── 01-multiple-mcp-tools/          # Agente autônomo com múltiplos servidores MCP + tool nativa
+    ├── 01-multiple-mcp-tools/          # Agente autônomo com múltiplos servidores MCP + tool nativa
+    ├── 02-google-trends-agent/         # Prompt chaining com tool de Google Trends (SerpAPI)
+    ├── 03-dev-instructions-agents/     # Agentes de desenvolvimento declarativos (.agent.md) do GitHub Copilot
+    ├── 04-skills/                      # Agent Skills — capacidades empacotadas em Markdown, alternativa ao MCP
+    └── 05-mcps-do-zero/                # Servidor MCP construído do zero (tools, resource, prompt)
 ```
 
 ## Módulos
@@ -51,6 +55,10 @@ Aprofundamento em Model Context Protocol (MCP): múltiplos servidores MCP simult
 | Projeto | Descrição |
 | ------- | --------- |
 | [01-multiple-mcp-tools](./modulo03-mcp-na-pratica/01-multiple-mcp-tools/) | Agente autônomo que resolve um pipeline de dados (CSV → JSON → MongoDB → relatório) combinando 2 servidores MCP (filesystem + MongoDB) com uma tool nativa do LangChain, orquestrado por `createAgent` em vez de nós de grafo explícitos |
+| [02-google-trends-agent](./modulo03-mcp-na-pratica/02-google-trends-agent/) | Agente LangGraph de prompt chaining linear (`researcher` → `responder`) que responde perguntas de estratégia de conteúdo usando dados reais do Google Trends via SerpAPI, embrulhado como tool nativa do LangChain |
+| [03-dev-instructions-agents](./modulo03-mcp-na-pratica/03-dev-instructions-agents/) | Instruções declarativas (`.agent.md`) para agentes de desenvolvimento do GitHub Copilot: um agente genérico de código e um pipeline de 3 agentes (planner → generator → healer) para automação de testes Playwright |
+| [04-skills](./modulo03-mcp-na-pratica/04-skills/) | Agent Skills — pacotes de instrução em Markdown (`SKILL.md`) carregados sob demanda pelo próprio agente, em contraste com tools/MCP |
+| [05-mcps-do-zero](./modulo03-mcp-na-pratica/05-mcps-do-zero/) | Servidor MCP construído do zero (`ciphersuite-mcp`) com o SDK oficial: tools de criptografia AES-256-CBC, resource, prompt e testes via `Client` MCP real sobre transporte STDIO |
 
 ## Stack
 
@@ -64,7 +72,10 @@ Aprofundamento em Model Context Protocol (MCP): múltiplos servidores MCP simult
 - **PostgreSQL** — persistência de sessão do LangGraph (checkpointer e store)
 - **SQLite / knex** — persistência leve de preferências de usuário entre sessões
 - **Web Workers** — treinamento de modelos no browser sem bloquear a UI
-- **MCP (Model Context Protocol)** — `@langchain/mcp-adapters` conectando LLMs a servidores externos (filesystem, MongoDB) via STDIO
+- **MCP (Model Context Protocol)** — `@langchain/mcp-adapters` conectando LLMs a servidores externos (filesystem, MongoDB) via STDIO; construção de servidores próprios com o SDK oficial `@modelcontextprotocol/sdk` (tools, resources, prompts)
+- **SerpAPI** — dados reais do Google Trends consumidos como tool nativa do LangChain
+- **GitHub Copilot Agents** — instruções declarativas (`.agent.md`) empacotando persona, ferramentas restritas e fluxo de trabalho sem código
+- **Agent Skills** — capacidades empacotadas em Markdown (`SKILL.md`) carregadas sob demanda pelo agente, alternativa ao MCP para contexto/instruções
 
 ## Conceitos de segurança abordados
 
