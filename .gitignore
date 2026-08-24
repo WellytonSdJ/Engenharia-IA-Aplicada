@@ -9,3 +9,9 @@ build/
 coverage/
 *.log
 storage/
+
+# Docker volume data (bind-mounted DB data dirs, e.g. postgres/mongo)
+dbdata/
+pgdata/
+mongodata/
+*_data/
