@@ -13,6 +13,8 @@ Material de referência do curso disponível em [`docs/`](./docs/) (dois PDFs fo
 | 03 | [dev-instructions-agents](./03-dev-instructions-agents/) | ✅ concluído | Instruções declarativas (`.agent.md`) para agentes de desenvolvimento do GitHub Copilot: um agente genérico de código e um pipeline de 3 agentes (planner → generator → healer) para automação de testes Playwright |
 | 04 | [skills](./04-skills/) | ✅ concluído | Agent Skills — pacotes de instrução em Markdown (`SKILL.md`) carregados sob demanda pelo próprio agente, em contraste com tools/MCP; 3 skills instaladas (`ffmpeg`, `find-skills`, `neo4j-cypher-guide`) |
 | 05 | [mcps-do-zero](./05-mcps-do-zero/) | ✅ concluído | Servidor MCP construído do zero (`ciphersuite-mcp`) com o SDK oficial: tools de criptografia AES-256-CBC, resource, prompt e testes via `Client` MCP real sobre transporte STDIO |
+| 06 | [your-legacy-api-as-mcp](./06-your-legacy-api-as-mcp/) | ✅ concluído | MCP server (`customers-mcp`) que embrulha uma API REST legada (Fastify + MongoDB) sem modificá-la: arquitetura em 4 camadas (domain/infra/application/mcp), Zod schemas compartilhados e testes de contrato via `Client` MCP |
+| 07 | [api-security-auth-rate-limiting](./07-api-security-auth-rate-limiting/) | ✅ concluído | Segurança e governança: JWT (`@fastify/jwt`) para usuários humanos, Service Tokens para M2M, RBAC com roles admin/member, rate limiting por token (`@fastify/rate-limit`), hierarquia de erros de domínio e testes de token inválido + esgotamento de rate limit |
 
 ## Roteiro do módulo (orientação, não implementado ainda)
 
@@ -20,8 +22,6 @@ Os próximos subprojetos deste módulo já têm pasta reservada no repositório 
 
 | # | Pasta de referência | Tema (a partir do nome/README disponível) |
 |---|---------------------|--------------------------------------------|
-| 06 | `06-your-legacy-api-as-mcp` | Transformar uma API legada (Fastify + MongoDB CRUD) em um servidor MCP — abstração de domínio em vez de espelhar endpoints |
-| 07 | `07-api-security-auth-rate-limiting` | Segurança e governança: RBAC, JWT, Service Tokens, rate limiting — aplicado tanto na Web API quanto no servidor MCP |
 | 08 | `08-publishing-mcps-private-npm` | Publicação de servidores MCP no NPM Registry (público) e Verdaccio (privado); outros transports além de STDIO |
 | 09 | `09-using-mcp-with-langchain` | Uso do MCP construído (customers MCP server) como tool de um agente LangChain.js |
 
@@ -51,8 +51,12 @@ Os próximos subprojetos deste módulo já têm pasta reservada no repositório 
 - Pipeline de agentes para automação de testes E2E (planner → generator → healer) com Playwright
 - Agent Skills como alternativa ao MCP: instruções em Markdown carregadas sob demanda pelo próprio agente, sem servidor nem protocolo, instaladas/versionadas por um gerenciador de skills (lockfile)
 - Construção de servidores MCP do zero: `McpServer`, `registerTool`, `registerResource`, `registerPrompt`, transporte STDIO e testes via `Client` MCP real
-- (Roteiro futuro) Transformação de APIs legadas em servidores MCP, com abstração de domínio
-- (Roteiro futuro) Segurança e governança em MCP: RBAC, autenticação JWT, Service Tokens, rate limiting
+- Transformação de APIs legadas em servidores MCP sem modificar o código original: arquitetura em camadas domain/infrastructure/application/mcp, separação de responsabilidades
+- Zod como fonte única de tipos TypeScript (`z.infer`, `.extend()`, `.shape`, `.nullable()`) — schemas compartilhados entre camadas
+- Segurança e governança em MCP: JWT para usuários, Service Tokens para M2M, RBAC com roles, rate limiting por token, hierarquia de erros de domínio
+- Propagação de erros HTTP tipados (`UnauthorizedError`, `ForbiddenError`, `RateLimitError`) até `isError: true` no protocolo MCP
+- `#assertOk()` (JavaScript private field) para centralizar validação de resposta HTTP
+- `beforeEach`/`afterEach` para isolamento de service tokens entre testes de rate limit
 - (Roteiro futuro) Publicação e distribuição de servidores MCP (NPM Registry / Verdaccio) e diferentes transports
 - (Roteiro futuro) Integração de servidores MCP com agentes LangChain.js
 
@@ -103,3 +107,24 @@ Documentação aprofundada dos conceitos aplicados disponível em [`05-mcps-do-z
 | [construindo-mcp-server-do-zero.md](./05-mcps-do-zero/docs/construindo-mcp-server-do-zero.md) | Como um servidor MCP é construído com o SDK oficial: `McpServer`, `registerTool`, `registerResource`, `registerPrompt` |
 | [transporte-stdio-e-testes-mcp-client.md](./05-mcps-do-zero/docs/transporte-stdio-e-testes-mcp-client.md) | Transporte STDIO (servidor como subprocesso) e como os testes conectam um `Client` MCP real ao servidor para validar o comportamento ponta a ponta |
 | [criptografia-aes-256-cbc.md](./05-mcps-do-zero/docs/criptografia-aes-256-cbc.md) | As decisões de criptografia por trás das tools: derivação de chave com `scrypt`, IV aleatório por chamada, formato de saída |
+
+## Documentação de conceitos (projeto 06)
+
+Documentação aprofundada dos conceitos aplicados disponível em [`06-your-legacy-api-as-mcp/customers-mcp/docs/`](./06-your-legacy-api-as-mcp/customers-mcp/docs/):
+
+| Documento | Conteúdo |
+| --- | --- |
+| [legacy-api-como-mcp.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/legacy-api-como-mcp.md) | O padrão de embrulhar uma API REST legada como MCP sem modificá-la: mapeamento tool→endpoint, resource como documentação viva, busca flexível além da API |
+| [arquitetura-em-camadas-mcp.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/arquitetura-em-camadas-mcp.md) | As quatro camadas (domain/infrastructure/application/mcp) e como elas se comunicam sem acoplamento reverso |
+| [zod-schemas-e-tipos.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/zod-schemas-e-tipos.md) | `z.infer`, `.extend()`, `.shape`, `.nullable()` e o `CustomerMutationSchema` unificado com o FIX de additional properties |
+
+## Documentação de conceitos (projeto 07)
+
+Documentação aprofundada dos conceitos aplicados disponível em [`07-api-security-auth-rate-limiting/customers-mcp/docs/`](./07-api-security-auth-rate-limiting/customers-mcp/docs/):
+
+| Documento | Conteúdo |
+| --- | --- |
+| [jwt-e-service-tokens.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/jwt-e-service-tokens.md) | JWT para usuários humanos vs Service Tokens para M2M — como cada um funciona e como o MCP server recebe o token via env var |
+| [rbac-roles-e-permissoes.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/rbac-roles-e-permissoes.md) | Role-Based Access Control: roles admin/member, `requireRole()` como factory de middleware, `preHandler` por rota |
+| [rate-limiting.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/rate-limiting.md) | Rate limiting por token com `@fastify/rate-limit`, `keyGenerator` e teste de esgotamento com loop de 100 chamadas |
+| [erros-de-dominio-e-tratamento.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/erros-de-dominio-e-tratamento.md) | `UnauthorizedError`/`ForbiddenError`/`RateLimitError`, `#assertOk()` com JavaScript private field, e `beforeEach`/`afterEach` para isolamento de testes |
