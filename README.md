@@ -16,12 +16,16 @@ engenharia-ia-aplicada/
 │   ├── 04-song-highlights/             # Chatbot musical com memória (LangGraph)
 │   ├── 05-safeguard-prompt-injection/  # Guardrails e segurança com LLM
 │   └── 06-rag-neo4j-students/          # RAG com Neo4j e Cypher
-└── modulo03-mcp-na-pratica/
-    ├── 01-multiple-mcp-tools/          # Agente autônomo com múltiplos servidores MCP + tool nativa
-    ├── 02-google-trends-agent/         # Prompt chaining com tool de Google Trends (SerpAPI)
-    ├── 03-dev-instructions-agents/     # Agentes de desenvolvimento declarativos (.agent.md) do GitHub Copilot
-    ├── 04-skills/                      # Agent Skills — capacidades empacotadas em Markdown, alternativa ao MCP
-    └── 05-mcps-do-zero/                # Servidor MCP construído do zero (tools, resource, prompt)
+├── modulo03-mcp-na-pratica/
+│   ├── 01-multiple-mcp-tools/          # Agente autônomo com múltiplos servidores MCP + tool nativa
+│   ├── 02-google-trends-agent/         # Prompt chaining com tool de Google Trends (SerpAPI)
+│   ├── 03-dev-instructions-agents/     # Agentes de desenvolvimento declarativos (.agent.md) do GitHub Copilot
+│   ├── 04-skills/                      # Agent Skills — capacidades empacotadas em Markdown, alternativa ao MCP
+│   ├── 05-mcps-do-zero/                # Servidor MCP construído do zero (tools, resource, prompt)
+│   ├── 06-your-legacy-api-as-mcp/      # API REST legada embrulhada como MCP sem modificá-la
+│   └── 07-api-security-auth-rate-limiting/ # JWT, Service Tokens, RBAC e rate limiting
+└── modulo04-criacao-agentes-autonomos/
+    └── 01-padroes-de-raciocinio-e-execucao/ # OpsPilot: ReAct, Plan-and-Execute e Reflection (Spec Kit)
 ```
 
 ## Módulos
@@ -59,6 +63,16 @@ Aprofundamento em Model Context Protocol (MCP): múltiplos servidores MCP simult
 | [03-dev-instructions-agents](./modulo03-mcp-na-pratica/03-dev-instructions-agents/) | Instruções declarativas (`.agent.md`) para agentes de desenvolvimento do GitHub Copilot: um agente genérico de código e um pipeline de 3 agentes (planner → generator → healer) para automação de testes Playwright |
 | [04-skills](./modulo03-mcp-na-pratica/04-skills/) | Agent Skills — pacotes de instrução em Markdown (`SKILL.md`) carregados sob demanda pelo próprio agente, em contraste com tools/MCP |
 | [05-mcps-do-zero](./modulo03-mcp-na-pratica/05-mcps-do-zero/) | Servidor MCP construído do zero (`ciphersuite-mcp`) com o SDK oficial: tools de criptografia AES-256-CBC, resource, prompt e testes via `Client` MCP real sobre transporte STDIO |
+| [06-your-legacy-api-as-mcp](./modulo03-mcp-na-pratica/06-your-legacy-api-as-mcp/) | MCP server (`customers-mcp`) que embrulha uma API REST legada (Fastify + MongoDB) sem modificá-la, em arquitetura de 4 camadas com schemas Zod compartilhados |
+| [07-api-security-auth-rate-limiting](./modulo03-mcp-na-pratica/07-api-security-auth-rate-limiting/) | Segurança e governança: JWT para usuários, Service Tokens para M2M, RBAC admin/member, rate limiting por token e hierarquia de erros de domínio |
+
+### Módulo 04 — Criação de Agentes Autônomos
+
+Construção incremental do **OpsPilot**, um copiloto de plantão / incident commander de um e-commerce fictício, com LangChain/LangGraph sobre OpenRouter e desenvolvimento guiado por especificação (Spec Kit). Cada projeto corresponde a uma unidade do curso; a unidade 01 do curso (arquitetura de agentes de código) foi pulada, então o projeto `01` daqui é a unidade 02 de lá. Roteiro completo em [`modulo04-criacao-agentes-autonomos/README.md`](./modulo04-criacao-agentes-autonomos/README.md).
+
+| Projeto | Descrição |
+| ------- | --------- |
+| [01-padroes-de-raciocinio-e-execucao](./modulo04-criacao-agentes-autonomos/01-padroes-de-raciocinio-e-execucao/) | 🚧 Núcleo de raciocínio do OpsPilot: ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, arena e bench; depois, a camada de Reflection. Spec, plano e tarefas prontos; implementação pendente |
 
 ## Stack
 
@@ -76,6 +90,8 @@ Aprofundamento em Model Context Protocol (MCP): múltiplos servidores MCP simult
 - **SerpAPI** — dados reais do Google Trends consumidos como tool nativa do LangChain
 - **GitHub Copilot Agents** — instruções declarativas (`.agent.md`) empacotando persona, ferramentas restritas e fluxo de trabalho sem código
 - **Agent Skills** — capacidades empacotadas em Markdown (`SKILL.md`) carregadas sob demanda pelo agente, alternativa ao MCP para contexto/instruções
+- **Spec Kit** — Spec-Driven Development: constituição, spec, plano e tarefas versionados antes do código, executados pelo agente de código via comandos `speckit.*`
+- **Padrões de raciocínio de agentes** — ReAct (`createReactAgent`), Plan-and-Execute (`StateGraph` planner/executor/replanner) e Reflection (crítico como decorator), comparados em arena e bench
 
 ## Conceitos de segurança abordados
 
