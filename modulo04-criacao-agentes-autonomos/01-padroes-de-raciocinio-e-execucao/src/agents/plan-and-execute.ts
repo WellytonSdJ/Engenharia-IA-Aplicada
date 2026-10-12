@@ -20,7 +20,7 @@ import {
   type ReasoningOptions,
   type ReasoningStrategy,
 } from "./strategy.js";
-import type { TraceEvent } from "./trace.js";
+import type { ReasoningResult, TraceEvent } from "./trace.js";
 
 export const PlanSchema = z.object({
   steps: z.array(z.string().trim().min(1)).max(8),
@@ -30,6 +30,11 @@ export const PlanSchema = z.object({
 export const ToolExecutionSchema = z.object({
   tool: z.enum(["list_alerts", "list_incidents", "open_incident", "resolve_incident"]),
   args: z.record(z.unknown()),
+});
+
+// Usado só no modo sem replanner: depois do último passo, uma chamada final redige a resposta.
+export const FinalAnswerSchema = z.object({
+  answer: z.string().trim().min(1),
 });
 
 export const ReplanSchema = z.object({
@@ -60,6 +65,11 @@ export interface PlanGraphOptions {
   model: BaseChatModel;
   beginIteration(): void;
   recordLlmCall(): void;
+  /**
+   * `false` executa o plano do planner em linha reta, sem revisá-lo a cada passo
+   * (flag `--no-replanner` do bench). Padrão: `true`.
+   */
+  replanner?: boolean;
 }
 
 type ReplanDecision = z.infer<typeof ReplanSchema>;
@@ -69,12 +79,16 @@ export function createPlanAndExecuteGraph(
   store: OpsStore = defaultOpsStore,
 ) {
   const [listAlerts, openIncident, resolveIncident, listIncidents] = createOpsTools(store);
+  // Diferente do ReAct (createReactAgent envia os schemas das tools ao modelo), aqui o planner
+  // e o executor usam structured output e nunca "veem" as tools. Sem este catálogo no prompt,
+  // o planner responde "não tenho acesso" e o executor inventa argumentos (ex.: sem `title`).
+  const toolCatalog = describeTools([listAlerts, openIncident, resolveIncident, listIncidents]);
 
   const planner = async (state: PEStateType) => {
     options.recordLlmCall();
     const output = await options.model.withStructuredOutput(PlanSchema).invoke([
       new SystemMessage(
-        "Create an ordered operational plan as short executable tool steps. Return at most eight steps. If no tool is needed, return no steps and a concise answer.",
+        `Create an ordered operational plan as short executable tool steps. Return at most eight steps. If no tool is needed, return no steps and a concise answer. Questions about alerts or incidents always need a tool.\nAvailable tools:\n${toolCatalog}`,
       ),
       new HumanMessage(state.input),
     ]);
@@ -98,7 +112,7 @@ export function createPlanAndExecuteGraph(
     options.recordLlmCall();
     const output = await options.model.withStructuredOutput(ToolExecutionSchema).invoke([
       new SystemMessage(
-        "Resolve this plan step using exactly one available tool. Return the tool name and its JSON arguments. Never invent tool names.",
+        `Resolve this plan step using exactly one available tool. Return the tool name and its JSON arguments. Never invent tool names.\nAvailable tools:\n${toolCatalog}`,
       ),
       new HumanMessage(
         `Request: ${state.input}\nStep: ${step}\nCompleted steps and tool results:\n${formatDone(state.done)}`,
@@ -168,6 +182,29 @@ export function createPlanAndExecuteGraph(
     return { answer: decision.answer };
   };
 
+  const finalizer = async (state: PEStateType) => {
+    options.recordLlmCall();
+    const output = await options.model.withStructuredOutput(FinalAnswerSchema).invoke([
+      new SystemMessage("Answer the request for the on-call operator using only the completed tool results."),
+      new HumanMessage(`Request: ${state.input}\nCompleted steps and tool results:\n${formatDone(state.done)}`),
+    ]);
+    return { answer: FinalAnswerSchema.parse(output).answer };
+  };
+
+  if (options.replanner === false) {
+    // Sem replanner: planner → executor → executor → ... → finalizer. Mais barato (uma chamada
+    // a menos por passo), mas não se corrige se um resultado mudar o que deveria vir depois.
+    return new StateGraph(PEState)
+      .addNode("planner", planner)
+      .addNode("executor", executor)
+      .addNode("finalizer", finalizer)
+      .addEdge(START, "planner")
+      .addConditionalEdges("planner", (state) => state.answer || state.plan.length === 0 ? END : "executor")
+      .addConditionalEdges("executor", (state) => state.done.length < state.plan.length ? "executor" : "finalizer")
+      .addEdge("finalizer", END)
+      .compile();
+  }
+
   return new StateGraph(PEState)
     .addNode("planner", planner)
     .addNode("executor", executor)
@@ -210,6 +247,28 @@ function validateReplanDecision(
     return new ValidationError("A finish decision requires an answer and cannot include replacement steps.");
   }
   return undefined;
+}
+
+type CatalogTool = { name: string; description: string; schema: unknown };
+
+/** Lista cada tool como `nome(arg: tipo, ...) — descrição`, lendo os próprios schemas Zod. */
+function describeTools(tools: readonly CatalogTool[]): string {
+  return tools.map((item) => {
+    const shape = item.schema instanceof z.ZodObject ? item.schema.shape as Record<string, z.ZodTypeAny> : {};
+    const args = Object.entries(shape).map(([key, value]) => `${key}: ${describeZodType(value)}`).join(", ");
+    return `- ${item.name}(${args}): ${item.description}`;
+  }).join("\n");
+}
+
+function describeZodType(schema: z.ZodTypeAny): string {
+  if (schema instanceof z.ZodDefault) {
+    return `${describeZodType(schema._def.innerType)} (optional)`;
+  }
+  if (schema instanceof z.ZodEnum) {
+    return (schema.options as string[]).map((option) => `"${option}"`).join(" | ");
+  }
+  if (schema instanceof z.ZodString) return "string";
+  return "unknown";
 }
 
 function formatDone(done: Array<[string, string]>): string {
@@ -265,32 +324,44 @@ function traceFromState(state: PEStateType): TraceEvent[] {
   return trace;
 }
 
-export const planAndExecuteStrategy: ReasoningStrategy = {
-  name: "plan-and-execute",
-  async run(input: string, options?: ReasoningOptions) {
-    const { maxIterations } = ReasoningOptionsSchema.parse({ maxIterations: options?.maxIterations });
-    if (!input.trim()) {
-      throw new ValidationError("Input must not be empty.");
-    }
-    const context = createExecutionContext(maxIterations);
-    const store = options?.store ?? defaultOpsStore;
-    const model = resolveModel(options?.model);
-    const graph = createPlanAndExecuteGraph({
-      model,
-      beginIteration: () => {
-        if (context.iterations >= context.maxIterations) {
-          throw new IterationLimitError(context.maxIterations);
-        }
-        context.iterations += 1;
-      },
-      recordLlmCall: () => context.recordLlmCall(),
-    }, store);
-    const result = await graph.invoke({ input });
-    const answer = result.answer.trim();
-    if (!answer) {
-      throw new ValidationError("Plan-and-Execute completed without a final answer.");
-    }
-    context.trace.push(...traceFromState(result));
-    return context.result(answer);
-  },
-};
+export function createPlanAndExecuteStrategy(config: { replanner?: boolean } = {}): ReasoningStrategy {
+  const replanner = config.replanner ?? true;
+  return {
+    name: replanner ? "plan-and-execute" : "plan-and-execute:no-replanner",
+    run: (input, options) => runPlanAndExecute(input, options, replanner),
+  };
+}
+
+export const planAndExecuteStrategy: ReasoningStrategy = createPlanAndExecuteStrategy();
+
+async function runPlanAndExecute(
+  input: string,
+  options: ReasoningOptions | undefined,
+  replanner: boolean,
+): Promise<ReasoningResult> {
+  const { maxIterations } = ReasoningOptionsSchema.parse({ maxIterations: options?.maxIterations });
+  if (!input.trim()) {
+    throw new ValidationError("Input must not be empty.");
+  }
+  const context = createExecutionContext(maxIterations);
+  const store = options?.store ?? defaultOpsStore;
+  const model = resolveModel(options?.model);
+  const graph = createPlanAndExecuteGraph({
+    model,
+    beginIteration: () => {
+      if (context.iterations >= context.maxIterations) {
+        throw new IterationLimitError(context.maxIterations);
+      }
+      context.iterations += 1;
+    },
+    recordLlmCall: () => context.recordLlmCall(),
+    replanner,
+  }, store);
+  const result = await graph.invoke({ input });
+  const answer = result.answer.trim();
+  if (!answer) {
+    throw new ValidationError("Plan-and-Execute completed without a final answer.");
+  }
+  context.trace.push(...traceFromState(result));
+  return context.result(answer);
+}

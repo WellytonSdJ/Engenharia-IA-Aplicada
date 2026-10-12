@@ -143,6 +143,30 @@ test("plan graph finishes immediately when the planner has no steps", async () =
   assert.deepEqual(completed.done, []);
 });
 
+test("without replanner the graph runs every planned step in order and finishes with one final call", async () => {
+  const store = new RecordingOpsStore();
+  // Sem respostas de replanner na fila: se ele fosse chamado, o FinalAnswerSchema/ReplanSchema quebraria.
+  const model = new ControlledStructuredModel([
+    { steps: ["Open checkout", "Open payments"] },
+    { tool: "open_incident", args: { title: "Checkout", service: "checkout", severity: "high" } },
+    { tool: "open_incident", args: { title: "Payments", service: "payments", severity: "high" } },
+    { answer: "Opened two incidents." },
+  ]);
+  let calls = 0;
+  const graph = createPlanAndExecuteGraph({
+    model,
+    recordLlmCall: () => { calls += 1; },
+    beginIteration: () => {},
+    replanner: false,
+  }, store);
+
+  const result = await graph.invoke({ input: "Open incidents for checkout and payments." });
+  assert.equal(result.answer, "Opened two incidents.");
+  assert.deepEqual(store.operations, ["open:checkout", "open:payments"]);
+  // planner + 2 executores + finalizer = 4 (com replanner seriam 5: uma revisão por passo).
+  assert.equal(calls, 4);
+});
+
 test("replanner may continue current plan or replace its remaining steps", async () => {
   const model = new ControlledStructuredModel([
     { steps: ["Initial", "Obsolete"] },
