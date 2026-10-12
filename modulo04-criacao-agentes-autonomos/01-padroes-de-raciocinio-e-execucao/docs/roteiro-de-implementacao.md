@@ -13,7 +13,8 @@ Este doc é a ponte entre o que já **planejamos** (`specs/001-nucleo-raciocinio
 ✅ /speckit.specify  → spec.md + checklists/requirements.md
 ✅ /speckit.plan     → plan.md, research.md, data-model.md, contracts/, quickstart.md
 ✅ /speckit.tasks    → tasks.md (todas as tarefas marcadas [X])
-✅ /speckit.implement → src/ implementado; 27 testes passando, typecheck limpo
+✅ /speckit.implement → src/ implementado; 29 testes passando, typecheck limpo
+✅ spec 003 (fix-replanner-output): replanner pede uma correção quando a decisão vem contraditória
 ✅ primeira execução real da arena (depois de corrigir o carregamento do .env — armadilha 3)
 🚧 spec 002 (reflection): spec.md + checklist prontos → plan → tasks → implement
 ```

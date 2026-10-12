@@ -115,13 +115,19 @@ npm run bench
 No **nosso** projeto, os comandos equivalentes que funcionam hoje (rode no PowerShell) são:
 
 ```powershell
-npm test                     # 27 testes, sem chave e sem rede
+npm test                     # 29 testes, sem chave e sem rede
 npm run seed                 # restaura src/data/ops-store.json
 # o input é posicional (não há --input); precisa de .env preenchido
 npm run arena -- "quantos alertas criticos estão disparando" --strategies react
 ```
 
-> **Pendente (out/2026):** com `OPENROUTER_MODEL=openrouter/free`, a estratégia `react` funciona, mas a `plan-and-execute` falha com um erro do Zod (`expected: "object", received: "undefined"`). O `.env` é carregado corretamente, então a causa é outra. A suspeita é que o modelo sorteado pelo `openrouter/free` não devolve o structured output que o planner espera. Ainda precisa ser investigado.
+> **Pendente (out/2026): Plan-and-Execute instável com `openrouter/free`.** A spec 003 corrigiu o **replanner**: quando ele devolve uma decisão contraditória (por exemplo, `continue` junto com `steps`), agora pede uma correção. Os testes cobrem isso. Mas, em execuções reais, as falhas acontecem **antes** do replanner:
+>
+> 1. **Planner devolve `undefined`.** Às vezes o modelo gratuito não devolve saída estruturada, e o `PlanSchema.parse(output)` em `src/agents/plan-and-execute.ts` lança o erro do Zod `expected: "object", received: "undefined"`. Aconteceu em 1 de 5 execuções da pergunta de alertas e em 2 de 3 do cenário com vários incidentes.
+> 2. **Planner não sabe que existem ferramentas.** O prompt dele não lista as tools. Por isso, às vezes devolve zero passos e responde "não tenho acesso aos alertas" (2 de 5 execuções), com `llmCalls: 1`.
+> 3. **Executor não conhece os argumentos das tools.** No cenário com vários incidentes, ele chamou `open_incident` sem `title`.
+>
+> A estratégia `react` não sofre com isso, porque o `createReactAgent` envia os schemas das tools ao modelo. Caminhos possíveis: colocar as tools e os seus argumentos nos prompts do planner e do executor, tratar saída `undefined` com uma nova tentativa (como o replanner já faz), ou usar um modelo com structured output confiável no lugar do `openrouter/free`.
 
 O `npm run bench` ainda não funciona: `src/bench.ts` não existe (armadilha 8 do roteiro). Se a arena reclamar de `OPENROUTER_API_KEY` com o `.env` preenchido, leia [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md).
 
