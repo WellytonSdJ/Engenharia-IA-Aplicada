@@ -38,6 +38,8 @@ export const DEFAULT_SERVICES: Service[] = [
   { id: "svc-payments", name: "payments", team: "finance", description: "Payment processing" },
   { id: "svc-identity", name: "identity", team: "security", description: "Identity service" },
   { id: "svc-notifications", name: "notifications", team: "messaging", description: "Notification delivery" },
+  // Sem alertas: existe para o cenário C2 do bench ("abra incidentes para checkout, payment e catalog").
+  { id: "svc-catalog", name: "catalog", team: "commerce", description: "Product catalog" },
 ];
 
 export const DEFAULT_ALERTS: Alert[] = [
@@ -96,7 +98,11 @@ export class InMemoryOpsStore implements OpsStore {
     }
     const service = this.services.find((item) => item.name === input.service);
     if (!service) {
-      throw new ResourceNotFoundError(`Service ${input.service} was not found.`);
+      // A lista de nomes válidos vira observação para o agente: o modelo que pediu "payment"
+      // lê a mensagem e consegue tentar de novo com "payments".
+      throw new ResourceNotFoundError(
+        `Service ${input.service} was not found. Known services: ${this.services.map((item) => item.name).join(", ")}.`,
+      );
     }
     const incident = IncidentSchema.parse({
       id: `incident-${++this.incidentSequence}`,

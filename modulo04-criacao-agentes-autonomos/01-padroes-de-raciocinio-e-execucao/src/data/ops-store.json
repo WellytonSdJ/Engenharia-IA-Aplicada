@@ -29,6 +29,12 @@
       "name": "notifications",
       "team": "messaging",
       "description": "Notification delivery"
+    },
+    {
+      "id": "svc-catalog",
+      "name": "catalog",
+      "team": "commerce",
+      "description": "Product catalog"
     }
   ],
   "alerts": [

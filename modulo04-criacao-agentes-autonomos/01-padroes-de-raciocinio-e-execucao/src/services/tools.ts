@@ -56,7 +56,9 @@ export function createOpsTools(store: OpsStore) {
     async (input) => executeTool(() => store.createIncident(input), OpenIncidentOutputSchema),
     {
       name: "open_incident",
-      description: "Open an incident for an existing service with a title and supported severity.",
+      // A descrição é o que o modelo lê para preencher os argumentos. Pedidos de plantão falam
+      // "sev2", mas o domínio só conhece low/medium/high/critical — o mapeamento precisa estar aqui.
+      description: "Open an incident for an existing service (use the exact service name) with a title and severity. Severity must be critical, high, medium or low; map sev1=critical, sev2=high, sev3=medium, sev4=low.",
       schema: OpenIncidentInputSchema,
     },
   );

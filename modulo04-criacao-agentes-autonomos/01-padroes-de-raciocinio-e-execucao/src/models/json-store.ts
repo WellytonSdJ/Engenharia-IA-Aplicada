@@ -136,7 +136,10 @@ export class JsonOpsStore implements OpsStore {
       const document = await this.readDocument();
       const service = document.services.find((item) => item.name === input.service.trim());
       if (!service) {
-        throw new ResourceNotFoundError(`Service ${input.service} was not found.`);
+        // Mesma mensagem do InMemoryOpsStore: listar os nomes válidos permite ao agente se corrigir.
+        throw new ResourceNotFoundError(
+          `Service ${input.service} was not found. Known services: ${document.services.map((item) => item.name).join(", ")}.`,
+        );
       }
 
       const incident = IncidentSchema.parse({

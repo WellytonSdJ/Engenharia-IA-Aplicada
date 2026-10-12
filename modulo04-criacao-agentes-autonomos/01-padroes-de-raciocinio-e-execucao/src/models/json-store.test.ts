@@ -18,7 +18,7 @@ test("JSON store reset writes the seed and mutations persist across store instan
   await store.reset();
   const tools = createOpsTools(store);
   assert.deepEqual(await store.readSummary(), {
-    services: 5,
+    services: 6,
     alerts: 6,
     firing: 3,
     resolved: 3,

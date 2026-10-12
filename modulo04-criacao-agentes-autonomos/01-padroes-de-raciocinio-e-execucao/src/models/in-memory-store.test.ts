@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { InMemoryOpsStore } from "./in-memory-store.js";
 
-test("default seed has five services and a 3/3 alert status split", async () => {
+test("default seed has six services (catalog without alerts) and a 3/3 alert status split", async () => {
   const store = new InMemoryOpsStore();
   assert.deepEqual(await store.readSummary(), {
-    services: 5,
+    services: 6,
     alerts: 6,
     firing: 3,
     resolved: 3,
@@ -18,7 +18,11 @@ test("default seed has five services and a 3/3 alert status split", async () => 
 
 test("incident lifecycle is atomic, validates service, and prevents repeated resolution", async () => {
   const store = new InMemoryOpsStore();
-  await assert.rejects(store.createIncident({ title: "Test", service: "unknown", severity: "high" }));
+  // A mensagem lista os nomes válidos para o agente conseguir se corrigir ("payment" → "payments").
+  await assert.rejects(
+    store.createIncident({ title: "Test", service: "payment", severity: "high" }),
+    /Service payment was not found\. Known services: api, checkout, payments, identity, notifications, catalog\./,
+  );
   assert.equal((await store.readSummary()).incidents, 0);
   assert.deepEqual(await store.listIncidents(), []);
 
@@ -38,7 +42,7 @@ test("reset is idempotent and restores the seeded state", async () => {
   await store.reset();
   await store.reset();
   assert.deepEqual(await store.readSummary(), {
-    services: 5,
+    services: 6,
     alerts: 6,
     firing: 3,
     resolved: 3,
