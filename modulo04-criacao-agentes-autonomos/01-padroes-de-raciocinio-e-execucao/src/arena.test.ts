@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { formatArenaRuns, parseArenaArgs, runArena } from "./controllers/arena-controller.js";
 import type { ReasoningStrategy } from "./agents/strategy.js";
+import { arenaStrategies } from "./arena.js";
 
 function strategy(name: string, answer: string, seenInputs: string[]): ReasoningStrategy {
   return {
@@ -37,4 +38,34 @@ test("arena validates flags before execution and shares input across selected st
   assert.deepEqual(runs.map((run) => run.strategy), ["first", "second"]);
   assert.match(formatArenaRuns(runs), /=== first ===[\s\S]*=== second ===/);
   assert.ok(runs.every((run) => run.metrics.llmCalls === 1));
+});
+
+test("arena registers reflected variants without removing base strategies", () => {
+  assert.deepEqual(Object.keys(arenaStrategies), [
+    "react",
+    "plan-and-execute",
+    "reflect:react",
+    "reflect:plan-and-execute",
+  ]);
+  assert.equal(arenaStrategies.react.name, "react");
+  assert.equal(arenaStrategies["plan-and-execute"].name, "plan-and-execute");
+  assert.equal(arenaStrategies["reflect:react"].name, "reflect:react");
+  assert.equal(arenaStrategies["reflect:plan-and-execute"].name, "reflect:plan-and-execute");
+});
+
+test("arena keeps reflected strategy results separate", async () => {
+  const seenInputs: string[] = [];
+  const registry = {
+    "reflect:react": strategy("reflect:react", "Reflected ReAct", seenInputs),
+    "reflect:plan-and-execute": strategy("reflect:plan-and-execute", "Reflected plan", seenInputs),
+  };
+
+  const runs = await runArena([
+    "--strategies=reflect:react,reflect:plan-and-execute",
+    "inspect firing alerts",
+  ], registry);
+
+  assert.deepEqual(runs.map((run) => run.strategy), ["reflect:react", "reflect:plan-and-execute"]);
+  assert.deepEqual(runs.map((run) => run.answer), ["Reflected ReAct", "Reflected plan"]);
+  assert.deepEqual(seenInputs, ["inspect firing alerts", "inspect firing alerts"]);
 });

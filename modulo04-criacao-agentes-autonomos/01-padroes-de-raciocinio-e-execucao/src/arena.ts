@@ -2,12 +2,18 @@ import { pathToFileURL } from "node:url";
 import { formatArenaRuns, runArena } from "./controllers/arena-controller.js";
 import { planAndExecuteStrategy } from "./agents/plan-and-execute.js";
 import { reactStrategy } from "./agents/react.js";
+import { withReflection } from "./agents/reflection.js";
+import type { ReasoningStrategy } from "./agents/strategy.js";
+
+export const arenaStrategies: Readonly<Record<string, ReasoningStrategy>> = {
+  react: reactStrategy,
+  "plan-and-execute": planAndExecuteStrategy,
+  "reflect:react": withReflection(reactStrategy),
+  "reflect:plan-and-execute": withReflection(planAndExecuteStrategy),
+};
 
 export async function main(args = process.argv.slice(2)): Promise<void> {
-  const runs = await runArena(args, {
-    react: reactStrategy,
-    "plan-and-execute": planAndExecuteStrategy,
-  });
+  const runs = await runArena(args, arenaStrategies);
   console.log(formatArenaRuns(runs));
 }
 
