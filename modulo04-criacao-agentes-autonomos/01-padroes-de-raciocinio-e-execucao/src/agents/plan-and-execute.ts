@@ -62,6 +62,8 @@ export interface PlanGraphOptions {
   recordLlmCall(): void;
 }
 
+type ReplanDecision = z.infer<typeof ReplanSchema>;
+
 export function createPlanAndExecuteGraph(
   options: PlanGraphOptions,
   store: OpsStore = defaultOpsStore,
@@ -118,40 +120,50 @@ export function createPlanAndExecuteGraph(
   };
 
   const replanner = async (state: PEStateType) => {
-    options.recordLlmCall();
     const currentSteps = state.plan.slice(state.done.length);
-    const output = await options.model.withStructuredOutput(ReplanSchema).invoke([
-      new SystemMessage(
-        "Review the request, current remaining plan, and completed tool results. Decide explicitly: continue the current remaining steps, adjust them with a replacement list, or finish with a user-facing answer. Keep completed work in mind. The total count of completed steps plus replacement/remaining steps must never exceed eight. If no more work remains, finish.",
-      ),
-      new HumanMessage([
-        `Request: ${state.input}`,
-        `Remaining plan: ${JSON.stringify(currentSteps)}`,
-        `Done (step/result pairs): ${JSON.stringify(state.done)}`,
-      ].join("\n")),
-    ]);
-    const decision = ReplanSchema.parse(output);
+    const replannerInstructions = [
+      "Review the request, current remaining plan, and completed tool results. Decide explicitly to continue the current remaining steps, adjust them with a replacement list, or finish with a user-facing answer. Keep completed work in mind.",
+      'Return exactly one matching object shape: {"decision":"continue"}; {"decision":"adjust","steps":["..."]}; or {"decision":"finish","answer":"..."}.',
+      "Do not include steps with continue or finish. Do not include answer with continue or adjust. For adjust, steps must be non-empty. For finish, answer must be non-empty.",
+      "The total count of completed steps plus replacement/remaining steps must never exceed eight. If no more work remains, finish.",
+    ].join(" ");
+    const replannerContext = [
+      `Request: ${state.input}`,
+      `Remaining plan: ${JSON.stringify(currentSteps)}`,
+      `Done (step/result pairs): ${JSON.stringify(state.done)}`,
+    ].join("\n");
+    const requestDecision = async (correction?: string): Promise<ReplanDecision> => {
+      options.recordLlmCall();
+      const output = await options.model.withStructuredOutput(ReplanSchema).invoke([
+        new SystemMessage(replannerInstructions),
+        new HumanMessage(correction
+          ? `${replannerContext}\n\nThe previous response violated this rule: ${correction} Return one corrected object matching the required shape.`
+          : replannerContext),
+      ]);
+      return ReplanSchema.parse(output);
+    };
+
+    let decision = await requestDecision();
+    let decisionError = validateReplanDecision(decision, currentSteps, state.done.length);
+    if (decisionError) {
+      decision = await requestDecision(decisionError.message);
+      decisionError = validateReplanDecision(decision, currentSteps, state.done.length);
+      if (decisionError) {
+        throw decisionError;
+      }
+    }
 
     if (decision.decision === "continue") {
-      if (decision.steps !== undefined || decision.answer !== undefined) {
-        throw new ValidationError("A continue decision cannot include replacement steps or an answer.");
-      }
-      if (currentSteps.length === 0) {
-        throw new ValidationError("Replanner cannot continue when no plan steps remain.");
-      }
       return {};
     }
     if (decision.decision === "adjust") {
-      if (!decision.steps?.length || decision.answer !== undefined) {
-        throw new ValidationError("An adjust decision requires replacement steps and cannot include a final answer.");
-      }
-      if (state.done.length + decision.steps.length > 8) {
-        throw new ValidationError("Replanner adjustment exceeds the eight-step total limit.");
+      if (!decision.steps?.length) {
+        throw new ValidationError("An adjust decision requires replacement steps.");
       }
       return { plan: [...state.plan.slice(0, state.done.length), ...decision.steps] };
     }
-    if (!decision.answer || decision.steps !== undefined) {
-      throw new ValidationError("A finish decision requires an answer and cannot include replacement steps.");
+    if (!decision.answer) {
+      throw new ValidationError("A finish decision requires an answer.");
     }
     return { answer: decision.answer };
   };
@@ -169,6 +181,35 @@ export function createPlanAndExecuteGraph(
       return END;
     })
     .compile();
+}
+
+function validateReplanDecision(
+  decision: ReplanDecision,
+  currentSteps: string[],
+  completedSteps: number,
+): ValidationError | undefined {
+  if (decision.decision === "continue") {
+    if (decision.steps !== undefined || decision.answer !== undefined) {
+      return new ValidationError("A continue decision cannot include replacement steps or an answer.");
+    }
+    if (currentSteps.length === 0) {
+      return new ValidationError("Replanner cannot continue when no plan steps remain.");
+    }
+    return undefined;
+  }
+  if (decision.decision === "adjust") {
+    if (!decision.steps?.length || decision.answer !== undefined) {
+      return new ValidationError("An adjust decision requires replacement steps and cannot include a final answer.");
+    }
+    if (completedSteps + decision.steps.length > 8) {
+      return new ValidationError("Replanner adjustment exceeds the eight-step total limit.");
+    }
+    return undefined;
+  }
+  if (!decision.answer || decision.steps !== undefined) {
+    return new ValidationError("A finish decision requires an answer and cannot include replacement steps.");
+  }
+  return undefined;
 }
 
 function formatDone(done: Array<[string, string]>): string {

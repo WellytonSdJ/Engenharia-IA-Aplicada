@@ -24,6 +24,10 @@ The total of completed and active steps must remain at most eight:
 `done.length + (plan.length - done.length) <= 8`.
 Any adjusted plan is checked against the completed count before it is accepted. The configured iteration limit is checked before each tool execution. A finished graph must return a non-empty answer.
 
+## Replanner Recovery
+
+Each replanner response must match the fields allowed for its decision. If structured output parses but combines incompatible fields, the agent asks for one corrected response using the same request, remaining plan, and completed results. It does not execute a tool during this correction. If the corrected response is still contradictory, the graph fails with a validation error. Provider/network errors are not retried.
+
 ## Persistence
 
 Tools use the injected `OpsStore`. The runtime default is the JSON-backed store at `src/data/ops-store.json`; tests use a fresh in-memory store or a temporary JSON path.

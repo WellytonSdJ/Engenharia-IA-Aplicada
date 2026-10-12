@@ -7,8 +7,9 @@ import type { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager
 import type { BaseLanguageModelInput } from "@langchain/core/language_models/base";
 import type { Runnable } from "@langchain/core/runnables";
 import { z } from "zod";
+import type { AlertWithService, Incident, IncidentWithService, Severity, StoreSummary } from "../models/domain.js";
 import { IterationLimitError } from "../services/errors.js";
-import { InMemoryOpsStore } from "../models/in-memory-store.js";
+import { InMemoryOpsStore, type OpsStore } from "../models/in-memory-store.js";
 import { createPlanAndExecuteGraph, PlanSchema, ReplanSchema, ToolExecutionSchema } from "./plan-and-execute.js";
 
 class ControlledStructuredModel extends SimpleChatModel {
@@ -41,6 +42,52 @@ class ControlledStructuredModel extends SimpleChatModel {
       }
       return next as RunOutput;
     });
+  }
+}
+
+class RecordingOpsStore implements OpsStore {
+  readonly operations: string[] = [];
+  private incidents: Incident[] = [];
+
+  async listAlerts(): Promise<AlertWithService[]> {
+    return [];
+  }
+
+  async listIncidents(): Promise<IncidentWithService[]> {
+    return [];
+  }
+
+  async createIncident(input: { title: string; service: string; severity: Severity }): Promise<Incident> {
+    const incident: Incident = {
+      id: `incident-${this.incidents.length + 1}`,
+      title: input.title,
+      serviceId: `service-${input.service}`,
+      severity: input.severity,
+      status: "open",
+      createdAt: new Date(),
+      resolvedAt: null,
+    };
+    this.incidents.push(incident);
+    this.operations.push(`open:${input.service}`);
+    return incident;
+  }
+
+  async resolveIncident(id: string): Promise<Incident> {
+    const incident = this.incidents.find((item) => item.id === id);
+    assert.ok(incident, `Expected incident ${id} to exist.`);
+    const resolved = { ...incident, status: "resolved" as const, resolvedAt: new Date() };
+    this.incidents = this.incidents.map((item) => item.id === id ? resolved : item);
+    this.operations.push(`resolve:${id}`);
+    return resolved;
+  }
+
+  async reset(): Promise<void> {
+    this.incidents = [];
+    this.operations.length = 0;
+  }
+
+  async readSummary(): Promise<StoreSummary> {
+    return { services: 3, alerts: 0, firing: 0, resolved: 0, incidents: this.incidents.length };
   }
 }
 
@@ -120,11 +167,66 @@ test("replanner may continue current plan or replace its remaining steps", async
   assert.equal(iterations, 3);
 });
 
+test("replanner corrects one contradictory response without repeating completed incident actions", async () => {
+  const store = new RecordingOpsStore();
+  const model = new ControlledStructuredModel([
+    { steps: ["Open checkout", "Open payments", "Open catalog", "Resolve first incident"] },
+    { tool: "open_incident", args: { title: "Checkout issue", service: "checkout", severity: "high" } },
+    { decision: "continue", steps: ["Wrong replacement"], answer: "Premature completion." },
+    { decision: "continue" },
+    { tool: "open_incident", args: { title: "Payments issue", service: "payments", severity: "high" } },
+    { decision: "continue" },
+    { tool: "open_incident", args: { title: "Catalog issue", service: "catalog", severity: "high" } },
+    { decision: "continue" },
+    { tool: "resolve_incident", args: { id: "incident-1" } },
+    { decision: "finish", answer: "Three incidents opened; the first was resolved." },
+  ]);
+  let calls = 0;
+  const graph = createPlanAndExecuteGraph({
+    model,
+    recordLlmCall: () => { calls += 1; },
+    beginIteration: () => {},
+  }, store);
+
+  const result = await graph.invoke({ input: "Open incidents for checkout, payments, and catalog, then resolve the first." });
+
+  assert.equal(result.answer, "Three incidents opened; the first was resolved.");
+  assert.deepEqual(store.operations, [
+    "open:checkout",
+    "open:payments",
+    "open:catalog",
+    "resolve:incident-1",
+  ]);
+  assert.equal(result.done.length, 4);
+  assert.equal(calls, 10);
+});
+
+test("replanner fails explicitly after a second contradictory response", async () => {
+  const store = new RecordingOpsStore();
+  const graph = createPlanAndExecuteGraph({
+    model: new ControlledStructuredModel([
+      { steps: ["Open checkout"] },
+      { tool: "open_incident", args: { title: "Checkout issue", service: "checkout", severity: "high" } },
+      { decision: "continue", answer: "Contradictory answer." },
+      { decision: "continue", steps: ["Contradictory replacement"] },
+    ]),
+    recordLlmCall: () => {},
+    beginIteration: () => {},
+  }, store);
+
+  await assert.rejects(
+    graph.invoke({ input: "Open an incident for checkout." }),
+    /A continue decision cannot include replacement steps or an answer/,
+  );
+  assert.deepEqual(store.operations, ["open:checkout"]);
+});
+
 test("replanner cannot increase total planned-plus-done work above eight", async () => {
   const guardedGraph = createPlanAndExecuteGraph({
     model: new ControlledStructuredModel([
       { steps: Array.from({ length: 8 }, (_, index) => `Step ${index + 1}`) },
       { tool: "list_alerts", args: { status: "firing" } },
+      { decision: "adjust", steps: Array.from({ length: 8 }, (_, index) => `Replacement ${index + 1}`) },
       { decision: "adjust", steps: Array.from({ length: 8 }, (_, index) => `Replacement ${index + 1}`) },
     ]),
     recordLlmCall: () => {},
@@ -147,6 +249,7 @@ test("replanner rejects a finish decision without a final answer", async () => {
     model: new ControlledStructuredModel([
       { steps: ["Inspect alerts"] },
       { tool: "list_alerts", args: { status: "firing" } },
+      { decision: "finish" },
       { decision: "finish" },
     ]),
     recordLlmCall: () => {},
