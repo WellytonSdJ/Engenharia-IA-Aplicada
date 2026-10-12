@@ -11,6 +11,9 @@ export async function main(args = process.argv.slice(2)): Promise<void> {
   console.log(formatArenaRuns(runs));
 }
 
+// Ponto de entrada da CLI. Rode via `npm run arena`: o script é
+// `node --env-file-if-exists=.env --import tsx src/arena.ts`, que carrega o .env
+// (credenciais do OpenRouter) antes deste arquivo executar. `tsx src/arena.ts` puro não carrega.
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error: unknown) => {
     console.error("Arena failed:", error instanceof Error ? error.message : String(error));
