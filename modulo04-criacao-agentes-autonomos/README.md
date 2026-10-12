@@ -12,7 +12,7 @@ Material de referência do curso: `POS_ENGENHARIA_IA/engenharia-de-software-com-
 
 | # | Projeto | Unidade do curso | Status | Descrição |
 |---|---------|------------------|--------|-----------|
-| 01 | [padroes-de-raciocinio-e-execucao](./01-padroes-de-raciocinio-e-execucao/) | U2 — Padrões de Raciocínio e Execução | 🚧 em andamento (spec 001 implementada; spec 002 — Reflection — em especificação) | Kickoff do OpsPilot: estratégias ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, tools mock sobre store em memória, arena de comparação e bench com acerto medido no estado; depois, a camada de Reflection |
+| 01 | [padroes-de-raciocinio-e-execucao](./01-padroes-de-raciocinio-e-execucao/) | U2 — Padrões de Raciocínio e Execução | 🚧 em andamento (specs 001, 002 — Reflection — e 003 implementadas; bench C1/C2/C3 pronto) | Kickoff do OpsPilot: estratégias ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, tools mock sobre store em memória, arena de comparação e bench com acerto medido no estado; depois, a camada de Reflection |
 
 ## Roteiro do módulo (orientação, não implementado ainda)
 

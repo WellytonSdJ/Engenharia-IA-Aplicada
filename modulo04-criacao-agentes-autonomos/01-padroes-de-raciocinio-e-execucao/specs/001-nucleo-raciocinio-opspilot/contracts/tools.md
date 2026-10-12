@@ -17,6 +17,7 @@ As ferramentas recebem um store com operações para listar alertas, criar incid
 - Input: `{ title: string; service: string; severity: Severity }`.
 - Output: incidente criado com identificador e status `open`.
 - Side effect: cria um incidente no store.
+- Errors: serviço inexistente é rejeitado sem alterar o estado; a mensagem lista os serviços conhecidos (`Known services: ...`) para o agente se corrigir. A descrição da tool mapeia `sev1=critical`, `sev2=high`, `sev3=medium`, `sev4=low`.
 
 ### `list_incidents`
 

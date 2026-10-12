@@ -12,6 +12,8 @@ Pense num simulador de voo. Ninguém treina pouso de emergência num avião de v
 
 ### O seed: 5 serviços, 6 alertas, 3 + 3
 
+> **No nosso projeto** o seed tem outros nomes (`api`, `checkout`, `payments`, `identity`, `notifications`) e, desde o bench, um 6º serviço, `catalog`, sem alertas, que existe para o cenário C2. Os alertas firing são 3, e **1** deles é critical (`payments`). Ver `DEFAULT_SERVICES`/`DEFAULT_ALERTS` em [`src/models/in-memory-store.ts`](../src/models/in-memory-store.ts).
+
 ```json
 // src/store/seed-data.json (referência) — trecho
 { "id": "alert-001", "service": "payment-api", "description": "High error rate on /checkout",

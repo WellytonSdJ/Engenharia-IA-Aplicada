@@ -72,7 +72,11 @@ Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pra
 | **Acerto no estado** | Critério de sucesso baseado no efeito das ações (incidentes criados/resolvidos), não no texto da resposta. |
 | **Cenários C1 / C2 / C3** | `direto` (só leitura + contagem), `estruturado` (3 aberturas em ordem + 1 resolução), `dinâmico` (ler → decidir → abrir → contar). |
 | **`diagnose`** | Função por cenário que explica um erro (o que faltou) sem alterar o critério de acerto. |
-| **`--no-replanner`** | Flag do bench que roda o Plan-and-Execute sem replanner, para medir custo × benefício do replanner. |
+| **`--no-replanner`** | Flag do bench que roda o Plan-and-Execute sem replanner, para medir custo × benefício do replanner. No nosso código, troca a estratégia por `plan-and-execute:no-replanner`. |
+| **Finalizer** | Nó do Plan-and-Execute sem replanner: depois do último passo, uma chamada redige a resposta a partir dos resultados. |
+| **Célula do bench** | Um par cenário × estratégia, executado com um store novo; é uma linha da tabela. |
+| **`answerMentionsCount`** | Verifica se a resposta cita a contagem esperada (dígito isolado ou por extenso), calculada a partir do store. |
+| **Catálogo de tools (`describeTools`)** | Texto com nome, argumentos e descrição de cada tool, injetado nos prompts do planner e do executor, que não recebem as tools por binding. |
 | **Exaustividade com `never`** | `const _x: never = valor` — não compila se algum caso de uma união não foi tratado antes. |
 
 ---
@@ -97,4 +101,4 @@ Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pra
 | **Incidente `open` / `resolved`** | Ocorrência aberta pelo agente / encerrada. Transição válida: `open → resolved`. |
 | **sev1..sev4** | Jargão de severidade mapeado para `critical`, `high`, `medium`, `low`. |
 | **`InMemoryStore` / `InMemoryOpsStore`** | Store em memória semeado (nome da referência / nome no nosso plano). |
-| **Seed** | Estado inicial fixo (5 serviços, 6 alertas) que torna as execuções comparáveis. |
+| **Seed** | Estado inicial fixo (6 serviços, incluindo `catalog` sem alertas, e 6 alertas) que torna as execuções comparáveis. |

@@ -13,10 +13,11 @@ Este doc é a ponte entre o que já **planejamos** (`specs/001-nucleo-raciocinio
 ✅ /speckit.specify  → spec.md + checklists/requirements.md
 ✅ /speckit.plan     → plan.md, research.md, data-model.md, contracts/, quickstart.md
 ✅ /speckit.tasks    → tasks.md (todas as tarefas marcadas [X])
-✅ /speckit.implement → src/ implementado; 29 testes passando, typecheck limpo
+✅ /speckit.implement → src/ implementado; 29 testes passando na época, typecheck limpo
 ✅ spec 003 (fix-replanner-output): replanner pede uma correção quando a decisão vem contraditória
+✅ spec 002 (reflection): withReflection + reflect:react / reflect:plan-and-execute na arena
+✅ bench: src/bench.ts com C1/C2/C3, --scenario e --no-replanner (43 testes)
 ✅ primeira execução real da arena (depois de corrigir o carregamento do .env — armadilha 3)
-🚧 spec 002 (reflection): spec.md + checklist prontos → plan → tasks → implement
 ```
 
 > Este doc foi escrito **antes** da implementação. A partir daqui, o status de cada armadilha está anotado logo abaixo do título dela.
@@ -41,8 +42,8 @@ O nosso `plan.md` organiza `src/` em camadas (constituição, princípio II: Mod
 | `src/agents/react.ts` | `src/agents/react.ts` | [react.md](./react.md) |
 | `src/agents/plan-and-execute.ts` | `src/strategies/plan-execute.ts` | [plan-and-execute.md](./plan-and-execute.md) |
 | `src/controllers/arena-controller.ts` + `src/arena.ts` | `src/arena.ts` | [arena-e-bench.md](./arena-e-bench.md) |
-| `src/bench.ts` | `src/bench.ts` | [arena-e-bench.md](./arena-e-bench.md) |
-| (spec 002) | `src/strategies/reflect.ts` | [reflection.md](./reflection.md) |
+| `src/controllers/bench-controller.ts` + `src/bench.ts` | `src/bench.ts` | [arena-e-bench.md](./arena-e-bench.md) |
+| `src/agents/reflection.ts` (spec 002) | `src/strategies/reflect.ts` | [reflection.md](./reflection.md) |
 
 ---
 
@@ -71,9 +72,9 @@ Estas não eram opiniões sobre o futuro código: eram inconsistências presente
 | 3 | Scripts não carregam o `.env` | ✅ resolvida: ver [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md) |
 | 4 | `OPENROUTER_MODEL` vazio | ✅ resolvida: `createModel` usa `!model`, que barra string vazia |
 | 5 | `resolveJsonModule` | ✅ não se aplica: o store lê o JSON com `readFile` (`src/models/json-store.ts`) |
-| 6 | `service` por nome × `serviceId` | 🔁 o seed passou a usar `api`, `checkout`, `payments`, `identity` e `notifications`; reavaliar o C2 quando o bench existir |
+| 6 | `service` por nome × `serviceId` | ✅ resolvida no bench: `catalog` entrou no seed, o check do C2 compara `serviceId` e o erro de serviço inexistente lista os nomes válidos. Ver [arena-e-bench.md](./arena-e-bench.md#decisões-que-o-c2-forçou) |
 | 7 | `list_alerts` sem `all`/default | ✅ resolvida: `status` aceita `all` e tem default `firing` |
-| 8 | Bench nesta spec? | ⬜ pendente: o script `bench` aponta para `src/bench.ts`, que ainda não existe |
+| 8 | Bench nesta spec? | ✅ implementado fora do `tasks.md`: `src/bench.ts` + `src/controllers/bench-controller.ts` |
 | 9 | Limite de iterações sem perder o trace | ✅ tratado em `src/agents/react.ts` (captura `GraphRecursionError`) |
 
 ### 1. Driver do MySQL: `mysql` em vez de `mysql2`

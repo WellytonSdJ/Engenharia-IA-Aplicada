@@ -1,6 +1,6 @@
 # Reflection — a camada de autocrítica
 
-> Este doc cobre a **spec 002 (`002-reflection-layer`)** do curso. No nosso projeto ela ainda não foi especificada: depois de terminar a `001`, o caminho é rodar `/speckit.specify` para a reflection. O que está aqui serve de base para escrever essa spec.
+> Este doc cobre a **spec 002 (`002-reflection-layer`)** do curso e foi escrito antes da nossa implementação. **Atualização:** a nossa spec [`002-camada-reflection`](../specs/002-camada-reflection/spec.md) já foi implementada em [`src/agents/reflection.ts`](../src/agents/reflection.ts) (`withReflection(strategy, opts)`, crítica `{ aproved, feedback }`, até 2 regenerações por padrão), e a arena ganhou `reflect:react` e `reflect:plan-and-execute`. O bench ainda compara só as duas estratégias base.
 
 ## O que é
 

@@ -27,7 +27,7 @@ resultado = texto final                   resultado = answer + trace tipado + m�
 
 O ponto central da unidade é **comparar**: qual padrão acerta mais, em que tipo de pedido, gastando quantas chamadas de LLM e quanto tempo. Por isso tudo gira em torno de um contrato comum (`ReasoningStrategy`), um trace tipado e duas ferramentas de medição (arena e bench).
 
-E tem uma novidade de **processo**: o projeto é conduzido com **Spec Kit** — spec, plano e tarefas escritos (e versionados) antes do código. Já fizemos essas três etapas e também o `/speckit.implement` da spec 001. A próxima é a spec 002 (Reflection).
+E tem uma novidade de **processo**: o projeto é conduzido com **Spec Kit** — spec, plano e tarefas escritos (e versionados) antes do código. Já fizemos essas três etapas e também o `/speckit.implement` das specs 001 (núcleo), 002 (Reflection) e 003 (correção do replanner). O bench também já existe.
 
 ---
 
@@ -115,20 +115,24 @@ npm run bench
 No **nosso** projeto, os comandos equivalentes que funcionam hoje (rode no PowerShell) são:
 
 ```powershell
-npm test                     # 29 testes, sem chave e sem rede
+npm test                     # 43 testes, sem chave e sem rede
 npm run seed                 # restaura src/data/ops-store.json
 # o input é posicional (não há --input); precisa de .env preenchido
 npm run arena -- "quantos alertas criticos estão disparando" --strategies react
+# também: --strategies reflect:react,reflect:plan-and-execute (spec 002)
+
+# acerto medido no estado: C1/C2/C3 × react e plan-and-execute
+npm run bench
+npm run bench -- --scenario C2 --no-replanner
 ```
 
-> **Pendente (out/2026): Plan-and-Execute instável com `openrouter/free`.** A spec 003 corrigiu o **replanner**: quando ele devolve uma decisão contraditória (por exemplo, `continue` junto com `steps`), agora pede uma correção. Os testes cobrem isso. Mas, em execuções reais, as falhas acontecem **antes** do replanner:
+> **Pendente (out/2026): Plan-and-Execute instável com `openrouter/free`.** O primeiro bench real mostrou `react` com 3/3 e `plan-and-execute` com 0/3. O que já foi corrigido:
 >
-> 1. **Planner devolve `undefined`.** Às vezes o modelo gratuito não devolve saída estruturada, e o `PlanSchema.parse(output)` em `src/agents/plan-and-execute.ts` lança o erro do Zod `expected: "object", received: "undefined"`. Aconteceu em 1 de 5 execuções da pergunta de alertas e em 2 de 3 do cenário com vários incidentes.
-> 2. **Planner não sabe que existem ferramentas.** O prompt dele não lista as tools. Por isso, às vezes devolve zero passos e responde "não tenho acesso aos alertas" (2 de 5 execuções), com `llmCalls: 1`.
-> 3. **Executor não conhece os argumentos das tools.** No cenário com vários incidentes, ele chamou `open_incident` sem `title`.
+> - **spec 003:** o replanner pede uma correção quando a decisão vem contraditória;
+> - **bench:** o planner e o executor recebem um catálogo das tools (nome, argumentos e descrição) no prompt, gerado por `describeTools`. Antes, eles não sabiam que as tools existiam, e o executor inventava argumentos.
 >
-> A estratégia `react` não sofre com isso, porque o `createReactAgent` envia os schemas das tools ao modelo. Caminhos possíveis: colocar as tools e os seus argumentos nos prompts do planner e do executor, tratar saída `undefined` com uma nova tentativa (como o replanner já faz), ou usar um modelo com structured output confiável no lugar do `openrouter/free`.
+> O que continua acontecendo: o modelo às vezes devolve `undefined` no structured output (o erro do Zod `received: "undefined"`), às vezes responde sem planejar nenhum passo, e o replanner às vezes erra o formato **duas vezes**. A suspeita principal é o `openrouter/free`, que sorteia um modelo gratuito diferente a cada chamada, com suporte desigual a structured output. Próximo experimento: fixar um modelo com structured output confiável e rodar `npm run bench` de novo.
 
-O `npm run bench` ainda não funciona: `src/bench.ts` não existe (armadilha 8 do roteiro). Se a arena reclamar de `OPENROUTER_API_KEY` com o `.env` preenchido, leia [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md).
+O bench está explicado em [arena-e-bench.md](./arena-e-bench.md#o-nosso-bench-implementado). Se a arena reclamar de `OPENROUTER_API_KEY` com o `.env` preenchido, leia [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md).
 
 O comando que mais ensina é o 2: olhe o trace de cada estratégia e conte quantas vezes o LLM foi chamado. Depois rode o 3 e veja que "a resposta parece boa" e "o store ficou certo" são coisas diferentes.

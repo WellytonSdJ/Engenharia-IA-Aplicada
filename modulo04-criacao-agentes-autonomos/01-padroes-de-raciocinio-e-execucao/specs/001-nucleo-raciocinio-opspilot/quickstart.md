@@ -23,7 +23,7 @@ O padrão de testes segue o runner `node:test`, com arquivos co-localizados em `
 npm run seed
 ```
 
-A saída deve confirmar 5 serviços e 6 alertas, sendo 3 `firing` e 3 `resolved`. O comando inicializa/restaura `src/data/ops-store.json`; ferramentas usam esse arquivo para consultar alertas e incidentes e persistir incidentes novos/resolvidos. Nos testes, injete stores ou arquivos temporários para não alterar o seed versionado.
+A saída deve confirmar 6 serviços e 6 alertas, sendo 3 `firing` e 3 `resolved`. O comando inicializa/restaura `src/data/ops-store.json`; ferramentas usam esse arquivo para consultar alertas e incidentes e persistir incidentes novos/resolvidos. Nos testes, injete stores ou arquivos temporários para não alterar o seed versionado.
 
 ## Focused Deterministic Checks
 
@@ -40,6 +40,15 @@ npm run arena -- --strategies react,plan-and-execute --max-iterations 8 "liste o
 ```
 
 A saída deve separar as estratégias e mostrar resposta, trace e métricas. Sem credenciais válidas, use testes ou um double de modelo; não registre chaves em logs.
+
+## Bench
+
+```powershell
+npm run bench
+npm run bench -- --scenario C2 --no-replanner
+```
+
+Roda C1 (direto), C2 (estruturado) e C3 (dinâmico) com `react` e `plan-and-execute`, cada célula com um `InMemoryOpsStore` novo, e imprime a tabela `cenário | estratégia | acerto | llmCalls | latencyMs` e os motivos de cada erro. O acerto é verificado no estado do store. `--no-replanner` troca a estratégia por `plan-and-execute:no-replanner`.
 
 ## Expected Checks
 

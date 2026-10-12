@@ -90,7 +90,7 @@ Como pessoa desenvolvedora, quero testar o store, as ferramentas e a formataçã
 - **FR-004**: O sistema MUST reportar as métricas `llmCalls` e `latencyMs` para cada execução.
 - **FR-005**: O sistema MUST disponibilizar uma fábrica única de modelos que leia `OPENROUTER_API_KEY` e `OPENROUTER_MODEL`, use a base URL compatível com OpenRouter e configure temperatura zero.
 - **FR-006**: O sistema MUST disponibilizar as ferramentas `list_alerts(status)`, `list_incidents(status)`, `open_incident(title, service, severity)` e `resolve_incident(id)` com schemas Zod para entrada e saída.
-- **FR-007**: O sistema MUST fornecer um store operacional pré-populado com 5 serviços e 6 alertas variados, sendo 3 `firing` e 3 `resolved`.
+- **FR-007**: O sistema MUST fornecer um store operacional pré-populado com 6 serviços (5 com alertas e `catalog`, sem alertas, usado pelo cenário C2 do bench) e 6 alertas variados, sendo 3 `firing` e 3 `resolved`.
 - **FR-008**: O sistema MUST fornecer um script explícito para executar o seed inicial e permitir verificar o estado criado.
 - **FR-009**: O runtime MUST usar um único arquivo JSON com o seed operacional como fonte de dados para consultas e mutações; testes MUST poder usar stores/arquivos isolados sem alterar o arquivo compartilhado.
 - **FR-010**: A estratégia ReAct MUST usar o agente ReAct pré-construído do LangGraph, conectar as ferramentas disponíveis e capturar o trace completo da execução.
@@ -116,7 +116,7 @@ Como pessoa desenvolvedora, quero testar o store, as ferramentas e a formataçã
 ### Measurable Outcomes
 
 - **SC-001**: Uma execução válida sempre retorna resposta, trace ordenado e as duas métricas obrigatórias, ou um erro estruturado sem estado parcialmente corrompido.
-- **SC-002**: O seed inicial produz exatamente 5 serviços e 6 alertas, distribuídos em 3 alertas `firing` e 3 `resolved`.
+- **SC-002**: O seed inicial produz exatamente 6 serviços e 6 alertas, distribuídos em 3 alertas `firing` e 3 `resolved`.
 - **SC-003**: 100% dos testes do store e da formatação de trace passam sem rede e produzem o mesmo resultado em execuções repetidas.
 - **SC-004**: Nenhuma execução Plan-and-Execute ultrapassa 8 passos planejados ou o limite de iterações configurado.
 - **SC-005**: A arena consegue apresentar resultados separados de pelo menos duas estratégias para o mesmo input, incluindo trace e métricas por estratégia.

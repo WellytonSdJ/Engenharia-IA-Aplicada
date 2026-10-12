@@ -17,7 +17,7 @@
 - `createdAt`: instante de criação.
 - `resolvedAt`: instante opcional de resolução.
 
-**Seed**: exatamente 6 alertas, 3 `firing` e 3 `resolved`, distribuídos entre os 5 serviços.
+**Seed**: exatamente 6 alertas, 3 `firing` e 3 `resolved`, distribuídos entre 5 dos 6 serviços (`catalog` não tem alertas; existe para o cenário C2 do bench).
 
 ## Incident
 
@@ -64,7 +64,7 @@
 
 - Schemas Zod devem validar entradas e saídas nas fronteiras.
 - `list_alerts` aceita apenas status suportado.
-- `open_incident` exige título, serviço existente e severidade suportada.
+- `open_incident` exige título, serviço existente e severidade suportada. Serviço inexistente gera erro que lista os nomes válidos; a descrição da tool mapeia sev1..sev4 para critical/high/medium/low.
 - `resolve_incident` exige identificador de incidente aberto.
 - Um plano não pode exceder 8 passos acumulados: passos completados (`done`) mais passos ativos (`plan`), inclusive após um ajuste do replanner.
 - Toda execução deve terminar com `answer` ou erro estruturado, respeitando o limite de iterações.

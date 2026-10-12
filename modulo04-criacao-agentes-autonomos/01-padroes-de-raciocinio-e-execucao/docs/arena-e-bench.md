@@ -160,9 +160,95 @@ return new PlanExecuteStrategy({
 
 Rodando `npm run bench` e depois `npm run bench -- --no-replanner`, você compara Plan-and-Execute com e sem replanner nos mesmos cenários: quantas chamadas o replanner adiciona e quantos acertos ele salva. É o tipo de pergunta que só o bench responde.
 
-## O que o nosso plano pede
+## O nosso bench (implementado)
 
-O nosso `tasks.md` foca na arena (T026–T028) e não detalha o bench — o `bench.ts` aparece na estrutura do `plan.md` e o script `npm run bench` já existe no `package.json`, mas não há tarefa específica para os cenários. Dá para seguir dois caminhos no `implement`: incluir o bench agora (acrescentando tarefas via `/speckit.converge` ou editando o `tasks.md`) ou deixá-lo para uma spec própria. Vale decidir antes; está anotado em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
+O bench saiu do papel fora do `tasks.md` da spec 001 (era a armadilha 8 do [roteiro](./roteiro-de-implementacao.md)). Ele segue a mesma divisão da arena:
+
+```text
+src/bench.ts                        → entrypoint: escolhe as estratégias e imprime
+src/controllers/bench-controller.ts → cenários, check no estado, flags, execução e tabela
+src/bench.test.ts                   → testes sem rede com estratégias falsas
+```
+
+### Rodando
+
+```powershell
+npm run bench                                  # C1, C2, C3 × react, plan-and-execute
+npm run bench -- --scenario C2                 # um cenário (aceita c2, ou lista: c1,c3)
+npm run bench -- --no-replanner                # plan-and-execute vira plan-and-execute:no-replanner
+npm run bench -- --scenario c1 --max-iterations 4
+```
+
+A saída tem três blocos: uma linha por célula enquanto roda, a tabela consolidada e, no fim, **por que** cada erro aconteceu (o papel do `diagnose` da referência):
+
+```text
+| cenário | estratégia       | acerto | llmCalls | latencyMs |
+|---------|------------------|--------|----------|-----------|
+| C1      | react            | sim    | 2        | 3566      |
+| C1      | plan-and-execute | não    | 1        | 1767      |
+| C2      | react            | sim    | 6        | 13626     |
+| C2      | plan-and-execute | não    | -        | 3028      |
+| C3      | react            | sim    | 3        | 14103     |
+| C3      | plan-and-execute | não    | -        | 20696     |
+
+Por que errou:
+C1 / plan-and-execute:
+  - resposta não cita a contagem esperada (1)
+C2 / plan-and-execute:
+  - erro: [ { "code": "invalid_type", "expected": "object", "received": "undefined", ... } ]
+C3 / plan-and-execute:
+  - erro: A continue decision cannot include replacement steps or an answer.
+```
+
+Essa é uma execução real com `OPENROUTER_MODEL=openrouter/free` (out/2026). Leia assim: `llmCalls` igual a `-` significa que a estratégia **lançou erro** e não devolveu métricas, e a latência é o tempo até o erro. `C1 / plan-and-execute` com `llmCalls: 1` mostra que o planner respondeu sem chamar nenhuma tool. O número parece certo de longe, mas o check pegou o erro.
+
+### Como cada cenário é julgado
+
+| Cenário | Pedido | O check confere no store | E na resposta |
+| --- | --- | --- | --- |
+| C1 direto | quantos alertas críticos estão disparando? | **nenhum** incidente criado (é só leitura) | cita a contagem real (1) |
+| C2 estruturado | abra três incidentes de sev2 para checkout, payment e catalog, nessa ordem, e resolva o primeiro | 3 incidentes, na ordem `svc-checkout`, `svc-payments`, `svc-catalog`, todos `high`, o 1º `resolved` e os outros `open` | — |
+| C3 dinâmico | dos alertas disparando, abra um incidente para o mais antigo e diga quantos sobraram | exatamente 1 incidente, `open`, no serviço do alerta firing mais antigo (`api`) | cita quantos sobraram (2) |
+
+Em C1 e C3, o pedido é **uma pergunta**, e a resposta é parte do resultado. Mesmo assim, o número esperado vem do store, não fica fixo no código: `answerMentionsCount` aceita o dígito isolado (não casa o "1" de "10") ou o número por extenso (`duas`, `três`...). "um/one" fica de fora porque aparece em qualquer frase ("abri um incidente").
+
+### Decisões que o C2 forçou
+
+O C2 da referência pede `payment` e `catalog`, mas o nosso store **rejeita serviço inexistente** e, no seed original, `catalog` não existia e o nome era `payments`. Antes, isso fazia o C2 falhar por construção. As decisões foram:
+
+1. **`catalog` entrou no seed** (`DEFAULT_SERVICES`, sem alertas), que agora tem 6 serviços.
+2. **O check compara `serviceId`, não o texto.** "payment" do usuário e `payments` do seed apontam para `svc-payments`.
+3. **A mensagem de erro ensina o nome certo.** `Service payment was not found. Known services: api, checkout, payments, ...`. O ReAct recebe esse erro como observação e tenta de novo com `payments`. Foi assim que ele acertou o C2 acima (6 chamadas).
+4. **`sev2 = high` está na descrição da tool `open_incident`** (`sev1=critical, sev2=high, sev3=medium, sev4=low`). O domínio só conhece `low/medium/high/critical`, e o bench espera `high`.
+
+### `--no-replanner` no nosso código
+
+A referência usa uma flag no construtor da classe. Aqui, como as estratégias são objetos, quem decide é uma fábrica:
+
+```ts
+// src/bench.ts
+export function benchStrategies(noReplanner: boolean): ReasoningStrategy[] {
+  return [reactStrategy, createPlanAndExecuteStrategy({ replanner: !noReplanner })];
+}
+```
+
+Sem replanner, o grafo vira `planner → executor → executor → ... → finalizer`. O `finalizer` faz uma chamada final que redige a resposta a partir dos resultados. Num plano de N passos, isso dá `1 + N + 1` chamadas, contra `1 + 2N` com replanner. O teste `without replanner the graph runs every planned step...` fixa essa conta (4 contra 5 para N = 2).
+
+### Por que um store novo por célula
+
+```ts
+// src/controllers/bench-controller.ts
+// Store novo (seed limpo) por célula: o C2 de uma estratégia não pode contaminar a outra.
+const store = createStore();
+```
+
+O padrão é `new InMemoryOpsStore()`. O bench **nunca** toca `src/data/ops-store.json`, então pode rodar quantas vezes quiser sem `npm run seed`.
+
+### Limite da conta gratuita
+
+Cada `npm run bench` completo faz de 20 a 40 chamadas. Com `openrouter/free`, a cota diária acaba rápido, e as células passam a falhar com `429 Rate limit exceeded: free-models-per-day`. Isso é erro de cota, não da estratégia. Use `--scenario` para rodar menos células enquanto estuda.
+
+### Diferenças da nossa arena
 
 A nossa arena também tem duas diferenças de contrato em relação à referência:
 
@@ -178,3 +264,7 @@ A nossa arena também tem duas diferenças de contrato em relação à referênc
 | Tarefas relacionadas | [`specs/.../tasks.md`](../specs/001-nucleo-raciocinio-opspilot/tasks.md) | T026, T027, T028, T035 |
 | Arena (referência) | `src/arena.ts` do snapshot | Store por estratégia, `never` exaustivo, `process.exitCode` |
 | Bench (referência) | `src/bench.ts` do snapshot | `check` no estado, `diagnose`, `--scenario`, `--no-replanner` |
+| Bench (nosso) | [`src/controllers/bench-controller.ts`](../src/controllers/bench-controller.ts) | `BENCH_SCENARIOS` com `check` que devolve motivos, `answerMentionsCount`, store por célula |
+| Entrypoint do bench | [`src/bench.ts`](../src/bench.ts) | `benchStrategies(noReplanner)` |
+| Testes do bench | [`src/bench.test.ts`](../src/bench.test.ts) | Estratégia "sloppy": a resposta parece certa e o estado reprova |
+| Modo sem replanner | [`src/agents/plan-and-execute.ts`](../src/agents/plan-and-execute.ts) | `createPlanAndExecuteStrategy({ replanner })`, nó `finalizer` |

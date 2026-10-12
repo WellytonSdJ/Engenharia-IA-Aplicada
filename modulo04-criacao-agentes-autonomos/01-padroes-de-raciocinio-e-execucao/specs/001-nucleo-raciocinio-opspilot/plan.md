@@ -36,7 +36,7 @@ O store JSON será injetado nas ferramentas como fonte de dados do runtime, perm
 
 **Constraints**: Temperatura zero; leitura exclusiva de `OPENROUTER_API_KEY` e `OPENROUTER_MODEL` pela fábrica; nenhum segredo em logs ou versionamento; máximo de 8 passos acumulados no planner mesmo após replans; limite de iterações configurável; testes determinísticos sem rede; gravação atômica do arquivo JSON.
 
-**Scale/Scope**: 5 serviços e 6 alertas no seed; 3 alertas `firing` e 3 `resolved`; quatro ferramentas operacionais; duas estratégias; uma arena mínima; testes focados no store e no trace.
+**Scale/Scope**: 6 serviços e 6 alertas no seed; 3 alertas `firing` e 3 `resolved`; quatro ferramentas operacionais; duas estratégias; uma arena mínima; testes focados no store e no trace.
 
 ## Constitution Check
 
