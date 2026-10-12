@@ -1,0 +1,91 @@
+{
+  "services": [
+    {
+      "id": "svc-api",
+      "name": "api",
+      "team": "platform",
+      "description": "Public API"
+    },
+    {
+      "id": "svc-checkout",
+      "name": "checkout",
+      "team": "commerce",
+      "description": "Checkout service"
+    },
+    {
+      "id": "svc-payments",
+      "name": "payments",
+      "team": "finance",
+      "description": "Payment processing"
+    },
+    {
+      "id": "svc-identity",
+      "name": "identity",
+      "team": "security",
+      "description": "Identity service"
+    },
+    {
+      "id": "svc-notifications",
+      "name": "notifications",
+      "team": "messaging",
+      "description": "Notification delivery"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alert-api-1",
+      "serviceId": "svc-api",
+      "title": "API error rate elevated",
+      "severity": "high",
+      "status": "firing",
+      "createdAt": "2026-09-28T08:00:00.000Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "alert-checkout-1",
+      "serviceId": "svc-checkout",
+      "title": "Checkout latency elevated",
+      "severity": "medium",
+      "status": "firing",
+      "createdAt": "2026-09-28T08:10:00.000Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "alert-payments-1",
+      "serviceId": "svc-payments",
+      "title": "Payment failures detected",
+      "severity": "critical",
+      "status": "firing",
+      "createdAt": "2026-09-28T08:20:00.000Z",
+      "resolvedAt": null
+    },
+    {
+      "id": "alert-api-2",
+      "serviceId": "svc-api",
+      "title": "API saturation",
+      "severity": "medium",
+      "status": "resolved",
+      "createdAt": "2026-09-27T08:00:00.000Z",
+      "resolvedAt": "2026-09-27T08:30:00.000Z"
+    },
+    {
+      "id": "alert-identity-1",
+      "serviceId": "svc-identity",
+      "title": "Authentication errors",
+      "severity": "high",
+      "status": "resolved",
+      "createdAt": "2026-09-27T09:00:00.000Z",
+      "resolvedAt": "2026-09-27T09:15:00.000Z"
+    },
+    {
+      "id": "alert-notifications-1",
+      "serviceId": "svc-notifications",
+      "title": "Notification queue backlog",
+      "severity": "low",
+      "status": "resolved",
+      "createdAt": "2026-09-27T10:00:00.000Z",
+      "resolvedAt": "2026-09-27T10:45:00.000Z"
+    }
+  ],
+  "incidents": []
+}
