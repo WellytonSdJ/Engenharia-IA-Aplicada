@@ -75,19 +75,20 @@ Como pessoa desenvolvedora ou operadora, quero ver as decisões do crítico no t
 
 - **FR-001**: O sistema MUST disponibilizar `withReflection(strategy, opts)` como decorador de qualquer estratégia compatível com o contrato comum de estratégia de raciocínio.
 - **FR-002**: O sistema MUST executar a estratégia base para obter a resposta e o trace que serão avaliados.
-- **FR-003**: O sistema MUST avaliar cada resposta com um crítico que use o mesmo modelo configurado para a estratégia envolvida.
-- **FR-004**: O crítico MUST avaliar a resposta em relação às observações disponíveis no trace da tentativa e MUST produzir uma saída estruturada com o campo booleano `aproved` e o campo textual `feedback`.
-- **FR-005**: Quando `aproved` for verdadeiro, o sistema MUST encerrar a reflexão e retornar a resposta avaliada sem regenerá-la.
-- **FR-006**: Quando `aproved` for falso e ainda houver ciclos disponíveis, o sistema MUST regenerar a resposta usando o feedback da crítica no contexto da estratégia.
-- **FR-007**: A opção `maxReflections` MUST limitar o número de ciclos de regeneração e MUST ter valor padrão 2; o valor zero MUST permitir a execução base sem ciclos de crítica ou regeneração.
-- **FR-008**: Cada avaliação do crítico MUST acrescentar ao trace um evento `critique` que registre a decisão e o feedback em ordem com os demais eventos da execução.
-- **FR-009**: O resultado MUST preservar os eventos da estratégia base e incluir os eventos de reflexão na ordem real em que ocorreram.
-- **FR-010**: As métricas MUST contabilizar as chamadas da estratégia base e todas as chamadas extras feitas para críticas e regenerações, sem omitir nem contar duas vezes uma chamada.
-- **FR-011**: A latência reportada MUST incluir a execução base e o tempo gasto em todas as críticas e regenerações.
-- **FR-012**: Quando o limite de regenerações for atingido sem aprovação, o sistema MUST retornar a resposta mais recente e deixar explícito no trace que a última crítica a reprovou.
-- **FR-013**: A arena MUST disponibilizar os identificadores `reflect:react` e `reflect:plan-and-execute` para executar as variantes refletidas das estratégias correspondentes.
-- **FR-014**: A arena MUST manter resultados, traces e métricas isolados para cada estratégia selecionada, incluindo as variantes refletidas.
-- **FR-015**: Falhas do crítico, de validação de sua saída ou de regeneração MUST ser comunicadas como falhas da execução; não MUST ser tratadas como aprovação nem ocultadas por uma resposta aparentemente bem-sucedida.
+- **FR-003**: O sistema MUST avaliar cada resposta com um crítico que use a mesma instância de modelo fornecida ou resolvida para a estratégia envolvida.
+- **FR-004**: O crítico MUST avaliar a resposta somente em relação ao pedido original e ao conteúdo de eventos `observation` do trace da tentativa; MUST NOT usar outros eventos do trace ou conhecimento externo como evidência.
+- **FR-005**: O crítico MUST produzir uma saída estruturada com o campo booleano `aproved` e o campo textual `feedback`; quando reprovar, o feedback MUST indicar correções específicas e acionáveis.
+- **FR-006**: Quando `aproved` for verdadeiro, o sistema MUST encerrar a reflexão e retornar a resposta avaliada sem regenerá-la.
+- **FR-007**: Quando `aproved` for falso e ainda houver ciclos disponíveis, o sistema MUST regenerar a resposta usando o feedback da crítica no contexto da estratégia.
+- **FR-008**: A opção `maxReflections` MUST limitar o número de ciclos de regeneração e MUST ter valor padrão 2; o valor zero MUST permitir a execução base sem ciclos de crítica ou regeneração.
+- **FR-009**: Cada avaliação do crítico MUST acrescentar ao trace um evento `critique` que registre a decisão e o feedback em ordem com os demais eventos da execução.
+- **FR-010**: O resultado MUST preservar os eventos da estratégia base e incluir os eventos de reflexão na ordem real em que ocorreram.
+- **FR-011**: As métricas MUST contabilizar as chamadas da estratégia base e todas as chamadas extras feitas para críticas e regenerações, sem omitir nem contar duas vezes uma chamada.
+- **FR-012**: A latência reportada MUST incluir a execução base e o tempo gasto em todas as críticas e regenerações.
+- **FR-013**: Quando o limite de regenerações for atingido sem aprovação, o sistema MUST retornar a resposta mais recente e deixar explícito no trace que a última crítica a reprovou.
+- **FR-014**: A arena MUST disponibilizar os identificadores `reflect:react` e `reflect:plan-and-execute` para executar as variantes refletidas das estratégias correspondentes.
+- **FR-015**: A arena MUST manter resultados, traces e métricas isolados para cada estratégia selecionada, incluindo as variantes refletidas.
+- **FR-016**: Falhas do crítico, de validação de sua saída ou de regeneração MUST ser comunicadas como falhas da execução e não MUST ser tratadas como aprovação nem ocultadas por uma resposta aparentemente bem-sucedida.
 
 ### Key Entities
 
@@ -111,6 +112,7 @@ Como pessoa desenvolvedora ou operadora, quero ver as decisões do crítico no t
 
 - `maxReflections` conta regenerações permitidas depois da resposta base. Cada tentativa, incluindo a resposta base, recebe uma avaliação, portanto o limite padrão permite no máximo duas regenerações e até três avaliações do crítico.
 - A chave `aproved` é mantida exatamente como especificada no contrato solicitado.
+- Quando reprova uma resposta, o crítico deve fornecer no campo `feedback` mudanças específicas e acionáveis; quando aprova, pode registrar uma justificativa breve nesse campo.
 - Ao esgotar o limite sem aprovação, a resposta mais recente é retornada como melhor resultado disponível, com a reprovação final explícita no trace; o chamador não deve interpretá-la como aprovada.
 - As métricas existentes de contagem de chamadas e latência permanecem compatíveis, e a reflexão acrescenta nelas o custo de todas as operações extras.
 - O feedback é utilizado apenas na regeneração imediatamente subsequente à crítica que o produziu.
