@@ -12,7 +12,7 @@ Material de referência do curso: `POS_ENGENHARIA_IA/engenharia-de-software-com-
 
 | # | Projeto | Unidade do curso | Status | Descrição |
 |---|---------|------------------|--------|-----------|
-| 01 | [padroes-de-raciocinio-e-execucao](./01-padroes-de-raciocinio-e-execucao/) | U2 — Padrões de Raciocínio e Execução | 🚧 em andamento (spec, plano e tarefas prontos; implementação pendente) | Kickoff do OpsPilot: estratégias ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, tools mock sobre store em memória, arena de comparação e bench com acerto medido no estado; depois, a camada de Reflection |
+| 01 | [padroes-de-raciocinio-e-execucao](./01-padroes-de-raciocinio-e-execucao/) | U2 — Padrões de Raciocínio e Execução | 🚧 em andamento (spec 001 implementada; spec 002 — Reflection — em especificação) | Kickoff do OpsPilot: estratégias ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, tools mock sobre store em memória, arena de comparação e bench com acerto medido no estado; depois, a camada de Reflection |
 
 ## Roteiro do módulo (orientação, não implementado ainda)
 
@@ -32,7 +32,7 @@ Os próximos projetos seguem as unidades do curso. Como o OpsPilot é um projeto
 
 | Requisito | Versão mínima | Observação |
 | --- | --- | --- |
-| **Node.js** | 22 LTS | A constituição do projeto fixa Node 22; variáveis de ambiente via `--env-file` nativo (sem `dotenv`) |
+| **Node.js** | 22.9+ (22 LTS) | A constituição do projeto fixa Node 22; variáveis de ambiente via `--env-file-if-exists` nativo (sem `dotenv`), que exige 22.9+ |
 | **npm** | 10+ | — |
 | **Conta OpenRouter** | — | `OPENROUTER_API_KEY` (e `OPENROUTER_MODEL`); modelos `:free` custam zero |
 | **Spec Kit** | 1.0.x | Integração `copilot`, scripts PowerShell (`.specify/`) |
@@ -52,11 +52,12 @@ Os próximos projetos seguem as unidades do curso. Como o OpsPilot é um projeto
 - Tools com `tool()` + Zod sobre store injetado; erros de domínio traduzidos em observações para o modelo
 - Avaliação de agentes: arena (comparação lado a lado) e bench com acerto medido no estado do sistema
 - Testes determinísticos sem rede com doubles de modelo, estratégia e crítico
+- Carregamento nativo de `.env` (`--env-file-if-exists`) sem `dotenv`, e por que os testes não o carregam
 - (Roteiro futuro) Function calling em API, MCP de operações, memória persistente e semântica, gerenciamento de contexto, grafos de produção, observabilidade, aprovação humana, publicação e multi-agentes
 
 ## Documentação de conceitos (projeto 01)
 
-Documentação aprofundada disponível em [`01-padroes-de-raciocinio-e-execucao/docs/`](./01-padroes-de-raciocinio-e-execucao/docs/). Como a implementação ainda não foi feita, os trechos de código vêm do snapshot de referência do curso, e cada doc aponta onde o nosso plano diverge dele.
+Documentação aprofundada disponível em [`01-padroes-de-raciocinio-e-execucao/docs/`](./01-padroes-de-raciocinio-e-execucao/docs/). Os docs de conceito foram escritos antes da implementação, por isso os trechos de código vêm do snapshot de referência do curso, e cada doc aponta onde o nosso plano diverge dele. O roteiro registra o que mudou depois da implementação.
 
 | Documento | Conteúdo |
 | --- | --- |
@@ -68,5 +69,6 @@ Documentação aprofundada disponível em [`01-padroes-de-raciocinio-e-execucao/
 | [plan-and-execute.md](./01-padroes-de-raciocinio-e-execucao/docs/plan-and-execute.md) | `StateGraph` planner → executor → replanner, schemas planos e modo sem replanner |
 | [reflection.md](./01-padroes-de-raciocinio-e-execucao/docs/reflection.md) | Reflection como decorator: crítico, fail-safe, feedback injetado e métricas somadas |
 | [arena-e-bench.md](./01-padroes-de-raciocinio-e-execucao/docs/arena-e-bench.md) | Arena lado a lado e bench com acerto no estado (C1/C2/C3, `diagnose`) |
+| [variaveis-de-ambiente-com-env-file.md](./01-padroes-de-raciocinio-e-execucao/docs/variaveis-de-ambiente-com-env-file.md) | `.env` com `node --env-file-if-exists --import tsx`: o bug da arena, outros usos e montagem do zero |
 | [roteiro-de-implementacao.md](./01-padroes-de-raciocinio-e-execucao/docs/roteiro-de-implementacao.md) | Ponte `tasks.md` × referência, divergências e armadilhas já identificadas |
 | [glossario.md](./01-padroes-de-raciocinio-e-execucao/docs/glossario.md) | Termos novos do projeto |

@@ -8,15 +8,17 @@ Este doc é a ponte entre o que já **planejamos** (`specs/001-nucleo-raciocinio
 
 ## Onde estamos
 
-```
+```text
 ✅ constituição (v1.0.1)
 ✅ /speckit.specify  → spec.md + checklists/requirements.md
 ✅ /speckit.plan     → plan.md, research.md, data-model.md, contracts/, quickstart.md
-✅ /speckit.tasks    → tasks.md (T001..T036)
-⬜ /speckit.analyze  → recomendado agora: cruzar spec × plan × tasks
-⬜ /speckit.implement
-⬜ spec 002 (reflection): /speckit.specify → plan → tasks → implement
+✅ /speckit.tasks    → tasks.md (todas as tarefas marcadas [X])
+✅ /speckit.implement → src/ implementado; 27 testes passando, typecheck limpo
+✅ primeira execução real da arena (depois de corrigir o carregamento do .env — armadilha 3)
+🚧 spec 002 (reflection): spec.md + checklist prontos → plan → tasks → implement
 ```
+
+> Este doc foi escrito **antes** da implementação. A partir daqui, o status de cada armadilha está anotado logo abaixo do título dela.
 
 ---
 
@@ -59,7 +61,19 @@ O nosso `plan.md` organiza `src/` em camadas (constituição, princípio II: Mod
 
 ## Armadilhas já visíveis (verificadas nos arquivos atuais)
 
-Estas não são opiniões sobre o futuro código — são inconsistências presentes **hoje** nos arquivos de configuração e specs. Nenhuma delas foi corrigida (a regra é não mexer em configuração nem em arquivos que os agentes leem); ficam aqui para você decidir.
+Estas não eram opiniões sobre o futuro código: eram inconsistências presentes, **antes da implementação**, nos arquivos de configuração e nas specs. Na época, nenhuma foi corrigida (a regra era não mexer em configuração nem em arquivos que os agentes leem). Elas ficaram aqui para você decidir. O status atual de cada uma vem logo abaixo do título.
+
+| # | Armadilha | Status após a implementação |
+| --- | --- | --- |
+| 1 | Driver `mysql` × `mysql2` | ✅ resolvida (`mysql2` adicionado) |
+| 2 | `@types/sequelize` desnecessário | ⚠️ ainda está no `package.json`, mas o typecheck passa |
+| 3 | Scripts não carregam o `.env` | ✅ resolvida: ver [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md) |
+| 4 | `OPENROUTER_MODEL` vazio | ✅ resolvida: `createModel` usa `!model`, que barra string vazia |
+| 5 | `resolveJsonModule` | ✅ não se aplica: o store lê o JSON com `readFile` (`src/models/json-store.ts`) |
+| 6 | `service` por nome × `serviceId` | 🔁 o seed passou a usar `api`, `checkout`, `payments`, `identity` e `notifications`; reavaliar o C2 quando o bench existir |
+| 7 | `list_alerts` sem `all`/default | ✅ resolvida: `status` aceita `all` e tem default `firing` |
+| 8 | Bench nesta spec? | ⬜ pendente: o script `bench` aponta para `src/bench.ts`, que ainda não existe |
+| 9 | Limite de iterações sem perder o trace | ✅ tratado em `src/agents/react.ts` (captura `GraphRecursionError`) |
 
 ### 1. Driver do MySQL: `mysql` em vez de `mysql2`
 
@@ -84,6 +98,8 @@ O `tsx` não lê `.env` sozinho, e a constituição proíbe `dotenv` ("carregue 
 ```
 
 Sem isso, `OPENROUTER_API_KEY` não chega ao processo e a fábrica de modelo lança erro na primeira execução real da arena (T035).
+
+> **Aconteceu exatamente isso.** A implementação preservou os scripts antigos, e a primeira execução real da arena falhou com `OPENROUTER_API_KEY and OPENROUTER_MODEL are required`, mesmo com o `.env` preenchido. A correção aplicada foi a que está acima, estendida para `dev` e `seed`. O `test` ficou de fora de propósito. Explicação completa, outros usos e passo a passo do zero: [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md).
 
 ### 4. `OPENROUTER_MODEL` vazio não cai no default
 

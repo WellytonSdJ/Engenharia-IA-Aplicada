@@ -27,7 +27,7 @@ resultado = texto final                   resultado = answer + trace tipado + m�
 
 O ponto central da unidade é **comparar**: qual padrão acerta mais, em que tipo de pedido, gastando quantas chamadas de LLM e quanto tempo. Por isso tudo gira em torno de um contrato comum (`ReasoningStrategy`), um trace tipado e duas ferramentas de medição (arena e bench).
 
-E tem uma novidade de **processo**: o projeto é conduzido com **Spec Kit** — spec, plano e tarefas escritos (e versionados) antes do código. Já fizemos essas três etapas; a próxima é `/speckit.implement`.
+E tem uma novidade de **processo**: o projeto é conduzido com **Spec Kit** — spec, plano e tarefas escritos (e versionados) antes do código. Já fizemos essas três etapas e também o `/speckit.implement` da spec 001. A próxima é a spec 002 (Reflection).
 
 ---
 
@@ -42,14 +42,17 @@ E tem uma novidade de **processo**: o projeto é conduzido com **Spec Kit** — 
 | 5 | [plan-and-execute.md](./plan-and-execute.md) | O segundo padrão, com um `StateGraph` próprio de três nós |
 | 6 | [reflection.md](./reflection.md) | A camada que envolve as outras duas (spec 002) |
 | 7 | [arena-e-bench.md](./arena-e-bench.md) | Como comparar as estratégias e medir acerto de verdade |
-| 8 | [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) | O mapa prático para rodar o `/speckit.implement` no nosso projeto |
-| 9 | [glossario.md](./glossario.md) | Referência rápida |
+| 8 | [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) | O mapa prático do `/speckit.implement` no nosso projeto, com o status de cada armadilha |
+| 9 | [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md) | Antes de rodar a arena: como o `.env` chega ao processo (e por que só criar o arquivo não basta) |
+| 10 | [glossario.md](./glossario.md) | Referência rápida |
 
 ---
 
 ## Mapa do código
 
-O nosso projeto ainda não tem código além do `src/index.ts` inicial. O mapa abaixo é do **snapshot de referência do curso** (`02-padroes-de-raciocinio-e-execucao/`), em ordem lógica de leitura. O nosso `plan.md` reorganiza esses arquivos em outra estrutura de pastas — a tabela de correspondência está em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
+> **Atualização:** o nosso `src/` já foi implementado, na estrutura do `plan.md` (`src/models/`, `src/services/`, `src/agents/`, `src/controllers/`). A correspondência arquivo a arquivo está em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
+
+O mapa abaixo é do **snapshot de referência do curso** (`02-padroes-de-raciocinio-e-execucao/`), em ordem lógica de leitura. O nosso `plan.md` reorganiza esses arquivos em outra estrutura de pastas — a tabela de correspondência está em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
 
 ```
 src/domain/types.ts            → tipos do domínio: Alert, Incident, TraceEvent, StrategyResult,
@@ -108,5 +111,18 @@ npm run arena -- --strategies react,plan-and-execute --input "Quais serviços t�
 # 3. Acerto medido no estado: 3 cenários × 2 estratégias
 npm run bench
 ```
+
+No **nosso** projeto, os comandos equivalentes que funcionam hoje (rode no PowerShell) são:
+
+```powershell
+npm test                     # 27 testes, sem chave e sem rede
+npm run seed                 # restaura src/data/ops-store.json
+# o input é posicional (não há --input); precisa de .env preenchido
+npm run arena -- "quantos alertas criticos estão disparando" --strategies react
+```
+
+> **Pendente (out/2026):** com `OPENROUTER_MODEL=openrouter/free`, a estratégia `react` funciona, mas a `plan-and-execute` falha com um erro do Zod (`expected: "object", received: "undefined"`). O `.env` é carregado corretamente, então a causa é outra. A suspeita é que o modelo sorteado pelo `openrouter/free` não devolve o structured output que o planner espera. Ainda precisa ser investigado.
+
+O `npm run bench` ainda não funciona: `src/bench.ts` não existe (armadilha 8 do roteiro). Se a arena reclamar de `OPENROUTER_API_KEY` com o `.env` preenchido, leia [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md).
 
 O comando que mais ensina é o 2: olhe o trace de cada estratégia e conte quantas vezes o LLM foi chamado. Depois rode o 3 e veja que "a resposta parece boa" e "o store ficou certo" são coisas diferentes.

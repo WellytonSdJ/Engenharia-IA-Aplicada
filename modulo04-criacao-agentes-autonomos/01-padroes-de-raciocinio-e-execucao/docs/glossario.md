@@ -77,6 +77,17 @@ Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pra
 
 ---
 
+## Ambiente de execução
+
+| Termo | Definição |
+| --- | --- |
+| **Variável de ambiente** | Par `NOME=valor` entregue pelo sistema operacional ao processo quando ele nasce; no Node, fica em `process.env`. |
+| **`.env` / `.env.example`** | Arquivo de texto com variáveis de ambiente (fora do git) e o modelo versionado, que lista os nomes sem os valores. |
+| **`--env-file=<arq>`** | Flag do Node (≥ 20.6) que carrega o arquivo em `process.env` antes do código rodar; aborta se o arquivo não existir. |
+| **`--env-file-if-exists=<arq>`** | Variante (Node ≥ 22.9) que segue em frente se o arquivo não existir. É a usada nos nossos scripts. |
+| **`--import tsx`** | Registra o `tsx` como loader do Node para executar `.ts` diretamente, mantendo as flags nativas do Node disponíveis. |
+| **`process.loadEnvFile()`** | Equivalente em runtime (Node ≥ 20.12) ao `--env-file`, para quando não dá para mexer na linha de comando. |
+
 ## Domínio (OpsPilot / Mercadinho)
 
 | Termo | Definição |
