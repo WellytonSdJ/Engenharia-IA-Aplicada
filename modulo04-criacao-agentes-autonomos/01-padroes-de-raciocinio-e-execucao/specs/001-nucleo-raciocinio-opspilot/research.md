@@ -12,17 +12,17 @@
 - **Rationale**: A versão instalada `@langchain/langgraph` `0.2.74` exporta o agente pré-construído e suporta `stream`/`invoke` com estado de mensagens e tool calling.
 - **Alternatives considered**: Implementar manualmente o loop ReAct foi rejeitado porque duplicaria lógica do LangGraph e aumentaria o risco de divergência no trace.
 
-## Decision 3: Plan-and-Execute como StateGraph
+## Decision 3: Plan-and-Execute como StateGraph com estado `done`
 
-- **Decision**: Construir um `StateGraph` com nós `planner`, `executor` e `replanner`, estado tipado e arestas condicionais. O executor processa somente o próximo passo; o replanner decide entre continuar e finalizar.
-- **Rationale**: `StateGraph` é exportado pela versão instalada e representa diretamente o ciclo com estado compartilhado. O limite de 8 passos e o limite de iterações serão guards do estado, não apenas instruções de prompt.
+- **Decision**: Construir um `StateGraph` com nós `planner`, `executor` e `replanner`, estado `input`, `plan`, `done` e `answer`, e arestas condicionais. O executor seleciona uma ferramenta disponível, executa somente o próximo passo e acrescenta `[step, result]` a `done`. O replanner escolhe explicitamente `continue`, `adjust` ou `finish`.
+- **Rationale**: `StateGraph` é exportado pela versão instalada e representa diretamente o ciclo com estado compartilhado. O máximo de oito passos é aplicado a `done.length + plan.length`, mesmo depois de ajustes, além do limite de iterações da arena.
 - **Alternatives considered**: Um loop imperativo foi rejeitado para manter a estratégia compatível com a observabilidade e o modelo de grafo do LangGraph.
 
-## Decision 4: Store in-memory e adapter Sequelize
+## Decision 4: Arquivo JSON persistente para o store operacional
 
-- **Decision**: Definir um contrato de store no domínio, implementar `InMemoryOpsStore` para mocks/arena/testes e um adapter Sequelize/MySQL para persistência durável. As tools recebem o store por injeção.
-- **Rationale**: Os testes exigem determinismo e ausência de rede, enquanto a feature exige fronteira MySQL com Sequelize. A injeção mantém essas necessidades separadas sem duplicar contratos de negócio.
-- **Alternatives considered**: Usar apenas MySQL nos testes foi rejeitado por exigir infraestrutura externa; usar apenas memória foi rejeitado por não cumprir a fronteira de persistência solicitada.
+- **Decision**: Usar `src/data/ops-store.json` como fonte de dados única do runtime, com leitura/escrita validadas e atualizações atômicas. Manter `InMemoryOpsStore` apenas como adapter leve de teste; testes de persistência usam arquivos temporários injetados.
+- **Rationale**: O agente deve ler o seed atual e persistir incidentes novos sem serviço externo, enquanto testes ficam independentes do JSON compartilhado.
+- **Alternatives considered**: Usar MySQL/Sequelize foi adiado, pois não é necessário para o estágio atual; manter apenas a memória foi rejeitado porque novos itens deixariam de persistir entre execuções.
 
 ## Decision 5: Métricas e trace
 

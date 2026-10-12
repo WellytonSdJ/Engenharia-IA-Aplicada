@@ -66,6 +66,7 @@ Como pessoa desenvolvedora, quero testar o store, as ferramentas e a formataçã
 
 1. **Given** o ambiente sem chave de provedor, **When** os testes determinísticos são executados, **Then** eles não tentam acessar a rede e passam usando o store controlado.
 2. **Given** eventos válidos e inválidos, **When** o formatador de trace é executado, **Then** os eventos válidos são formatados em ordem e entradas inválidas são rejeitadas de forma previsível.
+3. **Given** um arquivo JSON seedado e uma execução Plan-and-Execute, **When** uma ferramenta lê ou altera o estado, **Then** usa os dados atuais e persiste incidentes novos sem afetar o arquivo compartilhado nos testes isolados.
 
 ### Edge Cases
 
@@ -88,16 +89,17 @@ Como pessoa desenvolvedora, quero testar o store, as ferramentas e a formataçã
 - **FR-003**: Eventos `action` MUST carregar o nome da ferramenta e seus argumentos; eventos dos demais tipos MUST carregar dados suficientes para serem formatados e auditados.
 - **FR-004**: O sistema MUST reportar as métricas `llmCalls` e `latencyMs` para cada execução.
 - **FR-005**: O sistema MUST disponibilizar uma fábrica única de modelos que leia `OPENROUTER_API_KEY` e `OPENROUTER_MODEL`, use a base URL compatível com OpenRouter e configure temperatura zero.
-- **FR-006**: O sistema MUST disponibilizar as ferramentas `list_alerts(status)`, `open_incident(title, service, severity)` e `resolve_incident(id)` com schemas Zod para entrada e saída.
+- **FR-006**: O sistema MUST disponibilizar as ferramentas `list_alerts(status)`, `list_incidents(status)`, `open_incident(title, service, severity)` e `resolve_incident(id)` com schemas Zod para entrada e saída.
 - **FR-007**: O sistema MUST fornecer um store operacional pré-populado com 5 serviços e 6 alertas variados, sendo 3 `firing` e 3 `resolved`.
 - **FR-008**: O sistema MUST fornecer um script explícito para executar o seed inicial e permitir verificar o estado criado.
-- **FR-009**: O sistema MUST manter uma fronteira de persistência compatível com MySQL e Sequelize, sem impedir o uso do store em memória para mocks, arena e testes determinísticos.
+- **FR-009**: O runtime MUST usar um único arquivo JSON com o seed operacional como fonte de dados para consultas e mutações; testes MUST poder usar stores/arquivos isolados sem alterar o arquivo compartilhado.
 - **FR-010**: A estratégia ReAct MUST usar o agente ReAct pré-construído do LangGraph, conectar as ferramentas disponíveis e capturar o trace completo da execução.
-- **FR-011**: A estratégia Plan-and-Execute MUST executar um planner que produza uma lista estruturada de passos, um executor que processe um passo por vez com as ferramentas e um replanner que revise os passos restantes após cada execução.
-- **FR-012**: A estratégia Plan-and-Execute MUST aceitar no máximo 8 passos por plano e encerrar quando não houver passos restantes.
+- **FR-011**: A estratégia Plan-and-Execute MUST executar um planner que produza passos estruturados, um executor que selecione e execute uma ferramenta disponível por passo e armazene o par passo/resultado em `done`, e um replanner que escolha explicitamente continuar, ajustar o plano ou encerrar com resposta.
+- **FR-012**: A estratégia Plan-and-Execute MUST limitar o total acumulado de passos executados e planejados a 8, mesmo após ajustes do replanner, e encerrar quando o replanner finalizar ou não houver passos a executar.
 - **FR-013**: Toda estratégia MUST respeitar o limite de iterações configurado e contabilizar as chamadas de LLM realizadas.
 - **FR-014**: A arena MUST executar uma ou mais estratégias sobre o mesmo input, imprimir os traces e as métricas e aceitar as opções `--strategies` e `--max-iterations`.
 - **FR-015**: O sistema MUST incluir testes determinísticos, sem rede, para o store e para a formatação do trace.
+- **FR-016**: O seed MUST inicializar ou restaurar o arquivo JSON da aplicação; tools e estratégias MUST lerem alertas e incidentes atuais desse arquivo e persistirem incidentes criados/resolvidos.
 
 ### Key Entities
 
@@ -123,7 +125,7 @@ Como pessoa desenvolvedora, quero testar o store, as ferramentas e a formataçã
 ## Assumptions
 
 - A implementação desta feature será feita em TypeScript ESM no runtime Node.js 22 LTS, usando as dependências já declaradas no projeto.
-- O store em memória é a fonte controlada para mocks, seed, arena e testes sem rede; MySQL com Sequelize é a fronteira de persistência para o estado durável quando essa integração for ativada.
+- O arquivo JSON com dados seedados é a única fonte de dados operacional do runtime nesta etapa; stores e arquivos temporários mantêm testes determinísticos isolados. Sequelize/MySQL não fazem parte do caminho de execução desta etapa.
 - `OPENROUTER_API_KEY` e `OPENROUTER_MODEL` são obrigatórios somente para execuções que chamam o provedor de LLM; testes determinísticos não dependem deles.
 - `thought` no trace representa um resumo observável e limitado do raciocínio da estratégia, não a exposição irrestrita de conteúdo interno do modelo.
 - A severidade aceita para incidentes será definida no contrato da feature e compartilhada entre ferramentas, store e testes.

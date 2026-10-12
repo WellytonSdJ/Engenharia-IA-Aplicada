@@ -31,6 +31,15 @@
 
 **Transitions**: `open -> resolved`; uma resolução repetida ou um identificador inexistente gera erro de domínio sem mutação parcial.
 
+## OpsStoreDocument
+
+- `services`: lista de serviços seedados.
+- `alerts`: lista de alertas seedados.
+- `incidents`: lista de incidentes criados/resolvidos pelas ferramentas.
+- A ferramenta `list_incidents(status)` lê os incidentes persistidos para que o agente possa identificar itens existentes antes de decidir abrir ou resolver um incidente.
+- O documento JSON em `src/data/ops-store.json` é a fonte persistente do runtime. Datas são serializadas em ISO 8601 e validadas/coagidas ao ler.
+- Atualizações escrevem primeiro um arquivo temporário no mesmo diretório e renomeiam sobre o destino para evitar documentos parcialmente gravados.
+
 ## TraceEvent
 
 - `type`: `thought | action | observation | plan | critique | answer`.
@@ -57,5 +66,5 @@
 - `list_alerts` aceita apenas status suportado.
 - `open_incident` exige título, serviço existente e severidade suportada.
 - `resolve_incident` exige identificador de incidente aberto.
-- Um plano não pode conter mais de 8 passos.
+- Um plano não pode exceder 8 passos acumulados: passos completados (`done`) mais passos ativos (`plan`), inclusive após um ajuste do replanner.
 - Toda execução deve terminar com `answer` ou erro estruturado, respeitando o limite de iterações.

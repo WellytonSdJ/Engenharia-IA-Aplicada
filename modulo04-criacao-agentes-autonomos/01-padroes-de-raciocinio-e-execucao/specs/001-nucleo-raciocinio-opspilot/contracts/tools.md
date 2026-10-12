@@ -2,7 +2,7 @@
 
 ## Store Boundary
 
-As ferramentas recebem um store com operações para listar alertas, criar incidentes e resolver incidentes. O contrato é implementado por `InMemoryOpsStore` e por um adapter Sequelize/MySQL.
+As ferramentas recebem um store com operações para listar alertas, criar incidentes e resolver incidentes. No runtime, o store persiste em `src/data/ops-store.json`; testes podem injetar `InMemoryOpsStore` ou um arquivo temporário isolado.
 
 ## Tools
 
@@ -17,6 +17,12 @@ As ferramentas recebem um store com operações para listar alertas, criar incid
 - Input: `{ title: string; service: string; severity: Severity }`.
 - Output: incidente criado com identificador e status `open`.
 - Side effect: cria um incidente no store.
+
+### `list_incidents`
+
+- Input: `{ status: "open" | "resolved" | "all" }`, default `open`.
+- Output: lista de incidentes com serviço, título, severidade, estado e datas.
+- Side effect: nenhum.
 
 ### `resolve_incident`
 

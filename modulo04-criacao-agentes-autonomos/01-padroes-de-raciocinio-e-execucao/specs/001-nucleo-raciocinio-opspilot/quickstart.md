@@ -5,7 +5,7 @@
 - Node.js 22 LTS.
 - Dependências instaladas com `npm install`.
 - `OPENROUTER_API_KEY` e `OPENROUTER_MODEL` configurados somente para execuções com LLM.
-- MySQL disponível apenas para validar o adapter Sequelize; o fluxo determinístico usa memória.
+- O runtime e o seed usam `src/data/ops-store.json`; não é necessário MySQL.
 
 ## Deterministic Validation
 
@@ -15,6 +15,7 @@ npm run typecheck
 ```
 
 Os testes do store e do formatador de trace devem passar sem credenciais e sem rede.
+O padrão de testes segue o runner `node:test`, com arquivos co-localizados em `src/**/*.test.ts`.
 
 ## Seed
 
@@ -22,7 +23,15 @@ Os testes do store e do formatador de trace devem passar sem credenciais e sem r
 npm run seed
 ```
 
-A saída deve confirmar 5 serviços e 6 alertas, sendo 3 `firing` e 3 `resolved`. O seed deve ser seguro para repetição.
+A saída deve confirmar 5 serviços e 6 alertas, sendo 3 `firing` e 3 `resolved`. O comando inicializa/restaura `src/data/ops-store.json`; ferramentas usam esse arquivo para consultar alertas e incidentes e persistir incidentes novos/resolvidos. Nos testes, injete stores ou arquivos temporários para não alterar o seed versionado.
+
+## Focused Deterministic Checks
+
+```powershell
+node --import tsx --test "src/models/in-memory-store.test.ts" "src/agents/trace.test.ts"
+```
+
+Esses testes usam somente dados em memória e não constroem clientes nem fazem chamadas ao OpenRouter.
 
 ## Arena
 
@@ -35,6 +44,7 @@ A saída deve separar as estratégias e mostrar resposta, trace e métricas. Sem
 ## Expected Checks
 
 - Nenhuma chamada de rede nos testes determinísticos.
-- Nenhum plano com mais de 8 passos.
+- Nenhum plano Plan-and-Execute excede 8 passos acumulados; ajustes do replanner contam os passos concluídos.
+- O replanner retorna uma decisão explícita `continue`, `adjust` ou `finish`.
 - Nenhuma estratégia ultrapassa `--max-iterations`.
 - `llmCalls` e `latencyMs` aparecem em cada resultado válido.

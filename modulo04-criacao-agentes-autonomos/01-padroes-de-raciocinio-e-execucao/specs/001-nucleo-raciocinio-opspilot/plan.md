@@ -8,9 +8,9 @@
 
 ## Summary
 
-Implementar um núcleo de raciocínio comparável para o OpsPilot. O núcleo terá um contrato comum para estratégias, eventos de trace e métricas; uma fábrica única de `ChatOpenAI` configurada para OpenRouter; ferramentas de incidentes sobre um store in-memory; adapters de persistência Sequelize/MySQL; estratégias ReAct e Plan-and-Execute; uma arena CLI; seed reproduzível; e testes determinísticos sem rede.
+Implementar um núcleo de raciocínio comparável para o OpsPilot. O núcleo terá um contrato comum para estratégias, eventos de trace e métricas; uma fábrica única de `ChatOpenAI` configurada para OpenRouter; ferramentas operacionais sobre um arquivo JSON persistente; estratégias ReAct e Plan-and-Execute; uma arena CLI; seed reproduzível; e testes determinísticos sem rede.
 
-O store será injetado nas ferramentas. A arena e os testes usarão a implementação in-memory, enquanto o adapter Sequelize manterá a fronteira de persistência para MySQL sem acoplar os testes ao banco.
+O store JSON será injetado nas ferramentas como fonte de dados do runtime, permitindo que o modelo leia alertas/incidentes atuais e persista novos incidentes. Testes usarão caminhos temporários ou stores em memória isolados. Plan-and-Execute terá estado `input`, `plan`, `done` e `answer`; o replanner decidirá continuar, ajustar ou finalizar. O limite de oito passos será aplicado ao trabalho acumulado, incluindo ajustes.
 
 ## Technical Context
 
@@ -22,9 +22,9 @@ O store será injetado nas ferramentas. A arena e os testes usarão a implementa
 
 **Language/Version**: TypeScript 5.8 em Node.js 22 LTS, ESM com `module`/`moduleResolution` `NodeNext` e `strict: true`.
 
-**Primary Dependencies**: `@langchain/core` 0.3.x, `@langchain/langgraph` 0.2.x, `@langchain/openai` 0.3.x, Zod 3.x, Sequelize 6.x, MySQL 2.x e Express 5.x.
+**Primary Dependencies**: `@langchain/core` 0.3.x, `@langchain/langgraph` 0.2.x, `@langchain/openai` 0.3.x, Zod 3.x, Express 5.x e APIs de filesystem nativas do Node.js.
 
-**Storage**: `InMemoryOpsStore` para mocks, arena e testes; adapter Sequelize para MySQL como persistência durável.
+**Storage**: arquivo JSON em `src/data/ops-store.json` como fonte única operacional no runtime; adapters em memória e arquivos temporários para testes isolados.
 
 **Testing**: `node:test` executado por `tsx` com `npm test`; typecheck por `npm run typecheck`. Testes do store e do formatador de trace não fazem rede.
 
@@ -34,19 +34,19 @@ O store será injetado nas ferramentas. A arena e os testes usarão a implementa
 
 **Performance Goals**: Execuções locais sem chamadas redundantes além das necessárias para o grafo; cada resultado deve informar `llmCalls` e `latencyMs`. A arena deve manter resultados separados e reproduzíveis no modo in-memory.
 
-**Constraints**: Temperatura zero; leitura exclusiva de `OPENROUTER_API_KEY` e `OPENROUTER_MODEL` pela fábrica; nenhum segredo em logs ou versionamento; máximo de 8 passos no planner; limite de iterações configurável; testes determinísticos sem rede.
+**Constraints**: Temperatura zero; leitura exclusiva de `OPENROUTER_API_KEY` e `OPENROUTER_MODEL` pela fábrica; nenhum segredo em logs ou versionamento; máximo de 8 passos acumulados no planner mesmo após replans; limite de iterações configurável; testes determinísticos sem rede; gravação atômica do arquivo JSON.
 
-**Scale/Scope**: 5 serviços e 6 alertas no seed; 3 alertas `firing` e 3 `resolved`; três ferramentas operacionais; duas estratégias; uma arena mínima; testes focados no store e no trace.
+**Scale/Scope**: 5 serviços e 6 alertas no seed; 3 alertas `firing` e 3 `resolved`; quatro ferramentas operacionais; duas estratégias; uma arena mínima; testes focados no store e no trace.
 
 ## Constitution Check
 
 _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - **I. TypeScript ESM Estrito**: PASS. O plano preserva TypeScript ESM, Node.js 22, `strict: true` e os scripts existentes.
-- **II. Arquitetura em Camadas**: PASS. Models/stores, services/estratégias e controllers/CLI serão separados; efeitos de LLM e banco ficarão nas bordas.
+- **II. Arquitetura em Camadas**: PASS. Models/stores, services/estratégias e controllers/CLI serão separados; efeitos de LLM e filesystem ficarão nas bordas.
 - **III. Contratos e Erros Explícitos**: PASS. Zod validará ferramentas, trace, métricas, planner e flags da arena; erros de domínio serão traduzidos nas bordas.
 - **IV. Testes e Qualidade Não Negociáveis**: PASS. Testes serão adicionados junto à lógica e o plano exige `npm run typecheck` e `npm test`.
-- **V. Integração Segura e Simples**: PASS. A fábrica centraliza OpenRouter, o `.env` não será lido diretamente pelo agente e nenhuma dependência nova será introduzida.
+- **V. Integração Segura e Simples**: PASS. A fábrica centraliza OpenRouter, o `.env` não será lido diretamente pelo agente e a persistência usa APIs nativas sem dependências novas.
 - **Gates de workflow**: PASS. A especificação foi criada e revisada antes deste plano; o plano deverá ser revisado antes de `/speckit.tasks`.
 
 ## Project Structure
@@ -78,14 +78,16 @@ src/
 ├── models/
 │   ├── domain.ts
 │   ├── in-memory-store.ts
-│   └── sequelize-store.ts
+│   └── json-store.ts
 ├── services/
 │   ├── tools.ts
 │   ├── seed.ts
 │   └── errors.ts
 ├── arena.ts
 ├── index.ts
-└── bench.ts
+├── bench.ts
+└── data/
+    └── ops-store.json
 
 tests/
 └── (existing test convention: `src/**/*.test.ts`)
@@ -96,9 +98,9 @@ tests/
 ## Phase 0: Research Decisions
 
 - Confirmar a API instalada do `createReactAgent` para conectar `ChatOpenAI` e tools e obter mensagens/valores do grafo para o trace.
-- Usar `StateGraph` com estado tipado para planner, executor e replanner; o roteamento condicional encerra quando não há passos ou quando o limite é atingido.
+- Usar `StateGraph` com estado tipado `input`, `plan`, `done`, `answer`; cada execução acrescenta `[step, result]` ao canal `done`, e o replanner devolve decisão `continue`, `adjust` ou `finish`. O limite é calculado como `done.length + plan.length <= 8`, também após ajustes.
 - Usar `ChatOpenAI` com `configuration.baseURL` apontando para `https://openrouter.ai/api/v1`, `apiKey` de `OPENROUTER_API_KEY`, `model` de `OPENROUTER_MODEL` e `temperature: 0`.
-- Manter `InMemoryOpsStore` como adapter padrão injetado pelas tools e criar uma fronteira Sequelize/MySQL com modelos equivalentes, evitando banco nos testes determinísticos.
+- Manter `JsonOpsStore` como adapter padrão injetado nas tools; carregar/validar o documento JSON por operação e gravar alterações via arquivo temporário e rename atômico. Testes usam caminhos temporários e não editam `src/data/ops-store.json`.
 
 ## Phase 1: Design Outputs
 
@@ -112,7 +114,7 @@ tests/
 ## Constitution Check - Post-Design
 
 - **Status**: PASS.
-- Os artefatos de design preservam TypeScript ESM estrito, MVC/serviços separados, contratos Zod, testes sem rede, fábrica única do modelo e proteção de secrets.
+- Os artefatos de design preservam TypeScript ESM estrito, MVC/serviços separados, contratos Zod, testes sem rede, fábrica única do modelo e proteção de secrets. O caminho de dados ativo usa apenas JSON, sem conexão MySQL.
 - Não há violações ou decisões pendentes que impeçam a decomposição em tarefas.
 
 ## Complexity Tracking
