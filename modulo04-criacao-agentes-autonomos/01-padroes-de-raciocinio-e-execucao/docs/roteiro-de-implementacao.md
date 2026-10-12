@@ -141,3 +141,5 @@ A referência devolve `llmCalls: 0` e um trace vazio quando o ReAct estoura o `r
 3. Estender a arena com `reflect:react` e `reflect:plan-and-execute`.
 
 A partir daí o curso segue para a unidade 03 (Function Calling e Tool Use: `POST /chat`, store SQLite, tool de status de provedor e um servidor MCP de operações), que será o projeto `02` deste módulo.
+
+> **Atualização:** o `POST /chat` foi antecipado neste projeto como a spec [`004-http-chat-endpoint`](../specs/004-http-chat-endpoint/spec.md) (Express 5, registro de estratégias em `src/agents/index.ts`, `reflect` no corpo, timeout de 60 s). O store SQLite, a tool de status de provedor e o servidor MCP continuam para o projeto `02`.

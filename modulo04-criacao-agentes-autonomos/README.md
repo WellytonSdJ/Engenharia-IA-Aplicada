@@ -12,7 +12,7 @@ Material de referência do curso: `POS_ENGENHARIA_IA/engenharia-de-software-com-
 
 | # | Projeto | Unidade do curso | Status | Descrição |
 |---|---------|------------------|--------|-----------|
-| 01 | [padroes-de-raciocinio-e-execucao](./01-padroes-de-raciocinio-e-execucao/) | U2 — Padrões de Raciocínio e Execução | 🚧 em andamento (specs 001, 002 — Reflection — e 003 implementadas; bench C1/C2/C3 pronto) | Kickoff do OpsPilot: estratégias ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, tools mock sobre store em memória, arena de comparação e bench com acerto medido no estado; depois, a camada de Reflection |
+| 01 | [padroes-de-raciocinio-e-execucao](./01-padroes-de-raciocinio-e-execucao/) | U2 — Padrões de Raciocínio e Execução | 🚧 em andamento (specs 001, 002 — Reflection — e 003 implementadas; bench C1/C2/C3 pronto; spec 004 — `POST /chat` — planejada) | Kickoff do OpsPilot: estratégias ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, tools mock sobre store em memória, arena de comparação e bench com acerto medido no estado; depois, a camada de Reflection |
 
 ## Roteiro do módulo (orientação, não implementado ainda)
 
@@ -20,7 +20,7 @@ Os próximos projetos seguem as unidades do curso. Como o OpsPilot é um projeto
 
 | # | Pasta de referência no curso | Tema | Specs do OpsPilot no curso |
 |---|------------------------------|------|----------------------------|
-| 02 | `03-function-calling-e-tool-use` | Function Calling e Tool Use | 003-chat-api, 004-sqlite-ops-store, 005-provider-status-tool, 006-mcp-ops-server |
+| 02 | `03-function-calling-e-tool-use` | Function Calling e Tool Use | 003-chat-api (antecipada no projeto 01 como `004-http-chat-endpoint`), 004-sqlite-ops-store, 005-provider-status-tool, 006-mcp-ops-server |
 | 03 | `04-memoria-e-reflexao-em-agentes-autonomos` | Memória e Reflexão em Agentes Autônomos | 007-persistent-conversation, 008-semantic-memory, 009-learning-reflector |
 | 04 | `05-gerenciamento-de-contextos` | Gerenciamento de Contextos | 010-context-measurement, 011-history-summarization, 012-context-builder-budget |
 | 05 | `06-langgraph-e-workflows-complexos` | LangGraph e Workflows Complexos | 013-unified-production-graph, 014-model-resilience |

@@ -77,6 +77,10 @@ specs/001-nucleo-raciocinio-opspilot/
   tasks.md                   → T001..T036 em 7 fases, com marcação [P] de paralelismo e [USn]
 ```
 
+Depois da 001 vieram, com a mesma estrutura de pastas: `002-camada-reflection` e `003-fix-replanner-output` (implementadas) e `004-http-chat-endpoint` (`POST /chat`; spec, plano e tarefas prontos, aguardando `/speckit.implement`).
+
+> A spec 004 foi conduzida pelo Claude Code em vez do Copilot. Como os comandos do Spec Kit estão instalados como skills do Copilot (`.github/skills/speckit-*`), basta digitar `/speckit.plan` ou `/speckit.tasks` sem argumentos: o agente lê o `SKILL.md` correspondente, e o `.specify/feature.json` diz qual pasta de `specs/` está ativa.
+
 ### Como ler o `tasks.md`
 
 Cada tarefa tem um formato fixo: `- [ ] T0NN [P] [USn] descrição com caminho exato`. O `[P]` indica que ela pode rodar em paralelo com outras `[P]` da mesma fase (arquivos diferentes, sem dependência); o `[USn]` amarra a tarefa à user story da spec. As fases seguem o grafo de dependência declarado no topo:
