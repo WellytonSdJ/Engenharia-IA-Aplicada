@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-12
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Ao executar a arena com a estratégia Plan-and-Execute, uma solicitação para abrir três incidentes sev2 para os alertas checkout, payments e catalog, nessa ordem, e resolver o primeiro falha com `A continue decision cannot include replacement steps or an answer.` Corrija isso e explique o que houve."
 

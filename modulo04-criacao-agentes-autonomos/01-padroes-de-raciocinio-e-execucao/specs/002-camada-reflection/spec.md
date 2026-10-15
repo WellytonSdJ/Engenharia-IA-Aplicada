@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-05
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Camada reflection: withreflection(strategy, opts) decora qualquer ReasoningStrategy: executa a base; um crítico (mesmo modelo, saída estruturada {aproved, feedback}) avalia a resposta contra as observações do trace; se reprovar, regenera com o feedback no contexto; para em approved ou maxReflections(default: 2). Evento 'critique' no trace; métricas somam as chamadas extras. Arena: reflect:react e reflect:plan-and-execute"
 

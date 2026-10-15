@@ -2,7 +2,7 @@
 
 Este é o primeiro projeto do módulo 04 neste repositório e o nascimento do **OpsPilot**: um copiloto de plantão (incident commander) para o e-commerce fictício "Mercadinho". Nesta unidade nasce o **cérebro** do agente — três padrões de raciocínio (ReAct, Plan-and-Execute e Reflection) atrás de uma interface comum, com trace tipado, uma arena para comparar estratégias lado a lado e um bench que mede acerto **no estado do sistema**, não no texto da resposta.
 
-> **Estado atual do nosso projeto:** a spec `001-nucleo-raciocinio-opspilot` foi implementada (`/speckit.implement`): o `src/` existe, os 43 testes passam, a arena roda com LLM real e o bench mede acerto no estado. As specs `002-camada-reflection` (Reflection) e `003-fix-replanner-output` também foram implementadas. A spec `004-http-chat-endpoint` (`POST /chat`) já passou por `specify → plan → tasks`, mas ainda não foi implementada. Esta documentação foi escrita **antes** da implementação, como material de estudo para ela: os trechos de código vêm do snapshot de referência do curso (`modulo04-criacao-de-agentes-autonomos-novo/02-padroes-de-raciocinio-e-execucao`), e cada doc aponta onde o nosso plano diverge dele. Pulamos a unidade 01 do curso (`notas-api`); por isso este projeto é o `01` aqui.
+> **Estado atual do nosso projeto:** a spec `001-nucleo-raciocinio-opspilot` foi implementada (`/speckit.implement`): o `src/` existe, os 43 testes passam, a arena roda com LLM real e o bench mede acerto no estado. As specs `002-camada-reflection` (Reflection) e `003-fix-replanner-output` também foram implementadas. A spec `004-http-chat-endpoint` (`POST /chat`) já passou por `specify → plan → tasks`, mas não chegou a ser implementada neste projeto — a implementação real do endpoint HTTP acontece no projeto `02-function-calling-e-tool-use`, que nasce como cópia deste. Esta documentação foi escrita **antes** da implementação, como material de estudo para ela, e cada doc registra onde a implementação final divergiu do desenho inicial.
 
 ---
 
@@ -16,7 +16,7 @@ Este é o primeiro projeto do módulo 04 neste repositório e o nascimento do **
 | [tools-e-store-deterministico.md](./tools-e-store-deterministico.md) | As tools `list_alerts`/`open_incident`/`resolve_incident` com `tool()` + Zod, store injetado, seed validado e testes sem rede |
 | [react.md](./react.md) | O padrão ReAct (Thought → Action → Observation) com `createReactAgent`, `recursionLimit` e `GraphRecursionError` |
 | [plan-and-execute.md](./plan-and-execute.md) | Plan-and-Execute como `StateGraph`: planner → executor → replanner, schemas planos, teto de 8 passos e modo sem replanner |
-| [reflection.md](./reflection.md) | A camada de Reflection (spec 002) como **decorator**: crítico com saída estruturada, feedback injetado, fail-safe e métricas acumuladas |
+| [reflection.md](./reflection.md) | A camada de Reflection (spec 002) como **decorator**: crítico com saída estruturada, feedback injetado, sem fail-safe no erro do crítico, e métricas acumuladas |
 | [arena-e-bench.md](./arena-e-bench.md) | Arena (comparação lado a lado) e bench (acerto medido no store, cenários C1/C2/C3 e diagnóstico) |
 | [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md) | Como o `.env` chega ao `process.env` com `node --env-file-if-exists=.env --import tsx`, o bug que isso resolveu, outros usos e como montar do zero |
 | [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) | Ponte entre o nosso `tasks.md` e o código de referência: ordem de implementação, divergências e armadilhas já identificadas |
@@ -35,4 +35,4 @@ Este é o primeiro projeto do módulo 04 neste repositório e o nascimento do **
 | **Zod** | Schemas das tools, do plano, da decisão do replanner, do crítico e do seed |
 | **`node:test` + `tsx`** | Testes determinísticos sem rede (store, trace, reflection com mocks) |
 | **`--env-file-if-exists` (Node ≥ 22.9)** | Carrega o `.env` nos scripts `dev`/`arena`/`bench`/`seed` sem `dotenv`, como exige a constituição |
-| **Sequelize + MySQL** | Fronteira de persistência prevista no nosso plano (o snapshot de referência ainda não usa) |
+| **Sequelize + MySQL** | Fronteira de persistência inicialmente prevista no plano deste projeto, substituída depois por SQLite nativo (projeto 02, spec 005) |

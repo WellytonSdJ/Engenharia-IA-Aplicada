@@ -14,45 +14,61 @@ Esse contrato tem três peças:
 
 No módulo 03 ([`observabilidade-agent-loop.md`](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/observabilidade-agent-loop.md)) você enxergava o loop do agente com **callbacks** que imprimiam no console enquanto ele rodava — útil para depurar, mas o que ia para a tela se perdia. Aqui o trace é **dado**: uma lista tipada que volta junto com a resposta, que dá para testar, comparar e imprimir do jeito que quiser.
 
-## Como está sendo usado (código de referência)
+## Como está sendo usado
 
 ### A interface
 
 ```typescript
-// src/domain/types.ts (referência)
-export type TraceEventType = "thought" | "action" | "observation" | "plan" | "critique" | "answer";
+// src/agents/trace.ts
+export const TraceEventSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("thought"), content: z.string() }),
+  z.object({
+    type: z.literal("action"),
+    content: z.string(),
+    tool: z.string().min(1),
+    args: z.unknown().refine((value) => value !== undefined, "Action arguments are required."),
+  }),
+  z.object({ type: z.literal("observation"), content: z.string() }),
+  z.object({ type: z.literal("plan"), content: z.string(), steps: z.array(z.string()).max(8) }),
+  z.object({ type: z.literal("critique"), content: z.string() }),
+  z.object({ type: z.literal("answer"), content: z.string() }),
+]);
 
-export interface TraceEvent {
-  type: TraceEventType;
-  content: string;
-  tool?: string;
-  toolArgs?: Record<string, unknown>;
-  /** Reflection-layer critique round (1-based). */
-  round?: number;
-  /** Reflection-layer critic verdict. */
-  approved?: boolean;
-  /** Unix timestamp (ms) when the critique event was recorded. */
-  timestampMs?: number;
-}
+export const ReasoningMetricsSchema = z.object({
+  llmCalls: z.number().nonnegative(),
+  latencyMs: z.number().nonnegative(),
+  iterations: z.number().int().nonnegative().optional(),
+});
 
-export interface ExecutionMetrics {
-  llmCalls: number;
-  latencyMs: number;
-}
+export const ReasoningResultSchema = z.object({
+  answer: z.string(),
+  trace: z.array(TraceEventSchema),
+  metrics: ReasoningMetricsSchema,
+});
 
-export interface StrategyResult {
-  answer: string;
-  trace: TraceEvent[];
-  metrics: ExecutionMetrics;
-}
+export type TraceEvent = z.infer<typeof TraceEventSchema>;
+export type ReasoningMetrics = z.infer<typeof ReasoningMetricsSchema>;
+export type ReasoningResult = z.infer<typeof ReasoningResultSchema>;
+```
+
+```typescript
+// src/agents/strategy.ts
+export const ReasoningOptionsSchema = z.object({
+  maxIterations: z.number().int().positive().default(8),
+});
+
+export type ReasoningOptions = z.input<typeof ReasoningOptionsSchema> & {
+  model?: BaseChatModel;
+  store?: OpsStore;
+};
 
 export interface ReasoningStrategy {
   readonly name: string;
-  run(input: string): Promise<StrategyResult>;
+  run(input: string, options?: ReasoningOptions): Promise<ReasoningResult>;
 }
 ```
 
-Repare como a interface é **mínima**: um nome e um método. Tudo que é específico de cada estratégia (modelo, tools, limite de iterações) entra pelo **construtor**, não pelo `run`. Isso é o que permite a arena tratar todas iguais e a Reflection embrulhar qualquer uma.
+Repare como a interface é **mínima**: um nome e um método. Tudo que é específico de cada estratégia (modelo, tools, limite de iterações) entra por `ReasoningOptions`, um parâmetro opcional do próprio `run` — não por um construtor fixo. Isso é o que permite a arena e o bench tratarem todas as estratégias iguais e a Reflection embrulhar qualquer uma. `TraceEvent` é uma **união discriminada**: o TypeScript e o Zod proíbem, por exemplo, um evento `action` sem `tool` e `args`, ou um `plan` com mais de oito passos — algo que uma interface única com campos opcionais só garantiria por disciplina.
 
 ### Os seis tipos de evento
 
@@ -61,7 +77,7 @@ Cada tipo representa um momento diferente do raciocínio, e cada estratégia usa
 | Tipo | Significado | Quem emite |
 | --- | --- | --- |
 | `thought` | Texto que o modelo escreveu **antes** de chamar uma tool | ReAct |
-| `action` | Chamada de tool, com `tool` e `toolArgs` | ReAct, Plan-and-Execute |
+| `action` | Chamada de tool, com `tool` e `args` | ReAct, Plan-and-Execute |
 | `observation` | Resultado devolvido pela tool | ReAct, Plan-and-Execute |
 | `plan` | O plano numerado produzido pelo planner | Plan-and-Execute |
 | `critique` | Revisão: replanner ajustando o plano, ou o crítico da Reflection | Plan-and-Execute, Reflection |
@@ -69,46 +85,34 @@ Cada tipo representa um momento diferente do raciocínio, e cada estratégia usa
 
 ### Do histórico de mensagens para o trace
 
-O ReAct do LangGraph não devolve um trace — devolve o **histórico de mensagens** (as mesmas `AIMessage`/`ToolMessage` que você viu em [`langchain-messages.md`](../../../modulo02-integracao-apis-llms/02-langchain-intro/docs/langchain-messages.md)). O `buildTraceFromMessages` traduz uma coisa na outra:
+O ReAct do LangGraph não devolve um trace — devolve o **histórico de mensagens** (as mesmas `AIMessage`/`ToolMessage` que você viu em [`langchain-messages.md`](../../../modulo02-integracao-apis-llms/02-langchain-intro/docs/langchain-messages.md)). A função `traceFromMessages` traduz uma coisa na outra:
 
 ```typescript
-// src/trace/builder.ts (referência)
-export function buildTraceFromMessages(messages: BaseMessage[]): TraceEvent[] {
+// src/agents/react.ts
+function traceFromMessages(messages: readonly BaseMessage[]): TraceEvent[] {
   const trace: TraceEvent[] = [];
-
   for (const message of messages) {
     if (message instanceof AIMessage) {
-      const content = toText(message.content).trim();
-      if (message.tool_calls && message.tool_calls.length > 0) {
-        if (content.length > 0) {
-          trace.push({ type: "thought", content });
+      const toolCalls = message.tool_calls ?? [];
+      if (toolCalls.length > 0) {
+        if (message.content) {
+          trace.push({ type: "thought", content: messageText(message) });
         }
-
-        for (const call of message.tool_calls) {
+        for (const call of toolCalls) {
           trace.push({
             type: "action",
-            content: `${call.name}(${JSON.stringify(call.args ?? {})})`,
+            content: `Calling ${call.name}`,
             tool: call.name,
-            toolArgs: (call.args as Record<string, unknown>) ?? {},
+            args: call.args,
           });
         }
-      } else if (content.length > 0) {
-        trace.push({ type: "answer", content });
+      } else if (message.content) {
+        trace.push({ type: "answer", content: messageText(message) });
       }
-      continue;
-    }
-
-    if (message instanceof ToolMessage) {
-      const content = toText(message.content).trim();
-      trace.push({ type: "observation", content });
+    } else if (message instanceof ToolMessage) {
+      trace.push({ type: "observation", content: messageText(message) });
     }
   }
-
-  const hasAnswer = trace.some((event) => event.type === "answer");
-  if (!hasAnswer) {
-    trace.push({ type: "answer", content: "No answer generated." });
-  }
-
   return trace;
 }
 ```
@@ -120,64 +124,84 @@ AIMessage COM tool_calls   → (texto? → thought) + uma action por tool_call
 AIMessage SEM tool_calls   → answer
 ToolMessage                → observation
 HumanMessage / System      → ignorada
-nenhum answer no final     → answer "No answer generated."   ← garante o invariante
 ```
 
-O último passo é importante: **todo trace termina com `answer`**. É um invariante do contrato, e o builder garante isso mesmo quando o modelo não produz texto final.
+Diferente do que se poderia imaginar, essa função **não** garante por si só que o trace termine com `answer` — quem garante o invariante é a estratégia: `createReactStrategy` procura o último evento `answer` no trace produzido e, se não encontrar nenhum, lança `AgentConfigurationError("ReAct agent completed without a final answer.")` em vez de devolver um resultado incompleto. É a mesma ideia (todo resultado tem uma resposta), só que expressa como uma falha explícita em vez de um texto de fallback.
 
-A função `toText` existe porque `message.content` nem sempre é string — alguns provedores devolvem um array de partes (`[{ type: "text", text: "..." }]`). Ela achata tudo em texto.
+`messageText` existe porque `message.content` nem sempre é string — alguns provedores devolvem um array de partes. Ela serializa para texto (`JSON.stringify` quando não é string).
 
 ### Métricas: contar, não estimar
 
 ```typescript
-// src/agents/react.ts (referência) — dentro de run()
-const startedAt = Date.now();
-// ...
-const llmCalls = result.messages.filter((message) => message instanceof AIMessage).length;
-
-return {
-  answer,
-  trace,
-  metrics: {
-    llmCalls,
-    latencyMs: Date.now() - startedAt,
-  },
-};
+// src/agents/react.ts — dentro de run()
+const trace = traceFromMessages(messages);
+const answer = [...trace].reverse().find((event) => event.type === "answer")?.content;
+if (!answer) {
+  throw new AgentConfigurationError("ReAct agent completed without a final answer.");
+}
+context.trace.push(...trace);
+context.llmCalls = messages.filter((message) => message instanceof AIMessage).length;
+context.iterations = Math.max(0, context.llmCalls - (answer ? 1 : 0));
+if (context.iterations > maxIterations) {
+  throw new IterationLimitError(maxIterations);
+}
+return context.result(answer);
 ```
 
-No ReAct, cada `AIMessage` no histórico é uma resposta do modelo, logo uma chamada. No Plan-and-Execute o estado do grafo carrega um contador `llmCalls` que cada nó incrementa; na Reflection, as chamadas da estratégia base são **somadas** às do crítico. Em todos os casos o número vem do que aconteceu, não de uma estimativa a partir do texto — a nossa `research.md` registrou exatamente essa decisão ("Inferir chamadas e latência a partir de texto final foi rejeitado por ser impreciso").
+`context` vem de `createExecutionContext` (`src/agents/strategy.ts`), que também mede `latencyMs` com `performance.now()` e empacota tudo em `context.result(answer)`, validado pelo `ReasoningResultSchema`. No ReAct, cada `AIMessage` no histórico é uma resposta do modelo, logo uma chamada. No Plan-and-Execute, cada nó do grafo (`planner`, `executor`, `replanner`, `finalizer`) chama `options.recordLlmCall()` explicitamente antes de invocar o modelo; na Reflection, as chamadas da estratégia base são **somadas** a uma por rodada de crítica. Em todos os casos o número vem do que aconteceu, não de uma estimativa a partir do texto.
 
 ## Por que o trace é tipado e não um log
 
 Um log é texto para humano ler. Um trace tipado é **dado para código verificar**. Olhe o que um teste consegue afirmar:
 
 ```typescript
-// src/trace/builder.test.ts (referência)
-const trace = buildTraceFromMessages(messages);
-assert.deepEqual(trace.map((event) => event.type), ["thought", "action", "observation", "answer"]);
-assert.equal(trace[1]?.tool, "list_alerts");
-assert.deepEqual(trace[1]?.toolArgs, { status: "firing" });
-assert.equal(trace.at(-1)?.type, "answer");
+// src/agents/react.test.ts
+const trace = traceFromMessages([
+  new HumanMessage("List active alerts."),
+  new AIMessage({
+    content: "I should inspect the alert store.",
+    tool_calls: [{ name: "list_alerts", args: { status: "firing" }, id: "call-1", type: "tool_call" }],
+  }),
+  new ToolMessage({ content: '[{"status":"firing"}]', tool_call_id: "call-1", name: "list_alerts" }),
+  new AIMessage({ content: "One alert is firing." }),
+]);
+assert.deepEqual(trace.map(({ type }) => type), ["thought", "action", "observation", "answer"]);
+assert.deepEqual(trace[1], {
+  type: "action",
+  content: "Calling list_alerts",
+  tool: "list_alerts",
+  args: { status: "firing" },
+});
 ```
 
-E as mensagens desse teste são **fabricadas à mão** (`new AIMessage({ content: ..., tool_calls: [...] })`) — nenhum LLM é chamado. O trace vira uma fronteira testável entre "o que o modelo fez" e "o que a gente mostra/mede".
+E as mensagens desse teste são **fabricadas à mão** (`new AIMessage({ content: ..., tool_calls: [...] })`) — nenhum LLM é chamado. O trace vira uma fronteira testável entre "o que o modelo fez" e "o que a gente mostra/mede". O próprio `src/agents/trace.test.ts` testa o schema isoladamente, com eventos também fabricados à mão (sem passar por mensagem alguma):
 
-Nas próximas unidades do curso esse mesmo trace é persistido (spec `015-persistent-trace-logs`) e exibido numa interface web — por isso vale caprichar no contrato agora.
+```typescript
+// src/agents/trace.test.ts
+test("trace parser rejects missing action fields, unknown types, and plans over eight steps", () => {
+  assert.throws(() => parseTrace([{ type: "action", content: "missing fields" }]));
+  assert.throws(() => parseTrace([{ type: "action", content: "missing args", tool: "list_alerts" }]));
+  assert.throws(() => parseTrace([{ type: "hidden", content: "unknown" }]));
+  assert.throws(() => parseTrace([{ type: "plan", content: "too long", steps: Array(9).fill("step") }]));
+});
+```
 
-## Onde o nosso plano diverge da referência
+Em uma fase futura deste projeto esse mesmo trace deve ser persistido e exibido numa interface web — por isso vale caprichar no contrato agora.
 
-O nosso `contracts/strategy.md` e o `data-model.md` são **mais rígidos** que o snapshot do curso:
+## Decisões do contrato de estratégia e trace
 
-| Ponto | Referência | Nosso plano |
-| --- | --- | --- |
-| Tipo de `TraceEvent` | Interface única com campos opcionais | União discriminada: `plan` exige `steps`, `action` exige `tool` e `args` |
-| Nome dos argumentos | `toolArgs` | `args` |
-| Validação | Só tipos TypeScript | Schemas Zod que **rejeitam** tipos desconhecidos (T009, FR-002) |
-| `run` | `run(input)` | `run(input, options?)` com `ReasoningOptions` (`maxIterations` e dependências injetáveis) |
-| Métricas | `llmCalls`, `latencyMs` | + `iterations?` opcional |
-| Arquivos | `src/domain/types.ts` + `src/trace/builder.ts` | `src/agents/strategy.ts` + `src/agents/trace.ts` |
+O `contracts/strategy.md` e o `data-model.md` da spec 001 fixaram um conjunto de decisões deliberadamente rígidas, confirmadas pela implementação:
 
-A união discriminada é uma melhoria real: com ela, o TypeScript **proíbe** um `action` sem `tool`, enquanto na referência isso só é garantido por disciplina. Só tome cuidado para que a Reflection (spec 002) ainda caiba — ela adiciona `round`, `approved` e `timestampMs` aos eventos `critique`, e o nosso contrato já diz que "a implementação pode adicionar metadados não obrigatórios".
+| Ponto | Decisão adotada |
+| --- | --- |
+| Tipo de `TraceEvent` | União discriminada (`z.discriminatedUnion`): `plan` exige `steps` (até 8), `action` exige `tool` e `args` — em vez de uma interface única com campos opcionais |
+| Nome dos argumentos | `args` (não `toolArgs`) |
+| Validação | Schemas Zod que **rejeitam** tipos desconhecidos, não só tipagem TypeScript (T009, FR-002) |
+| `run` | `run(input, options?)` com `ReasoningOptions` (`maxIterations`, mais `model` e `store` injetáveis) |
+| Métricas | `llmCalls`, `latencyMs` e um `iterations?` opcional |
+| Arquivos | `src/agents/strategy.ts` + `src/agents/trace.ts` |
+
+A união discriminada é uma melhoria real: com ela, o TypeScript e o Zod **proíbem** um `action` sem `tool`, algo que de outra forma só seria garantido por disciplina. O evento `critique` do schema (`src/agents/trace.ts`) só exige `type` e `content` — a camada de Reflection (veja [reflection.md](./reflection.md)) serializa seu veredito (`{ aproved, feedback }`) como JSON dentro desse `content`, em vez de adicionar campos extras ao evento.
 
 ## Referências no projeto
 
@@ -186,6 +210,6 @@ A união discriminada é uma melhoria real: com ela, o TypeScript **proíbe** um
 | Contrato (nosso) | [`specs/.../contracts/strategy.md`](../specs/001-nucleo-raciocinio-opspilot/contracts/strategy.md) | União discriminada de `TraceEvent` e `ReasoningOptions` |
 | Modelo de dados (nosso) | [`specs/.../data-model.md`](../specs/001-nucleo-raciocinio-opspilot/data-model.md) | `TraceEvent`, `ReasoningMetrics`, `ReasoningResult` |
 | Tarefas relacionadas | [`specs/.../tasks.md`](../specs/001-nucleo-raciocinio-opspilot/tasks.md) | T009, T010, T012, T013, T014 |
-| Interface (referência) | `src/domain/types.ts` do snapshot do curso | `ReasoningStrategy` com um único método |
-| Builder (referência) | `src/trace/builder.ts` do snapshot do curso | Regra mensagem → evento e o `answer` garantido |
-| Testes (referência) | `src/trace/builder.test.ts` do snapshot do curso | Mensagens fabricadas à mão, zero rede |
+| Contrato de estratégia (nosso) | [`src/agents/strategy.ts`](../src/agents/strategy.ts) | `ReasoningStrategy` e `ReasoningOptions` |
+| Builder do trace (nosso) | [`src/agents/trace.ts`](../src/agents/trace.ts) | Regra mensagem → evento e o `answer` garantido |
+| Testes do trace (nosso) | [`src/agents/trace.test.ts`](../src/agents/trace.test.ts) | Mensagens fabricadas à mão, zero rede |

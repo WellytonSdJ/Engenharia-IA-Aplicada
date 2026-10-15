@@ -4,7 +4,7 @@
 
 **Created**: 2026-09-28
 
-**Status**: Draft
+**Status**: Implemented
 
 **Input**: User description: "Núcleo de raciocínio do OpsPilot com uma interface comum de estratégias, fábrica única de modelos, ferramentas mock de incidentes, estratégias ReAct e Plan-and-Execute, limites de iteração, métricas, arena e testes determinísticos."
 

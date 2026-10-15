@@ -71,7 +71,7 @@ Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pra
 | **Bench** | CLI com cenários fixos que mede acerto de cada estratégia conferindo o estado do store. |
 | **Acerto no estado** | Critério de sucesso baseado no efeito das ações (incidentes criados/resolvidos), não no texto da resposta. |
 | **Cenários C1 / C2 / C3** | `direto` (só leitura + contagem), `estruturado` (3 aberturas em ordem + 1 resolução), `dinâmico` (ler → decidir → abrir → contar). |
-| **`diagnose`** | Função por cenário que explica um erro (o que faltou) sem alterar o critério de acerto. |
+| **Lista de motivos (`reasons`)** | Retorno do `check` de cada cenário: vazia significa acerto; quando não vazia, já explica o que faltou — não existe uma função `diagnose` separada. |
 | **`--no-replanner`** | Flag do bench que roda o Plan-and-Execute sem replanner, para medir custo × benefício do replanner. No nosso código, troca a estratégia por `plan-and-execute:no-replanner`. |
 | **Finalizer** | Nó do Plan-and-Execute sem replanner: depois do último passo, uma chamada redige a resposta a partir dos resultados. |
 | **Célula do bench** | Um par cenário × estratégia, executado com um store novo; é uma linha da tabela. |
@@ -100,5 +100,5 @@ Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pra
 | **Alerta `firing` / `resolved`** | Alerta disparando agora / já normalizado. O seed tem 3 de cada. |
 | **Incidente `open` / `resolved`** | Ocorrência aberta pelo agente / encerrada. Transição válida: `open → resolved`. |
 | **sev1..sev4** | Jargão de severidade mapeado para `critical`, `high`, `medium`, `low`. |
-| **`InMemoryStore` / `InMemoryOpsStore`** | Store em memória semeado (nome da referência / nome no nosso plano). |
+| **`InMemoryOpsStore`** | Store em memória semeado, usado em testes, bench e arena. |
 | **Seed** | Estado inicial fixo (6 serviços, incluindo `catalog` sem alertas, e 6 alertas) que torna as execuções comparáveis. |

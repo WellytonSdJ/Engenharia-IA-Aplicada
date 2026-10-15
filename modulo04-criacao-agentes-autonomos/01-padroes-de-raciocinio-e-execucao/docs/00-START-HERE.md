@@ -50,36 +50,7 @@ E tem uma novidade de **processo**: o projeto é conduzido com **Spec Kit** — 
 
 ## Mapa do código
 
-> **Atualização:** o nosso `src/` já foi implementado, na estrutura do `plan.md` (`src/models/`, `src/services/`, `src/agents/`, `src/controllers/`). A correspondência arquivo a arquivo está em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
-
-O mapa abaixo é do **snapshot de referência do curso** (`02-padroes-de-raciocinio-e-execucao/`), em ordem lógica de leitura. O nosso `plan.md` reorganiza esses arquivos em outra estrutura de pastas — a tabela de correspondência está em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
-
-```
-src/domain/types.ts            → tipos do domínio: Alert, Incident, TraceEvent, StrategyResult,
-                                 ReasoningStrategy e IStore — o contrato de tudo
-src/domain/errors.ts           → IncidentNotFoundError (erro de domínio)
-src/store/seed-data.json       → 5 serviços e 6 alertas (3 firing, 3 resolved) do Mercadinho
-src/store/seed.ts              → valida o JSON com Zod e popula o store; também roda como script
-src/store/in-memory-store.ts   → InMemoryStore: getAlerts, createIncident, resolveIncident, getIncidents
-src/agents/model.ts            → createModel(): fábrica única de ChatOpenAI → OpenRouter, temperature 0
-src/llm/factory.ts             → re-export de createModel
-src/agents/tools.ts            → list_alerts, open_incident, resolve_incident com tool() + Zod
-src/tools/*.ts                 → re-exports de cada tool (index, list-alerts, open-incident, resolve-incident)
-src/trace/builder.ts           → buildTraceFromMessages (mensagens → TraceEvent[]) e buildPlanExecuteTrace
-src/agents/react.ts            → ReactStrategy (createReactAgent + recursionLimit)
-src/strategies/react.ts        → re-export de ReactStrategy
-src/strategies/plan-execute.ts → PlanExecuteStrategy (StateGraph planner/executor/replanner)
-src/agents/plan-execute.ts     → re-export de PlanExecuteStrategy
-src/strategies/reflect.ts      → withReflection (decorator), createLLMCritic, enrichInputWithFeedback
-src/arena.ts                   → CLI que roda N estratégias sobre o mesmo input e imprime trace + métricas
-src/bench.ts                   → CLI com cenários C1/C2/C3 e checagem de acerto no estado do store
-src/index.ts                   → bootstrapOpsPilot(): monta store + tools + estratégias
-src/store/in-memory-store.test.ts → testes do store (seed 6/3/3, ids únicos, transição, erro)
-src/trace/builder.test.ts         → testes do trace a partir de mensagens fabricadas à mão
-src/strategies/reflect.test.ts    → testes da reflection com estratégia e crítico mockados
-```
-
-> Repare nos re-exports (`src/llm/factory.ts`, `src/tools/*.ts`, `src/strategies/react.ts`...): o snapshot tem arquivos que só apontam para outros. Isso é resíduo da evolução do projeto em aula — a spec pedia uma estrutura de pastas e o código foi nascendo em outra. Não precisamos copiar isso; nosso `plan.md` já define uma estrutura única.
+O nosso `src/` está implementado na estrutura definida pelo `plan.md`: `src/models/` (domínio, store), `src/services/` (tools, seed, erros), `src/agents/` (estratégias de raciocínio, modelo, trace) e `src/controllers/` (arena, bench). A correspondência detalhada arquivo a arquivo, com o histórico de decisões de nomenclatura, está em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
 
 ---
 
@@ -99,7 +70,7 @@ pedido (texto)
 
 ## Como rodar e ver o que importa
 
-Os comandos abaixo são os do snapshot de referência — depois do `/speckit.implement`, os nossos devem ficar equivalentes (veja as diferenças de script em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md)).
+Comandos reais deste projeto, já implementados:
 
 ```bash
 # 1. Testes determinísticos — não precisam de chave nem de rede

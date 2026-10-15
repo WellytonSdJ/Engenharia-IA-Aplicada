@@ -104,7 +104,7 @@ Além dos quatro principais, o Spec Kit instalou skills de apoio que você pode 
 | `speckit-taskstoissues` | Transforma o `tasks.md` em issues do GitHub |
 | `speckit-constitution` | Cria ou emenda a constituição (com versão e data de emenda) |
 
-> Sugestão para o próximo passo: rodar `/speckit.analyze` antes do `/speckit.implement`. O [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) já lista algumas inconsistências que um analyze provavelmente apontaria (ex.: o `data-model.md` fala em `serviceId`, enquanto o seed de referência usa `service` como nome).
+> Sugestão para o próximo passo: rodar `/speckit.analyze` antes do `/speckit.implement`. O [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) já lista algumas inconsistências que um analyze provavelmente apontaria (ex.: divergências de nome entre `data-model.md` e o seed implementado).
 
 ## Por que isso importa para agentes
 
@@ -114,7 +114,7 @@ O Spec Kit resolve um problema que fica gritante quando quem escreve o código �
 - o agente tem critério objetivo de "pronto" (cada tarefa tem validação);
 - mudanças de escopo precisam passar de volta pela spec ("se o escopo mudar, atualize a especificação e o plano antes de continuar").
 
-O snapshot de referência do curso mostra o outro lado: lá, o `UNIDADE.md` registra que o `POST /chat` "estava planejado para fechar a U2, mas foi commitado junto com a persistência da U3" e que "o roteiro cita a spec como `001-nucleo-raciocinio`; o nome real ficou em inglês". Specs versionadas deixam esses desvios **visíveis** — não os impedem, mas não deixam que passem despercebidos.
+Esse tipo de desvio é comum mesmo com processo: uma feature planejada para fechar um projeto termina sendo implementada junto com a próxima, ou o nome da branch da spec acaba diferente do nome usado no roteiro informal. Specs versionadas deixam esses desvios **visíveis** — não os impedem, mas não deixam que passem despercebidos.
 
 ## Referências no projeto
 

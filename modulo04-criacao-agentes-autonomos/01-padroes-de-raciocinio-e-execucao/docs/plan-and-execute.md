@@ -20,9 +20,9 @@ START → planner → executor → replanner ─┬─ finish (answer preenchida
 
 A vantagem: tarefas com estrutura ("abra três, nessa ordem, e resolva o primeiro") ficam explícitas num plano que dá para **ler no trace** antes de qualquer ação. A desvantagem: mais chamadas de LLM (uma para planejar, uma por passo do executor, uma por revisão do replanner) — e o bench vai mostrar esse custo.
 
-## Como está sendo usado (código de referência)
+## Como está sendo usado (implementação)
 
-Este é o maior arquivo da unidade (`src/strategies/plan-execute.ts` no snapshot). Vamos por partes.
+Este é o maior arquivo da unidade (`src/agents/plan-and-execute.ts`). Vamos por partes.
 
 ### O estado do grafo
 
@@ -216,5 +216,5 @@ const stepLimit = Math.min(MAX_STEPS, this.maxIterations);
 | Decisão do `StateGraph` | [`specs/.../research.md`](../specs/001-nucleo-raciocinio-opspilot/research.md) | Decision 3: limites como guards de estado |
 | Requisitos | [`specs/.../spec.md`](../specs/001-nucleo-raciocinio-opspilot/spec.md) | FR-011, FR-012, SC-004 e os edge cases do planner/replanner |
 | Tarefas relacionadas | [`specs/.../tasks.md`](../specs/001-nucleo-raciocinio-opspilot/tasks.md) | T022, T023, T025 |
-| Estratégia (referência) | `src/strategies/plan-execute.ts` do snapshot | Reducers, schemas, os três nós e as duas topologias |
-| Trace específico (referência) | `src/trace/builder.ts` do snapshot | `buildPlanExecuteTrace` e os testes de replanning com `critique` |
+| Estratégia (nosso) | [`src/agents/plan-and-execute.ts`](../src/agents/plan-and-execute.ts) | Reducers, schemas, os três nós e as duas topologias |
+| Trace específico (nosso) | [`src/agents/trace.ts`](../src/agents/trace.ts) | `buildPlanExecuteTrace` e os testes de replanning com `critique` |
