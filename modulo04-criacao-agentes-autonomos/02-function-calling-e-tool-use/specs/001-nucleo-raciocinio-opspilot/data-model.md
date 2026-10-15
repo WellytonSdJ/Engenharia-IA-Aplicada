@@ -1,0 +1,70 @@
+# Data Model: Núcleo de raciocínio do OpsPilot
+
+## Service
+
+- `id`: identificador estável.
+- `name`: nome único do serviço.
+- `team`: equipe responsável.
+- `description`: descrição operacional.
+
+## Alert
+
+- `id`: identificador estável.
+- `serviceId`: referência a `Service`.
+- `title`: descrição curta do alerta.
+- `severity`: severidade operacional.
+- `status`: `firing` ou `resolved`.
+- `createdAt`: instante de criação.
+- `resolvedAt`: instante opcional de resolução.
+
+**Seed**: exatamente 6 alertas, 3 `firing` e 3 `resolved`, distribuídos entre 5 dos 6 serviços (`catalog` não tem alertas; existe para o cenário C2 do bench).
+
+## Incident
+
+- `id`: identificador estável.
+- `title`: título obrigatório.
+- `serviceId`: referência a `Service`.
+- `severity`: severidade validada.
+- `status`: `open` ou `resolved`.
+- `createdAt`: instante de abertura.
+- `resolvedAt`: instante opcional de resolução.
+
+**Transitions**: `open -> resolved`; uma resolução repetida ou um identificador inexistente gera erro de domínio sem mutação parcial.
+
+## OpsStoreDocument
+
+- `services`: lista de serviços seedados.
+- `alerts`: lista de alertas seedados.
+- `incidents`: lista de incidentes criados/resolvidos pelas ferramentas.
+- A ferramenta `list_incidents(status)` lê os incidentes persistidos para que o agente possa identificar itens existentes antes de decidir abrir ou resolver um incidente.
+- O documento JSON em `src/data/ops-store.json` é a fonte persistente do runtime. Datas são serializadas em ISO 8601 e validadas/coagidas ao ler.
+- Atualizações escrevem primeiro um arquivo temporário no mesmo diretório e renomeiam sobre o destino para evitar documentos parcialmente gravados.
+
+## TraceEvent
+
+- `type`: `thought | action | observation | plan | critique | answer`.
+- `content`: resumo textual ou estrutura serializável do evento.
+- `tool`: obrigatório quando `type = action`.
+- `args`: argumentos validados quando `type = action`.
+- `timestamp`: instante relativo ou absoluto para ordenação.
+
+## ReasoningMetrics
+
+- `llmCalls`: número não negativo de chamadas ao modelo.
+- `latencyMs`: duração não negativa da execução.
+- `iterations`: número de ciclos usados, quando necessário para diagnóstico.
+
+## ReasoningResult
+
+- `answer`: resposta final da estratégia.
+- `trace`: lista ordenada de `TraceEvent`.
+- `metrics`: `ReasoningMetrics`.
+
+## Validation Rules
+
+- Schemas Zod devem validar entradas e saídas nas fronteiras.
+- `list_alerts` aceita apenas status suportado.
+- `open_incident` exige título, serviço existente e severidade suportada. Serviço inexistente gera erro que lista os nomes válidos; a descrição da tool mapeia sev1..sev4 para critical/high/medium/low.
+- `resolve_incident` exige identificador de incidente aberto.
+- Um plano não pode exceder 8 passos acumulados: passos completados (`done`) mais passos ativos (`plan`), inclusive após um ajuste do replanner.
+- Toda execução deve terminar com `answer` ou erro estruturado, respeitando o limite de iterações.
