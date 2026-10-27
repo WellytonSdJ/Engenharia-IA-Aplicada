@@ -3,7 +3,7 @@ import type { BaseChatModel } from "@langchain/core/language_models/chat_models"
 import type { StructuredToolInterface } from "@langchain/core/tools";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { AgentConfigurationError, IterationLimitError, ValidationError } from "../services/errors.js";
-import { defaultOpsStore, createOpsTools } from "../services/tools.js";
+import { defaultOpsStore, createForgetPreferenceTool, createOpsTools } from "../services/tools.js";
 import { resolveModel } from "./model.js";
 import { createExecutionContext, ReasoningOptionsSchema, type ReasoningOptions, type ReasoningStrategy } from "./strategy.js";
 import { OPSPILOT_SYSTEM_PROMPT } from "./system-prompt.js";
@@ -74,7 +74,12 @@ export function createReactStrategy(agentFactory: ReactAgentFactory = langGraphA
     const model = resolveModel(options?.model);
     const store = options?.store ?? defaultOpsStore;
     const context = createExecutionContext(maxIterations);
-    const agent = agentFactory(model, [...createOpsTools(store)], maxIterations * 2 + 1);
+    const tools: StructuredToolInterface[] = [...createOpsTools(store)];
+    if (options?.memory) {
+      // Spec 010: só existe quando há um usuário no turno (/chat). Arena e bench não passam memory.
+      tools.push(createForgetPreferenceTool(options.memory.store, options.memory.userId));
+    }
+    const agent = agentFactory(model, tools, maxIterations * 2 + 1);
     let messages: BaseMessage[];
     try {
       const result = await agent.invoke(

@@ -123,7 +123,7 @@ test("runChat with no relevant memories leaves the message untouched and reports
   assert.deepEqual(seenInputs, ["oi"]);
 });
 
-test("runChat passes the message through and omits options.model when no model is injected", async () => {
+test("runChat passes the message through, omits options.model when no model is injected and binds memory to the userId", async () => {
   const seenInputs: string[] = [];
   const seenOptions: Array<ReasoningOptions | undefined> = [];
   const registry: StrategyRegistry = { react: fakeStrategy("react", seenInputs, seenOptions) };
@@ -133,7 +133,65 @@ test("runChat passes the message through and omits options.model when no model i
 
   assert.equal(result.answer, "react: oi");
   assert.deepEqual(seenInputs, ["oi"]);
-  assert.equal(seenOptions[0], undefined);
+  assert.equal(seenOptions[0]?.model, undefined);
+  assert.equal(seenOptions[0]?.memory?.userId, "ana");
+  assert.equal(seenOptions[0]?.memory?.store, deps.memoryStore);
+});
+
+test("runChat returns before the learning reflector's remember finishes (fire-and-forget)", async () => {
+  const registry: StrategyRegistry = { react: fakeStrategy("react", [], []) };
+  let releaseRemember!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    releaseRemember = resolve;
+  });
+  let rememberStarted = false;
+  let rememberFinished = false;
+  const memoryStore = new SqliteMemoryStore(":memory:", new FakeEmbedder());
+  memoryStore.remember = async () => {
+    rememberStarted = true;
+    await gate;
+    rememberFinished = true;
+    return { id: "memory-late", stored: true };
+  };
+  const deps = memoryDeps({
+    registry,
+    memoryStore,
+    learningReflector: async () => ({ hasLearning: true, fact: "O plantonista prioriza o checkout" }),
+  });
+
+  const result = await runChat({ userId: "ana", message: "sempre priorize o checkout", reflect: false }, deps);
+
+  assert.equal(result.answer, "react: sempre priorize o checkout");
+  assert.equal(rememberFinished, false);
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  assert.equal(rememberStarted, true);
+  assert.equal(rememberFinished, false);
+  releaseRemember();
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  assert.equal(rememberFinished, true);
+});
+
+test("runChat does not run the learning reflector when the strategy fails", async () => {
+  const registry: StrategyRegistry = {
+    react: {
+      name: "react",
+      async run() {
+        throw new Error("strategy failed");
+      },
+    },
+  };
+  const reflected: string[] = [];
+  const deps = memoryDeps({
+    registry,
+    learningReflector: async (message) => {
+      reflected.push(message);
+      return { hasLearning: false, fact: "" };
+    },
+  });
+
+  await assert.rejects(runChat({ userId: "ana", message: "oi", reflect: false }, deps), /strategy failed/);
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  assert.deepEqual(reflected, []);
 });
 
 test("runChat forwards deps.model as options.model", async () => {

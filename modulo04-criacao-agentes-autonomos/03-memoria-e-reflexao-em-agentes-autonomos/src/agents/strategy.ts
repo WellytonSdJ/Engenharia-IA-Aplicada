@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import type { OpsStore } from "../models/in-memory-store.js";
+import type { MemoryStore } from "../models/memory-store.js";
 import { IterationLimitError } from "../services/errors.js";
 import { ReasoningResultSchema, type ReasoningResult, type TraceEvent } from "./trace.js";
 
@@ -11,6 +12,8 @@ export const ReasoningOptionsSchema = z.object({
 export type ReasoningOptions = z.input<typeof ReasoningOptionsSchema> & {
   model?: BaseChatModel;
   store?: OpsStore;
+  /** Spec 010: memória do usuário do turno. Quando presente, o ReAct ganha a tool forget_preference. */
+  memory?: { store: MemoryStore; userId: string };
 };
 
 export interface ReasoningStrategy {

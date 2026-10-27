@@ -1,8 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { SqliteMemoryStore } from "../models/memory-store.js";
 import { SqliteOpsStore } from "../models/sqlite-store.js";
+import { FakeEmbedder } from "./fake-embedder.js";
 import {
+  createForgetPreferenceTool,
   createOpsTools,
+  ForgetPreferenceInputSchema,
   ListAlertsInputSchema,
   ListIncidentsInputSchema,
   OpenIncidentInputSchema,
@@ -134,4 +138,40 @@ test("check_provider_status returns a readable error for an invalid payload", as
 
   const result = await tools[5].invoke({});
   assert.match(result, /formato inesperado/);
+});
+
+test("forget_preference forgets only the most similar memory of the bound user", async () => {
+  const embedder = new FakeEmbedder()
+    .setAxis("O plantonista prioriza o checkout", 0)
+    .setAxis("Prefere resumos curtos", 1)
+    .setAxis("priorizar checkout", 0);
+  const memoryStore = new SqliteMemoryStore(":memory:", embedder);
+  await memoryStore.remember("ana", "O plantonista prioriza o checkout");
+  await memoryStore.remember("ana", "Prefere resumos curtos");
+  await memoryStore.remember("bia", "O plantonista prioriza o checkout");
+  const forget = createForgetPreferenceTool(memoryStore, "ana");
+
+  const output = await forget.invoke({ query: "priorizar checkout" });
+
+  assert.equal(output, "Preferência esquecida: O plantonista prioriza o checkout");
+  assert.deepEqual(await memoryStore.recall("ana", "priorizar checkout"), []);
+  assert.equal((await memoryStore.recall("ana", "Prefere resumos curtos")).length, 1);
+  assert.equal((await memoryStore.recall("bia", "priorizar checkout")).length, 1);
+});
+
+test("forget_preference without a similar memory answers safely and changes nothing", async () => {
+  const embedder = new FakeEmbedder().setAxis("Prefere resumos curtos", 1).setAxis("esqueça o checkout", 2);
+  const memoryStore = new SqliteMemoryStore(":memory:", embedder);
+  await memoryStore.remember("ana", "Prefere resumos curtos");
+  const forget = createForgetPreferenceTool(memoryStore, "ana");
+
+  const output = await forget.invoke({ query: "esqueça o checkout" });
+
+  assert.match(output, /Nenhuma preferência parecida/);
+  assert.equal((await memoryStore.recall("ana", "Prefere resumos curtos")).length, 1);
+});
+
+test("forget_preference schema has no userId field and rejects an empty query", () => {
+  assert.deepEqual(Object.keys(ForgetPreferenceInputSchema.shape), ["query"]);
+  assert.equal(ForgetPreferenceInputSchema.safeParse({ query: "  " }).success, false);
 });

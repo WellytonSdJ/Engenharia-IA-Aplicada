@@ -10,6 +10,7 @@ import {
   SeveritySchema,
 } from "../models/domain.js";
 import { type OpsStore } from "../models/in-memory-store.js";
+import type { MemoryStore } from "../models/memory-store.js";
 import { SqliteOpsStore } from "../models/sqlite-store.js";
 import { OpsPilotError, ToolBoundaryError, ValidationError } from "./errors.js";
 
@@ -174,6 +175,41 @@ export function createOpsToolDefinitions(
       run: async ({ provider }) => fetchProviderStatus(provider, fetchFn),
     },
   ];
+}
+
+export const ForgetPreferenceInputSchema = z.object({
+  query: z.string().trim().min(1).describe(
+    "Descrição da preferência ou fato a esquecer, nas palavras do usuário (ex.: 'priorizar checkout'). A busca é por significado, não precisa ser o texto exato guardado.",
+  ),
+});
+
+/**
+ * Spec 010. Fica FORA de createOpsToolDefinitions de propósito: depende do usuário do turno
+ * (`userId` vem do /chat, fechado neste closure) e não é exposta pelo servidor MCP.
+ * Repare que o schema NÃO tem campo userId — o modelo não tem como apagar memória de outra pessoa.
+ */
+export function createForgetPreferenceToolDefinition(
+  memoryStore: MemoryStore,
+  userId: string,
+): OpsToolDefinition<typeof ForgetPreferenceInputSchema> {
+  return {
+    name: "forget_preference",
+    description: "Use quando o usuário pedir explicitamente para esquecer uma preferência ou fato que o OpsPilot lembrou dele (ex.: 'esqueça que eu priorizo checkout'). Não serve para apagar alertas ou incidentes, nem para listar memórias. Remove só a memória mais parecida com a descrição, do usuário atual; sem memória parecida, responde que não encontrou e não altera nada.",
+    inputSchema: ForgetPreferenceInputSchema,
+    run: async ({ query }) => {
+      // recall + forget: acha o fato mais parecido (top-1, já acima do piso de 0.3) e apaga pelo id.
+      const [target] = await memoryStore.recall(userId, query);
+      if (!target) {
+        return "Nenhuma preferência parecida foi encontrada; nada foi esquecido.";
+      }
+      const removed = await memoryStore.forget(userId, target.id);
+      return removed ? `Preferência esquecida: ${target.fact}` : "Não foi possível esquecer a preferência.";
+    },
+  };
+}
+
+export function createForgetPreferenceTool(memoryStore: MemoryStore, userId: string) {
+  return toLangChainTool(createForgetPreferenceToolDefinition(memoryStore, userId));
 }
 
 function toLangChainTool<TSchema extends z.ZodType>(definition: OpsToolDefinition<TSchema>) {

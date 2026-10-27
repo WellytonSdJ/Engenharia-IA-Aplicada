@@ -1,11 +1,13 @@
 import { z } from "zod";
 import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { resolveStrategy, strategyRegistry, type StrategyRegistry } from "../agents/index.js";
+import type { ReasoningOptions } from "../agents/strategy.js";
 import { ReasoningResultSchema } from "../agents/trace.js";
 import { ConversationStore } from "../models/conversation-store.js";
 import type { Message, RecalledMemory } from "../models/domain.js";
 import { SqliteMemoryStore, type MemoryStore } from "../models/memory-store.js";
 import { ExecutionTimeoutError } from "./errors.js";
+import { scheduleLearning, type LearningReflectorFn } from "./learning-reflector.js";
 
 export interface ChatDependencies {
   registry: StrategyRegistry;
@@ -13,6 +15,8 @@ export interface ChatDependencies {
   model?: BaseChatModel;
   conversationStore: ConversationStore;
   memoryStore: MemoryStore;
+  /** Spec 010: sem refletor, o /chat só lê memórias; com ele, também aprende após cada turno. */
+  learningReflector?: LearningReflectorFn;
 }
 
 export const DEFAULT_CHAT_TIMEOUT_MS = 60_000;
@@ -28,6 +32,7 @@ export function resolveChatDependencies(partial?: Partial<ChatDependencies>): Ch
     conversationStore: partial?.conversationStore ?? new ConversationStore(),
     // Mesmo arquivo OPSPILOT_DB dos outros stores. Criar o store não carrega o modelo de embeddings.
     memoryStore: partial?.memoryStore ?? new SqliteMemoryStore(),
+    learningReflector: partial?.learningReflector,
   };
 }
 
@@ -98,16 +103,30 @@ export async function runChat(request: ChatRequest, deps: ChatDependencies): Pro
   const recalled = await deps.memoryStore.recall(request.userId, request.message);
   const input = composeInput(request.message, history, recalled);
 
-  const result = await withTimeout(
-    strategy.run(input, deps.model ? { model: deps.model } : undefined),
-    deps.timeoutMs,
-  );
+  // `memory` habilita a tool forget_preference no ReAct (spec 010), já presa a ESTE userId:
+  // o modelo nunca escolhe de qual usuário apaga memória.
+  const options: ReasoningOptions = {
+    memory: { store: deps.memoryStore, userId: request.userId },
+    ...(deps.model ? { model: deps.model } : {}),
+  };
+  const result = await withTimeout(strategy.run(input, options), deps.timeoutMs);
   const parsed = ReasoningResultSchema.parse(result);
 
   await deps.conversationStore.append(conversation.id, [
     { role: "user", content: request.message },
     { role: "assistant", content: parsed.answer },
   ]);
+
+  if (deps.learningReflector) {
+    // Fire-and-forget (spec 010): sem `await`, a resposta volta já, e o refletor (uma chamada
+    // extra ao LLM) roda em segundo plano. Só chega aqui se o turno deu certo.
+    void scheduleLearning({
+      reflector: deps.learningReflector,
+      memoryStore: deps.memoryStore,
+      userId: request.userId,
+      userMessage: request.message,
+    });
+  }
 
   return ChatResultSchema.parse({
     ...parsed,

@@ -5,6 +5,8 @@ import { SimpleChatModel } from "@langchain/core/language_models/chat_models";
 import type { BaseMessage } from "@langchain/core/messages";
 import type { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager";
 import { InMemoryOpsStore } from "../models/in-memory-store.js";
+import { SqliteMemoryStore } from "../models/memory-store.js";
+import { FakeEmbedder } from "../services/fake-embedder.js";
 import { IterationLimitError } from "../services/errors.js";
 import { createReactStrategy, traceFromMessages } from "./react.js";
 
@@ -91,4 +93,27 @@ test("ReAct strategy rejects results that exceed the requested iteration cap", a
     strategy.run("Check alerts.", { model: new NoopChatModel({}), maxIterations: 1 }),
     IterationLimitError,
   );
+});
+
+test("ReAct adds forget_preference only when the turn carries a user memory", async () => {
+  const seenToolNames: string[][] = [];
+  const strategy = createReactStrategy((_model, tools) => {
+    seenToolNames.push(tools.map((item) => item.name));
+    return {
+      async invoke() {
+        return { messages: [new AIMessage({ content: "ok" })] };
+      },
+    };
+  });
+  const memoryStore = new SqliteMemoryStore(":memory:", new FakeEmbedder());
+
+  await strategy.run("oi", { model: new NoopChatModel({}), store: new InMemoryOpsStore() });
+  await strategy.run("oi", {
+    model: new NoopChatModel({}),
+    store: new InMemoryOpsStore(),
+    memory: { store: memoryStore, userId: "ana" },
+  });
+
+  assert.equal(seenToolNames[0].includes("forget_preference"), false);
+  assert.equal(seenToolNames[1].at(-1), "forget_preference");
 });
