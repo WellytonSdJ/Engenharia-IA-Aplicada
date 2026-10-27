@@ -12,6 +12,7 @@ Diferente dos módulos anteriores, o desenvolvimento aqui é conduzido por **Spe
 |---|---------|------|--------|-----------|
 | 01 | [padroes-de-raciocinio-e-execucao](./01-padroes-de-raciocinio-e-execucao/) | Padrões de Raciocínio e Execução | ✅ specs 001 (núcleo ReAct/Plan-and-Execute), 002 (Reflection) e 003 (fix replanner) implementadas; bench C1/C2/C3 pronto. Spec 004 (`POST /chat`) especificada (specify → plan → tasks), mas a implementação acontece no projeto 02 | Kickoff do OpsPilot: estratégias ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, tools mock sobre store em memória, arena de comparação e bench com acerto medido no estado; depois, a camada de Reflection |
 | 02 | [function-calling-e-tool-use](./02-function-calling-e-tool-use/) | Function Calling e Tool Use | ✅ specs 004 a 008 implementadas (99 testes): `POST /chat`, persistência SQLite com tool de runbook, tool de status de provedores externos, servidor MCP e conversa persistente | Evolução do OpsPilot: endpoint HTTP de chat, persistência real via `node:sqlite` com tool de runbook, tool de status de provedores externos, servidor MCP de operações e conversa persistente no `/chat` |
+| 03 | [memoria-e-reflexao-em-agentes-autonomos](./03-memoria-e-reflexao-em-agentes-autonomos/) | Memória e Reflexão em Agentes Autônomos | ✅ specs 009 (memória semântica) e 010 (refletor de aprendizado) implementadas (129 testes sem rede + 3 testes com o modelo real de embeddings) | Memória de longo prazo do OpsPilot: embeddings locais (`all-MiniLM-L6-v2`), vector store em SQLite com `remember`/`recall`/`forget` por `userId`, memórias injetadas no `/chat`, `POST /memories`, refletor que aprende fatos duráveis em segundo plano e tool `forget_preference` |
 
 ## Roteiro do módulo (orientação, não implementado ainda)
 
@@ -19,7 +20,6 @@ Os próximos projetos seguem a trilha de temas do módulo. Como o OpsPilot é um
 
 | # | Tema | Especificações previstas do OpsPilot |
 |---|------|----------------------------|
-| 03 | Memória e Reflexão em Agentes Autônomos | memória semântica, reflector de aprendizado de longo prazo |
 | 04 | Gerenciamento de Contextos | medição de contexto, sumarização de histórico, orçamento de construção de contexto |
 | 05 | LangGraph e Workflows Complexos | grafo de produção unificado, resiliência de modelo |
 | 06 | Observabilidade e Limites de Autonomia | logs de trace persistentes, aprovação humana |
@@ -36,6 +36,7 @@ Os próximos projetos seguem a trilha de temas do módulo. Como o OpsPilot é um
 | **Spec Kit** | 1.0.x | Integração `copilot`, scripts PowerShell (`.specify/`) |
 | **GitHub Copilot** | — | Agente de código que executa os comandos `speckit.*` |
 | **SQLite** | nativo (`node:sqlite`) | Usado a partir do projeto 02 (spec 005) como persistência real via `DatabaseSync`, sem servidor externo; testes e bench usam `:memory:` |
+| **`@huggingface/transformers`** | 4.2.x | A partir do projeto 03 (spec 009): roda o modelo de embeddings `all-MiniLM-L6-v2` localmente (sem API key). A primeira execução baixa ~23 MB; `npm test` não depende disso (usa `FakeEmbedder`) |
 
 > Cada projeto tem seu próprio `docs/` com requisitos detalhados e instruções de execução.
 
@@ -52,7 +53,11 @@ Os próximos projetos seguem a trilha de temas do módulo. Como o OpsPilot é um
 - Testes determinísticos sem rede com doubles de modelo, estratégia e crítico
 - Carregamento nativo de `.env` (`--env-file-if-exists`) sem `dotenv`, e por que os testes não o carregam
 - Persistência real sem servidor externo (`node:sqlite`), tool de runbook, tool de status de provedores externos, servidor MCP de operações e conversa persistente no `/chat`
-- (Roteiro futuro) Memória persistente e semântica, gerenciamento de contexto, grafos de produção, observabilidade, aprovação humana, publicação e multi-agentes
+- Memória de curto prazo (histórico por `conversationId`) × longo prazo (fatos por `userId`)
+- Embeddings locais com Transformers.js, similaridade de cosseno como produto escalar de vetores normalizados, lazy singleton do modelo
+- Vector store "na mão" com SQLite (vetor em BLOB, busca por força bruta), dedup semântico (> 0,92) e recall top-3 com piso (≥ 0,3)
+- Reflection reaproveitada como loop de aprendizado (`{ hasLearning, fact }`), fire-and-forget e tool `forget_preference` com `userId` por closure
+- (Roteiro futuro) Gerenciamento de contexto, grafos de produção, observabilidade, aprovação humana, publicação e multi-agentes
 
 ## Documentação de conceitos (projeto 01)
 
@@ -73,3 +78,17 @@ O projeto 02 nasce como cópia do 01 e **não repete** essa documentação — s
 | [variaveis-de-ambiente-com-env-file.md](./01-padroes-de-raciocinio-e-execucao/docs/variaveis-de-ambiente-com-env-file.md) | `.env` com `node --env-file-if-exists --import tsx`: o bug da arena, outros usos e montagem do zero |
 | [roteiro-de-implementacao.md](./01-padroes-de-raciocinio-e-execucao/docs/roteiro-de-implementacao.md) | Ponte `tasks.md` × referência, divergências e armadilhas já identificadas |
 | [glossario.md](./01-padroes-de-raciocinio-e-execucao/docs/glossario.md) | Termos novos do projeto |
+
+## Documentação de conceitos (projeto 03)
+
+O projeto 03 nasce como cópia do 02 e, do mesmo jeito, **não repete** a documentação anterior: linka para o 01/02 e documenta só memória e aprendizado. Cada doc abre com um bloco "Em 30 segundos" e tem checkpoints ao longo do texto. O [`00-START-HERE.md`](./03-memoria-e-reflexao-em-agentes-autonomos/docs/00-START-HERE.md) inclui uma tabela que liga cada arquivo da referência do curso ao arquivo correspondente aqui.
+
+| Documento | Conteúdo |
+| --- | --- |
+| [00-START-HERE.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/00-START-HERE.md) | O que muda na unidade, trilha de leitura, mapa do código, mapa referência → nosso e como rodar |
+| [embeddings-e-similaridade.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/embeddings-e-similaridade.md) | Embedding, cosseno como produto escalar, `all-MiniLM-L6-v2` local e lazy singleton |
+| [memoria-semantica.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/memoria-semantica.md) | Curto × longo prazo, vector store em SQLite, `remember`/`recall`/`forget`, limiares e memórias no `/chat` |
+| [refletor-de-aprendizado.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/refletor-de-aprendizado.md) | Reflection como loop de aprendizado, durável × pontual × segredo, fire-and-forget |
+| [forget-preference.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/forget-preference.md) | Tool presa ao usuário do turno por closure (e por que a referência usa `AsyncLocalStorage`) |
+| [testando-memoria.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/testando-memoria.md) | `FakeEmbedder`, testes semânticos fora do `npm test` e teste do "não esperou" |
+| [glossario.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/glossario.md) | Termos novos da unidade |

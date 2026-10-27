@@ -18,7 +18,7 @@ Specs implementadas nesta unidade:
 | [007-servidor-mcp-opspilot](../specs/007-servidor-mcp-opspilot/spec.md) | Servidor MCP (`src/mcp/server.ts`, stdio) expondo `list_alerts`/`open_incident`/`resolve_incident` para clientes compatíveis com Model Context Protocol | Permite que outros agentes/IDEs operem sobre o mesmo store, via protocolo padrão |
 | [008-conversa-persistente](../specs/008-conversa-persistente/spec.md) | `conversationId` opcional em `/chat`, histórico de até 12 mensagens injetado no prompt, métrica `historyMessages` | Dá continuidade ao diálogo entre requisições, sem o cliente reenviar o histórico manualmente |
 
-Esta é a última feature planejada desta unidade.
+Esta é a última feature desta unidade. A próxima, [`03-memoria-e-reflexao-em-agentes-autonomos`](../../03-memoria-e-reflexao-em-agentes-autonomos/docs/00-START-HERE.md), parte desta base e acrescenta memória de longo prazo por usuário (specs 009 e 010). A conversa persistente daqui vira a "memória de curto prazo" de lá.
 
 ---
 
