@@ -14,6 +14,7 @@ import {
 import { IterationLimitError, ValidationError } from "../services/errors.js";
 import type { OpsStore } from "../models/in-memory-store.js";
 import { resolveModel } from "./model.js";
+import { MEMORY_GUIDANCE } from "./system-prompt.js";
 import {
   createExecutionContext,
   ReasoningOptionsSchema,
@@ -88,7 +89,7 @@ export function createPlanAndExecuteGraph(
     options.recordLlmCall();
     const output = await options.model.withStructuredOutput(PlanSchema).invoke([
       new SystemMessage(
-        `Create an ordered operational plan as short executable tool steps. Return at most eight steps. If no tool is needed, return no steps and a concise answer. Questions about alerts or incidents always need a tool.\nAvailable tools:\n${toolCatalog}`,
+        `Create an ordered operational plan as short executable tool steps. Return at most eight steps. If no tool is needed, return no steps and a concise answer. Questions about alerts or incidents always need a tool.\n${MEMORY_GUIDANCE}\nAvailable tools:\n${toolCatalog}`,
       ),
       new HumanMessage(state.input),
     ]);

@@ -1,12 +1,14 @@
 import type * as http from "node:http";
 import express, { type Express } from "express";
 import { chatErrorHandler, createChatHandler } from "../controllers/chat-controller.js";
+import { createRememberHandler } from "../controllers/memory-controller.js";
 import { resolveChatDependencies, type ChatDependencies } from "../services/chat.js";
 
 export function createServer(deps?: Partial<ChatDependencies>): Express {
   const resolved = resolveChatDependencies(deps);
   const app = express();
   app.post("/chat", express.json(), createChatHandler(resolved));
+  app.post("/memories", express.json(), createRememberHandler(resolved.memoryStore));
   app.use(chatErrorHandler);
   return app;
 }

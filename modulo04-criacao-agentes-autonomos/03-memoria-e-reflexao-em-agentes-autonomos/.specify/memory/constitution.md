@@ -25,11 +25,11 @@ O agente de gerenciamento de alertas e incidentes usa LangChain/LangGraph e inte
 ## Additional Constraints
 
 - Runtime e linguagem: Node.js 22 LTS, TypeScript ESM e `strict: true`.
-- Dependências de produção: `@langchain/core`, `@langchain/langgraph`, `@langchain/openai`, Express 5 e Zod.
+- Dependências de produção: `@langchain/core`, `@langchain/langgraph`, `@langchain/openai`, `@modelcontextprotocol/sdk`, Express 5, Zod e `@huggingface/transformers` (embeddings locais da memória semântica, sem API key e sem serviço externo de vetores).
 - Dependências de desenvolvimento: tipos de Express e Node.js, `tsx` e TypeScript.
 - Persistência: SQLite via o módulo nativo `node:sqlite` (`DatabaseSync`), sem ORM e sem dependências externas de banco de dados. O caminho do arquivo é configurado pela variável de ambiente `OPSPILOT_DB` (default `./data/opspilot.db`); testes e cenários reproduzíveis (bench/arena) usam `:memory:`. Todo acesso a dados usa prepared statements; não concatene SQL. Não introduza MySQL, Sequelize, Postgres ou qualquer outro banco de dados tradicional.
 - Interfaces de execução: API Express, além dos pontos de entrada `src/index.ts`, `src/arena.ts` e `src/bench.ts`.
-- Scripts oficiais: `npm run dev`, `npm run arena`, `npm run bench`, `npm test` e `npm run typecheck`.
+- Scripts oficiais: `npm run dev`, `npm run arena`, `npm run bench`, `npm run seed`, `npm run mcp`, `npm test`, `npm run test:semantic` e `npm run typecheck`. `npm test` roda sem rede; testes que exigem o modelo real de embeddings ficam em `*.semantic-test.ts` e rodam só via `npm run test:semantic`.
 - Não introduza `dotenv`, não acesse secrets diretamente no código e não altere contratos externos sem atualizar a especificação e os testes correspondentes.
 - Diretórios de dados (ex.: `data/`) usados pelo arquivo SQLite devem permanecer fora do controle de versão (`.gitignore`).
 
@@ -48,4 +48,4 @@ O agente de gerenciamento de alertas e incidentes usa LangChain/LangGraph e inte
 
 Esta constituição define as regras permanentes do opsPilot e deve ser considerada junto com `.github/copilot-instructions.md`. Em caso de conflito, a regra mais específica para a mudança deve ser aplicada sem violar estes princípios. Alterações na constituição exigem atualização do número de versão, da data de alteração e das especificações ou instruções afetadas. Toda revisão deve verificar os contratos, os testes e os gates de qualidade definidos aqui.
 
-**Version**: 1.1.0 | **Ratified**: 2026-09-28 | **Last Amended**: 2026-10-14
+**Version**: 1.2.0 | **Ratified**: 2026-09-28 | **Last Amended**: 2026-10-26

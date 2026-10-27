@@ -10,9 +10,11 @@
     "seed": "node --env-file-if-exists=.env --import tsx src/services/seed.ts",
     "mcp": "node --env-file-if-exists=.env --import tsx src/mcp/server.ts",
     "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "test:semantic": "node --import tsx --test \"src/**/*.semantic-test.ts\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "@langchain/core": "^0.3.0",
     "@langchain/langgraph": "^0.2.0",
     "@langchain/openai": "^0.3.0",

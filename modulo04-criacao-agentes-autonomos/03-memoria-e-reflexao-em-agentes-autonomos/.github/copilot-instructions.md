@@ -7,6 +7,7 @@ Copiloto de plantão para gerenciamento de alertas e incidentes de produção. A
 - Node.js 22 LTS; TypeScript ESM com `strict: true`.
 - Zod valida entradas e saídas nas fronteiras HTML e CLI.
 - Express e persistência em SQLite via `node:sqlite` (sem ORM).
+- Memória semântica com embeddings locais (`@huggingface/transformers`, all-MiniLM-L6-v2) guardados em BLOB no mesmo SQLite.
 - Testes com `node:test` via `tsx`.
 - Use o carregamento de variáveis de ambiente nativo do Node.js; não use `dotenv`.
 
@@ -15,7 +16,8 @@ Copiloto de plantão para gerenciamento de alertas e incidentes de produção. A
 - `npm run dev`
 - `npm run arena`
 - `npm run bench`
-- `npm test` ou `npm run test`
+- `npm test` ou `npm run test` (sem rede)
+- `npm run test:semantic` (modelo real de embeddings; baixa ~23 MB na primeira vez)
 - `npm run typecheck`
 
 ## Convenções

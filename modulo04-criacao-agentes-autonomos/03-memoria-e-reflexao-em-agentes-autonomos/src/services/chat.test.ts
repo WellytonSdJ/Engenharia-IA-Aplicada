@@ -4,8 +4,10 @@ import type { BaseChatModel } from "@langchain/core/language_models/chat_models"
 import type { StrategyRegistry } from "../agents/index.js";
 import type { ReasoningOptions, ReasoningStrategy } from "../agents/strategy.js";
 import { ConversationStore } from "../models/conversation-store.js";
+import { SqliteMemoryStore } from "../models/memory-store.js";
 import { ExecutionTimeoutError, UnknownConversationError } from "./errors.js";
-import { resolveChatDependencies, runChat, withTimeout } from "./chat.js";
+import { FakeEmbedder } from "./fake-embedder.js";
+import { formatMemoriesForPrompt, resolveChatDependencies, runChat, withTimeout } from "./chat.js";
 
 function fakeStrategy(
   name: string,
@@ -68,8 +70,58 @@ test("withTimeout propagates the original error when it rejects before the deadl
 });
 
 function memoryDeps(partial?: Parameters<typeof resolveChatDependencies>[0]) {
-  return resolveChatDependencies({ conversationStore: new ConversationStore(":memory:"), ...partial });
+  return resolveChatDependencies({
+    conversationStore: new ConversationStore(":memory:"),
+    memoryStore: new SqliteMemoryStore(":memory:", new FakeEmbedder()),
+    ...partial,
+  });
 }
+
+test("formatMemoriesForPrompt lists each recalled fact under the Relevant memories header", () => {
+  assert.equal(
+    formatMemoriesForPrompt([
+      { id: "m1", fact: "checkout primeiro", score: 0.9 },
+      { id: "m2", fact: "resumos curtos", score: 0.5 },
+    ]),
+    "Relevant memories:\n- checkout primeiro\n- resumos curtos",
+  );
+});
+
+test("runChat injects recalled memories before the history and reports recalledMemories", async () => {
+  const seenInputs: string[] = [];
+  const registry: StrategyRegistry = { react: fakeStrategy("react", seenInputs, []) };
+  const embedder = new FakeEmbedder().setAxis("checkout primeiro", 3).setAxis("e agora?", 3);
+  const memoryStore = new SqliteMemoryStore(":memory:", embedder);
+  await memoryStore.remember("ana", "checkout primeiro");
+  const conversationStore = new ConversationStore(":memory:");
+  const conversation = await conversationStore.create();
+  await conversationStore.append(conversation.id, [{ role: "user", content: "pergunta anterior" }]);
+  const deps = memoryDeps({ registry, memoryStore, conversationStore });
+
+  const result = await runChat(
+    { userId: "ana", message: "e agora?", reflect: false, conversationId: conversation.id },
+    deps,
+  );
+
+  assert.equal(result.metrics.recalledMemories, 1);
+  assert.equal(
+    seenInputs[0],
+    "Relevant memories:\n- checkout primeiro\n\nConversation so far:\nUser: pergunta anterior\n\nUser: e agora?",
+  );
+});
+
+test("runChat with no relevant memories leaves the message untouched and reports recalledMemories 0", async () => {
+  const seenInputs: string[] = [];
+  const registry: StrategyRegistry = { react: fakeStrategy("react", seenInputs, []) };
+  const embedder = new FakeEmbedder().setAxis("fato sem relação", 10).setAxis("oi", 20);
+  const memoryStore = new SqliteMemoryStore(":memory:", embedder);
+  await memoryStore.remember("ana", "fato sem relação");
+
+  const result = await runChat({ userId: "ana", message: "oi", reflect: false }, memoryDeps({ registry, memoryStore }));
+
+  assert.equal(result.metrics.recalledMemories, 0);
+  assert.deepEqual(seenInputs, ["oi"]);
+});
 
 test("runChat passes the message through and omits options.model when no model is injected", async () => {
   const seenInputs: string[] = [];
@@ -77,7 +129,7 @@ test("runChat passes the message through and omits options.model when no model i
   const registry: StrategyRegistry = { react: fakeStrategy("react", seenInputs, seenOptions) };
   const deps = memoryDeps({ registry });
 
-  const result = await runChat({ message: "oi", reflect: false }, deps);
+  const result = await runChat({ userId: "ana", message: "oi", reflect: false }, deps);
 
   assert.equal(result.answer, "react: oi");
   assert.deepEqual(seenInputs, ["oi"]);
@@ -91,7 +143,7 @@ test("runChat forwards deps.model as options.model", async () => {
   const model = {} as BaseChatModel;
   const deps = memoryDeps({ registry, model });
 
-  await runChat({ message: "oi", reflect: false }, deps);
+  await runChat({ userId: "ana", message: "oi", reflect: false }, deps);
 
   assert.equal(seenOptions[0]?.model, model);
 });
@@ -101,7 +153,7 @@ test("runChat without conversationId creates a new conversation and returns its 
   const registry: StrategyRegistry = { react: fakeStrategy("react", seenInputs, []) };
   const deps = memoryDeps({ registry });
 
-  const result = await runChat({ message: "oi", reflect: false }, deps);
+  const result = await runChat({ userId: "ana", message: "oi", reflect: false }, deps);
 
   assert.ok(result.conversationId.length > 0);
   assert.equal(result.metrics.historyMessages, 0);
@@ -119,7 +171,7 @@ test("runChat with an existing conversationId reuses the conversation and inject
     { role: "assistant", content: "resposta anterior" },
   ]);
 
-  const result = await runChat({ message: "nova pergunta", reflect: false, conversationId: conversation.id }, deps);
+  const result = await runChat({ userId: "ana", message: "nova pergunta", reflect: false, conversationId: conversation.id }, deps);
 
   assert.equal(result.conversationId, conversation.id);
   assert.equal(result.metrics.historyMessages, 2);
@@ -138,7 +190,7 @@ test("runChat with a conversation of 13 prior messages injects only the 12 most 
     await conversationStore.append(conversation.id, [{ role: "user", content: `msg-${i}` }]);
   }
 
-  const result = await runChat({ message: "atual", reflect: false, conversationId: conversation.id }, deps);
+  const result = await runChat({ userId: "ana", message: "atual", reflect: false, conversationId: conversation.id }, deps);
 
   assert.equal(result.metrics.historyMessages, 12);
   assert.doesNotMatch(seenInputs[0], /msg-0(?!\d)/);
@@ -151,7 +203,7 @@ test("runChat with an unknown conversationId throws UnknownConversationError wit
   const deps = memoryDeps({ registry });
 
   await assert.rejects(
-    runChat({ message: "oi", reflect: false, conversationId: "conversation-missing" }, deps),
+    runChat({ userId: "ana", message: "oi", reflect: false, conversationId: "conversation-missing" }, deps),
     (error: unknown) => error instanceof UnknownConversationError,
   );
   assert.deepEqual(seenInputs, []);
@@ -171,7 +223,7 @@ test("runChat does not persist the turn when the strategy fails", async () => {
   const conversation = await conversationStore.create();
 
   await assert.rejects(
-    runChat({ message: "oi", reflect: false, conversationId: conversation.id }, deps),
+    runChat({ userId: "ana", message: "oi", reflect: false, conversationId: conversation.id }, deps),
     /strategy failed/,
   );
 

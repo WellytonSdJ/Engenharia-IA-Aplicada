@@ -6,6 +6,7 @@ import { AgentConfigurationError, IterationLimitError, ValidationError } from ".
 import { defaultOpsStore, createOpsTools } from "../services/tools.js";
 import { resolveModel } from "./model.js";
 import { createExecutionContext, ReasoningOptionsSchema, type ReasoningOptions, type ReasoningStrategy } from "./strategy.js";
+import { OPSPILOT_SYSTEM_PROMPT } from "./system-prompt.js";
 import type { TraceEvent } from "./trace.js";
 
 function messageText(message: BaseMessage): string {
@@ -53,11 +54,7 @@ export type ReactAgentFactory = (
 ) => ReactAgentRunner;
 
 const langGraphAgentFactory: ReactAgentFactory = (model, tools, recursionLimit) => {
-  const agent = createReactAgent({
-    llm: model,
-    tools,
-    prompt: "You are OpsPilot, an on-call operations assistant. Use the available tools to verify operational facts. Keep responses concise.",
-  });
+  const agent = createReactAgent({ llm: model, tools, prompt: OPSPILOT_SYSTEM_PROMPT });
   return {
     async invoke(input) {
       const result = await agent.invoke(input, { recursionLimit });

@@ -71,6 +71,20 @@ export const MessageSchema = z.object({
   createdAt: z.string(),
 });
 
+// Spec 009: memória semântica. `score` é a similaridade (produto escalar de vetores
+// normalizados = cosseno) entre a consulta e o fato; só existe no recall, não é persistido.
+export const RecalledMemorySchema = z.object({
+  id: z.string().min(1),
+  fact: z.string().min(1),
+  score: z.number(),
+});
+
+// `stored: false` = o fato era quase idêntico a um já guardado (dedup) e `id` aponta para o existente.
+export const RememberResultSchema = z.object({
+  id: z.string().min(1),
+  stored: z.boolean(),
+});
+
 export type AlertStatus = z.infer<typeof AlertStatusSchema>;
 export type AlertFilter = z.infer<typeof AlertFilterSchema>;
 export type IncidentStatus = z.infer<typeof IncidentStatusSchema>;
@@ -86,3 +100,5 @@ export type Runbook = z.infer<typeof RunbookSchema>;
 export type MessageRole = z.infer<typeof MessageRoleSchema>;
 export type Conversation = z.infer<typeof ConversationSchema>;
 export type Message = z.infer<typeof MessageSchema>;
+export type RecalledMemory = z.infer<typeof RecalledMemorySchema>;
+export type RememberResult = z.infer<typeof RememberResultSchema>;

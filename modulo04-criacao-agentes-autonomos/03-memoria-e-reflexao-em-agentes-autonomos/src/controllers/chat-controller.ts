@@ -2,10 +2,18 @@ import type { ErrorRequestHandler, RequestHandler } from "express";
 import { z } from "zod";
 import type { ChatDependencies } from "../services/chat.js";
 import { runChat } from "../services/chat.js";
-import { ExecutionTimeoutError, UnknownConversationError, UnknownStrategyError } from "../services/errors.js";
+import {
+  EmbeddingError,
+  ExecutionTimeoutError,
+  InvalidMemoryInputError,
+  UnknownConversationError,
+  UnknownStrategyError,
+} from "../services/errors.js";
 
 export const ChatRequestSchema = z.object({
   message: z.string().trim().min(1),
+  // Spec 009: obrigatório. Escopa a memória semântica; não há autenticação, o cliente declara quem é.
+  userId: z.string().trim().min(1),
   strategy: z.string().trim().min(1).optional(),
   reflect: z.boolean().default(false),
   conversationId: z.string().trim().min(1).optional(),
@@ -52,6 +60,12 @@ export function toErrorResponse(error: unknown): { status: number; body: Record<
         conversationId: error.conversationId,
       },
     };
+  }
+  if (error instanceof InvalidMemoryInputError) {
+    return { status: 400, body: { error: "INVALID_MEMORY_INPUT", message: error.message } };
+  }
+  if (error instanceof EmbeddingError) {
+    return { status: 503, body: { error: "EMBEDDING_UNAVAILABLE", message: error.message } };
   }
   return { status: 500, body: { error: "INTERNAL", message: "Internal server error." } };
 }

@@ -6,7 +6,8 @@ export type DomainErrorCode =
   | "ITERATION_LIMIT"
   | "UNKNOWN_STRATEGY"
   | "TIMEOUT"
-  | "UNKNOWN_CONVERSATION";
+  | "UNKNOWN_CONVERSATION"
+  | "EMBEDDING";
 
 export class OpsPilotError extends Error {
   constructor(
@@ -73,5 +74,17 @@ export class ExecutionTimeoutError extends OpsPilotError {
 export class UnknownConversationError extends OpsPilotError {
   constructor(readonly conversationId: string) {
     super(`Unknown conversation "${conversationId}".`, "UNKNOWN_CONVERSATION");
+  }
+}
+
+// Spec 009: o fato/consulta/userId chegou vazio ao MemoryStore. Na borda HTTP o Zod já barra
+// isso antes; este erro protege quem chama o store direto (testes, refletor, tools).
+export class InvalidMemoryInputError extends ValidationError {}
+
+// Spec 009: falha ao carregar o modelo de embeddings (download, ONNX) ou ao gerar um vetor.
+// Vira 503 na borda HTTP: é indisponibilidade de uma dependência, não erro do cliente.
+export class EmbeddingError extends OpsPilotError {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, "EMBEDDING", options);
   }
 }
