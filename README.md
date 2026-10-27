@@ -25,7 +25,9 @@ engenharia-ia-aplicada/
 │   ├── 06-your-legacy-api-as-mcp/      # API REST legada embrulhada como MCP sem modificá-la
 │   └── 07-api-security-auth-rate-limiting/ # JWT, Service Tokens, RBAC e rate limiting
 └── modulo04-criacao-agentes-autonomos/
-    └── 01-padroes-de-raciocinio-e-execucao/ # OpsPilot: ReAct, Plan-and-Execute e Reflection (Spec Kit)
+    ├── 01-padroes-de-raciocinio-e-execucao/          # OpsPilot: ReAct, Plan-and-Execute e Reflection (Spec Kit)
+    ├── 02-function-calling-e-tool-use/               # OpsPilot: POST /chat, SQLite, runbook, provedores, MCP e conversa persistente
+    └── 03-memoria-e-reflexao-em-agentes-autonomos/   # OpsPilot: memória semântica com embeddings locais e refletor de aprendizado
 ```
 
 ## Módulos
@@ -72,7 +74,9 @@ Construção incremental do **OpsPilot**, um copiloto de plantão / incident com
 
 | Projeto | Descrição |
 | ------- | --------- |
-| [01-padroes-de-raciocinio-e-execucao](./modulo04-criacao-agentes-autonomos/01-padroes-de-raciocinio-e-execucao/) | 🚧 Núcleo de raciocínio do OpsPilot: ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, arena e bench; depois, a camada de Reflection. Spec, plano e tarefas prontos; implementação pendente |
+| [01-padroes-de-raciocinio-e-execucao](./modulo04-criacao-agentes-autonomos/01-padroes-de-raciocinio-e-execucao/) | Núcleo de raciocínio do OpsPilot: ReAct e Plan-and-Execute atrás de uma interface comum, trace tipado, métricas, arena e bench (C1/C2/C3), mais a camada de Reflection como decorator (specs 001–003) |
+| [02-function-calling-e-tool-use](./modulo04-criacao-agentes-autonomos/02-function-calling-e-tool-use/) | Evolução do OpsPilot: endpoint `POST /chat`, persistência real com `node:sqlite`, tool de runbook, tool de status de provedores externos, servidor MCP de operações e conversa persistente (specs 004–008) |
+| [03-memoria-e-reflexao-em-agentes-autonomos](./modulo04-criacao-agentes-autonomos/03-memoria-e-reflexao-em-agentes-autonomos/) | Memória de longo prazo do OpsPilot: embeddings locais (`all-MiniLM-L6-v2`), vector store em SQLite com `remember`/`recall`/`forget` por usuário, memórias injetadas no `/chat`, refletor que aprende fatos duráveis em segundo plano e tool `forget_preference` (specs 009–010) |
 
 ## Stack
 
@@ -84,7 +88,7 @@ Construção incremental do **OpsPilot**, um copiloto de plantão / incident com
 - **OpenRouter** — acesso a múltiplos modelos LLM com roteamento automático
 - **Zod** — validação e tipagem de saídas estruturadas dos LLMs
 - **PostgreSQL** — persistência de sessão do LangGraph (checkpointer e store)
-- **SQLite / knex** — persistência leve de preferências de usuário entre sessões
+- **SQLite / knex** — persistência leve de preferências de usuário entre sessões (módulo 02)
 - **Web Workers** — treinamento de modelos no browser sem bloquear a UI
 - **MCP (Model Context Protocol)** — `@langchain/mcp-adapters` conectando LLMs a servidores externos (filesystem, MongoDB) via STDIO; construção de servidores próprios com o SDK oficial `@modelcontextprotocol/sdk` (tools, resources, prompts)
 - **SerpAPI** — dados reais do Google Trends consumidos como tool nativa do LangChain
@@ -92,6 +96,8 @@ Construção incremental do **OpsPilot**, um copiloto de plantão / incident com
 - **Agent Skills** — capacidades empacotadas em Markdown (`SKILL.md`) carregadas sob demanda pelo agente, alternativa ao MCP para contexto/instruções
 - **Spec Kit** — Spec-Driven Development: constituição, spec, plano e tarefas versionados antes do código, executados pelo agente de código via comandos `speckit.*`
 - **Padrões de raciocínio de agentes** — ReAct (`createReactAgent`), Plan-and-Execute (`StateGraph` planner/executor/replanner) e Reflection (crítico como decorator), comparados em arena e bench
+- **SQLite nativo (`node:sqlite`)** — persistência real do OpsPilot via `DatabaseSync`, sem servidor externo, também usado como vector store (vetores em BLOB, busca por força bruta)
+- **Transformers.js (`@huggingface/transformers`)** — embeddings locais com `all-MiniLM-L6-v2`, sem API key, para a memória semântica de longo prazo
 
 ## Conceitos de segurança abordados
 
