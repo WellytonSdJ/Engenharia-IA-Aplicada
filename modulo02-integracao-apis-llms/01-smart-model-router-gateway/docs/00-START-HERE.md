@@ -23,11 +23,11 @@ modelo exato é a camada de roteamento.
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [model-routing.md](./model-routing.md) | O conceito central do projeto — por que rotear modelos em vez de fixar um só |
-| 2 | [openrouter-sdk.md](./openrouter-sdk.md) | Como o SDK do OpenRouter unifica o acesso a múltiplos provedores de LLM |
-| 3 | [fastify.md](./fastify.md) | O framework HTTP usado para expor a rota `/chat` com validação de schema |
-| 4 | [testes-e2e-injecao-dependencia.md](./testes-e2e-injecao-dependencia.md) | Como os testes trocam a configuração de roteamento sem tocar no código de produção |
-| 5 | [glossario.md](./glossario.md) | Referência rápida dos termos novos |
+| 1 | [01-model-routing.md](./01-model-routing.md) | O conceito central do projeto — por que rotear modelos em vez de fixar um só |
+| 2 | [02-openrouter-sdk.md](./02-openrouter-sdk.md) | Como o SDK do OpenRouter unifica o acesso a múltiplos provedores de LLM |
+| 3 | [03-fastify.md](./03-fastify.md) | O framework HTTP usado para expor a rota `/chat` com validação de schema |
+| 4 | [04-testes-e2e-injecao-dependencia.md](./04-testes-e2e-injecao-dependencia.md) | Como os testes trocam a configuração de roteamento sem tocar no código de produção |
+| 5 | [05-glossario.md](./05-glossario.md) | Referência rápida dos termos novos |
 
 ## Mapa do código
 
@@ -63,3 +63,7 @@ o critério muda de `price` para `throughput`:
 ```bash
 npm test
 ```
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Roteamento de Modelos (Model Routing)](./01-model-routing.md)**

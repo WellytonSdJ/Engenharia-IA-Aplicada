@@ -235,3 +235,7 @@ Se preferências de uma conversa anterior contiverem texto malicioso (ex: o usu�
 | userContext no system prompt | [src/prompts/v1/chatResponse.ts](../src/prompts/v1/chatResponse.ts) | Schema tipado na extração |
 | Extração de preferências | [src/prompts/v1/chatResponse.ts](../src/prompts/v1/chatResponse.ts) | `withStructuredOutput` + Zod |
 | Validação de output | [src/services/openrouterService.ts](../src/services/openrouterService.ts) | Schema Zod obrigatório |
+
+---
+
+⬅️ Anterior: [04 · Persistência](./04-persistence.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [06 · Glossário](./06-glossario.md)**

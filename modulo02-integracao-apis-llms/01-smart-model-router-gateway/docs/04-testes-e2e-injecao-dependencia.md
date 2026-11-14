@@ -93,3 +93,7 @@ nenhuma alteração.
 | Cenários de teste com config alternativa | `tests/router.e2e.test.ts` | `customConfig` com `sort.by` sobrescrito |
 | Chamada de rota sem subir porta | `tests/router.e2e.test.ts` | `app.inject({...})` |
 | Runner nativo do Node.js | `package.json` | Scripts `test` e `test:dev` usando `node --test` |
+
+---
+
+⬅️ Anterior: [03 · Fastify](./03-fastify.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [05 · Glossário](./05-glossario.md)**

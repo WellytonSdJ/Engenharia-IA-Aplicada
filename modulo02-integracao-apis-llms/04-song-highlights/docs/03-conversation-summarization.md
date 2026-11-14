@@ -146,3 +146,7 @@ preferencias_previamente_armazenadas: userContext || 'Nenhuma'
 | Trigger de sumarização | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts) |
 | Roteamento para summarize | [src/graph/nodes/edgeConditions.ts](../src/graph/nodes/edgeConditions.ts) |
 | Persistência do resumo | [src/services/preferencesService.ts](../src/services/preferencesService.ts) |
+
+---
+
+⬅️ Anterior: [02 · LangGraph](./02-langgraph.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Persistência](./04-persistence.md)**

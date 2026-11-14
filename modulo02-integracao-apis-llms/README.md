@@ -54,10 +54,10 @@ Documentação aprofundada dos conceitos aplicados disponível em [`01-smart-mod
 
 | Documento | Conteúdo |
 | --- | --- |
-| [model-routing.md](./01-smart-model-router-gateway/docs/model-routing.md) | Roteamento de modelos: escolha do LLM em tempo de requisição por preço, throughput ou latência |
-| [openrouter-sdk.md](./01-smart-model-router-gateway/docs/openrouter-sdk.md) | `@openrouter/sdk`: acesso unificado a múltiplos provedores de LLM |
-| [fastify.md](./01-smart-model-router-gateway/docs/fastify.md) | Servidor HTTP com validação de schema nativa (sem Zod) |
-| [testes-e2e-injecao-dependencia.md](./01-smart-model-router-gateway/docs/testes-e2e-injecao-dependencia.md) | Testes E2E com `node:test` e injeção de dependência via `configOverride` |
+| [01-model-routing.md](./01-smart-model-router-gateway/docs/01-model-routing.md) | Roteamento de modelos: escolha do LLM em tempo de requisição por preço, throughput ou latência |
+| [02-openrouter-sdk.md](./01-smart-model-router-gateway/docs/02-openrouter-sdk.md) | `@openrouter/sdk`: acesso unificado a múltiplos provedores de LLM |
+| [03-fastify.md](./01-smart-model-router-gateway/docs/03-fastify.md) | Servidor HTTP com validação de schema nativa (sem Zod) |
+| [04-testes-e2e-injecao-dependencia.md](./01-smart-model-router-gateway/docs/04-testes-e2e-injecao-dependencia.md) | Testes E2E com `node:test` e injeção de dependência via `configOverride` |
 
 ## Documentação de conceitos (projeto 02)
 
@@ -65,8 +65,8 @@ Documentação aprofundada dos conceitos aplicados disponível em [`02-langchain
 
 | Documento | Conteúdo |
 | --- | --- |
-| [langgraph-intro.md](./02-langchain-intro/docs/langgraph-intro.md) | StateGraph, state com Zod, nós, edges condicionais, `withLangGraph`, compilação do grafo |
-| [langchain-messages.md](./02-langchain-intro/docs/langchain-messages.md) | HumanMessage, AIMessage, BaseMessage, MessagesZodMeta, reducer de mensagens |
+| [01-langgraph-intro.md](./02-langchain-intro/docs/01-langgraph-intro.md) | StateGraph, state com Zod, nós, edges condicionais, `withLangGraph`, compilação do grafo |
+| [02-langchain-messages.md](./02-langchain-intro/docs/02-langchain-messages.md) | HumanMessage, AIMessage, BaseMessage, MessagesZodMeta, reducer de mensagens |
 
 ## Documentação de conceitos (projeto 03)
 
@@ -74,10 +74,10 @@ Documentação aprofundada dos conceitos aplicados disponível em [`03-medical-a
 
 | Documento | Conteúdo |
 | --- | --- |
-| [prompt-chaining.md](./03-medical-appointment/docs/prompt-chaining.md) | Pipeline identify→execute→respond, por que separar etapas, routing condicional |
-| [structured-output.md](./03-medical-appointment/docs/structured-output.md) | Zod schemas como contrato, `generateStructured`, `createAgent`, `providerStrategy` |
-| [node-factory-pattern.md](./03-medical-appointment/docs/node-factory-pattern.md) | Injeção de dependências em nós via factory functions, `Partial<GraphState>` |
-| [domain-vs-llm-service.md](./03-medical-appointment/docs/domain-vs-llm-service.md) | AppointmentService vs OpenRouterService: separação de responsabilidades |
+| [01-prompt-chaining.md](./03-medical-appointment/docs/01-prompt-chaining.md) | Pipeline identify→execute→respond, por que separar etapas, routing condicional |
+| [02-structured-output.md](./03-medical-appointment/docs/02-structured-output.md) | Zod schemas como contrato, `generateStructured`, `createAgent`, `providerStrategy` |
+| [03-node-factory-pattern.md](./03-medical-appointment/docs/03-node-factory-pattern.md) | Injeção de dependências em nós via factory functions, `Partial<GraphState>` |
+| [04-domain-vs-llm-service.md](./03-medical-appointment/docs/04-domain-vs-llm-service.md) | AppointmentService vs OpenRouterService: separação de responsabilidades |
 
 ## Documentação de conceitos (projeto 04)
 
@@ -85,11 +85,11 @@ Documentação aprofundada dos conceitos aplicados disponível em [`04-song-high
 
 | Documento | Conteúdo |
 | --- | --- |
-| [langchain.md](./04-song-highlights/docs/langchain.md) | Abstrações core, ChatOpenAI, structured output, integração com LangGraph |
-| [langgraph.md](./04-song-highlights/docs/langgraph.md) | StateGraph, nós, edges, reducers, checkpointer, store, Runtime |
-| [conversation-summarization.md](./04-song-highlights/docs/conversation-summarization.md) | Sumarização incremental, trigger por contagem, RemoveMessage |
-| [persistence.md](./04-song-highlights/docs/persistence.md) | Postgres (LangGraph) vs SQLite (preferências), quando usar cada um |
-| [prompt-injection.md](./04-song-highlights/docs/prompt-injection.md) | O que é, vetores de ataque, mitigações, exposições no projeto |
+| [01-langchain.md](./04-song-highlights/docs/01-langchain.md) | Abstrações core, ChatOpenAI, structured output, integração com LangGraph |
+| [02-langgraph.md](./04-song-highlights/docs/02-langgraph.md) | StateGraph, nós, edges, reducers, checkpointer, store, Runtime |
+| [03-conversation-summarization.md](./04-song-highlights/docs/03-conversation-summarization.md) | Sumarização incremental, trigger por contagem, RemoveMessage |
+| [04-persistence.md](./04-song-highlights/docs/04-persistence.md) | Postgres (LangGraph) vs SQLite (preferências), quando usar cada um |
+| [05-prompt-injection.md](./04-song-highlights/docs/05-prompt-injection.md) | O que é, vetores de ataque, mitigações, exposições no projeto |
 
 ## Documentação de conceitos (projeto 05)
 
@@ -97,11 +97,11 @@ Documentação aprofundada dos conceitos aplicados disponível em [`05-safeguard
 
 | Documento | Conteúdo |
 | --- | --- |
-| [prompt-injection.md](./05-safeguard-prompt-injection/docs/prompt-injection.md) | Demonstração prática dos ataques: override direto, instrução indireta, por que system prompt não protege |
-| [guardrails.md](./05-safeguard-prompt-injection/docs/guardrails.md) | O que são guardrails, safeguard model vs. executor, defesa determinística vs. probabilística, fail closed |
-| [mcp.md](./05-safeguard-prompt-injection/docs/mcp.md) | Model Context Protocol: servidor de filesystem, STDIO transport, por que MCP amplifica o risco de injection |
-| [rbac.md](./05-safeguard-prompt-injection/docs/rbac.md) | Role-Based Access Control: admin/member, por que RBAC via prompt falha, RBAC via código |
-| [langgraph.md](./05-safeguard-prompt-injection/docs/langgraph.md) | Grafo de segurança: guardrails_check → chat/blocked, SafeguardStateAnnotation, roteamento condicional |
+| [01-prompt-injection.md](./05-safeguard-prompt-injection/docs/01-prompt-injection.md) | Demonstração prática dos ataques: override direto, instrução indireta, por que system prompt não protege |
+| [02-guardrails.md](./05-safeguard-prompt-injection/docs/02-guardrails.md) | O que são guardrails, safeguard model vs. executor, defesa determinística vs. probabilística, fail closed |
+| [03-mcp.md](./05-safeguard-prompt-injection/docs/03-mcp.md) | Model Context Protocol: servidor de filesystem, STDIO transport, por que MCP amplifica o risco de injection |
+| [04-rbac.md](./05-safeguard-prompt-injection/docs/04-rbac.md) | Role-Based Access Control: admin/member, por que RBAC via prompt falha, RBAC via código |
+| [05-langgraph.md](./05-safeguard-prompt-injection/docs/05-langgraph.md) | Grafo de segurança: guardrails_check → chat/blocked, SafeguardStateAnnotation, roteamento condicional |
 
 ## Documentação de conceitos (projeto 06)
 
@@ -109,7 +109,7 @@ Documentação aprofundada dos conceitos aplicados disponível em [`06-rag-neo4j
 
 | Documento | Conteúdo |
 | --- | --- |
-| [rag-com-grafos.md](./06-rag-neo4j-students/docs/rag-com-grafos.md) | O que é RAG, por que usar um banco de grafos (Neo4j) em vez de busca vetorial |
-| [text-to-cypher.md](./06-rag-neo4j-students/docs/text-to-cypher.md) | Conversão de linguagem natural em Cypher: o núcleo do sistema, riscos e validação |
-| [langgraph-pipeline.md](./06-rag-neo4j-students/docs/langgraph-pipeline.md) | Pipeline de 6 nós no LangGraph orquestrando geração, execução e resposta |
-| [multi-step.md](./06-rag-neo4j-students/docs/multi-step.md) | Decomposição de perguntas complexas em sub-queries independentes |
+| [01-rag-com-grafos.md](./06-rag-neo4j-students/docs/01-rag-com-grafos.md) | O que é RAG, por que usar um banco de grafos (Neo4j) em vez de busca vetorial |
+| [03-text-to-cypher.md](./06-rag-neo4j-students/docs/03-text-to-cypher.md) | Conversão de linguagem natural em Cypher: o núcleo do sistema, riscos e validação |
+| [02-langgraph-pipeline.md](./06-rag-neo4j-students/docs/02-langgraph-pipeline.md) | Pipeline de 6 nós no LangGraph orquestrando geração, execução e resposta |
+| [04-multi-step.md](./06-rag-neo4j-students/docs/04-multi-step.md) | Decomposição de perguntas complexas em sub-queries independentes |

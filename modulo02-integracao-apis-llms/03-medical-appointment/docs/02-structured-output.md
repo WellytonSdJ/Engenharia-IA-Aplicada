@@ -155,3 +155,7 @@ Falhas do LLM viram estados de erro no grafo, não exceções que derrubam o ser
 | generateStructured | `src/services/openRouterService.ts` | `createAgent`, `providerStrategy(schema)`, `data.structuredResponse` |
 | Uso do resultado | `src/graph/nodes/identifyIntentNode.ts` | `result.data!` tipado, spread no estado |
 | Tratamento de falha | `src/graph/nodes/messageGeneratorNode.ts` | Fallback quando `result.error` está presente |
+
+---
+
+⬅️ Anterior: [01 · Prompt Chaining](./01-prompt-chaining.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Node Factory Pattern](./03-node-factory-pattern.md)**

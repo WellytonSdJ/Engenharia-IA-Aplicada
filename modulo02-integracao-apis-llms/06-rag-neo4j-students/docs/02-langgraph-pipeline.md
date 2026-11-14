@@ -227,3 +227,7 @@ Isso facilita testes — você pode passar mocks de `Neo4jService` sem tocar no 
 | Factory de serviços | [src/graph/factory.ts](../src/graph/factory.ts) |
 | Nós do grafo | [src/graph/nodes/](../src/graph/nodes/) |
 | Limites (correção, sub-perguntas) | [src/config.ts](../src/config.ts) |
+
+---
+
+⬅️ Anterior: [01 · RAG com Grafos](./01-rag-com-grafos.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Text-to-Cypher](./03-text-to-cypher.md)**

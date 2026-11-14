@@ -166,3 +166,7 @@ Além da complexidade técnica, há um motivo prático: o LLM erra mais em queri
 | Síntese multi-step | [src/graph/nodes/analyticalResponseNode.ts](../src/graph/nodes/analyticalResponseNode.ts) |
 | Prompt de síntese | [src/prompts/v1/analyticalResponse.ts](../src/prompts/v1/analyticalResponse.ts) |
 | Limite de sub-perguntas | [src/config.ts](../src/config.ts) |
+
+---
+
+⬅️ Anterior: [03 · Text-to-Cypher](./03-text-to-cypher.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [05 · Glossário](./05-glossario.md)**

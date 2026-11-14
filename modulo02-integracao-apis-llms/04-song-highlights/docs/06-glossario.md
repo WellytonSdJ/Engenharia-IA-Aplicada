@@ -28,7 +28,7 @@ Referência rápida. Para profundidade, vá ao documento específico de cada con
 | **AIMessage** | Tipo de mensagem que representa resposta do modelo. |
 | **SystemMessage** | Tipo de mensagem com instruções para o modelo (não é "fala" do usuário). |
 | **RemoveMessage** | Instrução especial do LangGraph processada pelo reducer de mensagens — sinaliza que a mensagem com aquele `id` deve ser removida do state. |
-| **Structured Output** | Resposta do modelo forçada a ser um JSON com schema definido. Elimina `JSON.parse` manual. Ver [langchain.md](./langchain.md). |
+| **Structured Output** | Resposta do modelo forçada a ser um JSON com schema definido. Elimina `JSON.parse` manual. Ver [01-langchain.md](./01-langchain.md). |
 | **withStructuredOutput** | Método do LangChain que configura o modelo para retornar output validado por um schema Zod. Usa tool calling ou JSON mode dependendo do modelo. |
 
 ---
@@ -75,7 +75,7 @@ Referência rápida. Para profundidade, vá ao documento específico de cada con
 | --- | --- |
 | **Short-term memory** | Histórico da conversa atual — armazenado no Postgres via checkpointer do LangGraph. |
 | **Long-term memory** | Preferências estáveis do usuário — armazenadas no SQLite, persistem entre sessões. |
-| **Resumo incremental** | Técnica de manter um resumo que evolui: `resumo anterior + mensagens novas → novo resumo`. Evita reprocessar o histórico completo. Ver [conversation-summarization.md](./conversation-summarization.md). |
+| **Resumo incremental** | Técnica de manter um resumo que evolui: `resumo anterior + mensagens novas → novo resumo`. Evita reprocessar o histórico completo. Ver [03-conversation-summarization.md](./03-conversation-summarization.md). |
 | **mergePreferences** | Método do `PreferencesService` que acumula preferências novas sem sobrescrever as existentes — usa `Set` para deduplicar gêneros e bandas. |
 | **storeSummary** | Método do `PreferencesService` que sobrescreve as preferências com o resumo gerado pelo LLM (o LLM já recebeu o estado anterior como input). |
 | **maxMessagesToSummary** | Configuração que define quantas mensagens no state disparam a sumarização automática. |
@@ -86,7 +86,7 @@ Referência rápida. Para profundidade, vá ao documento específico de cada con
 
 | Termo | Definição |
 | --- | --- |
-| **Prompt Injection** | Ataque onde input externo insere instruções que manipulam o comportamento do LLM. O análogo de SQL injection para modelos de linguagem. Ver [prompt-injection.md](./prompt-injection.md). |
+| **Prompt Injection** | Ataque onde input externo insere instruções que manipulam o comportamento do LLM. O análogo de SQL injection para modelos de linguagem. Ver [05-prompt-injection.md](./05-prompt-injection.md). |
 | **Prompt Hijacking** | Variação de prompt injection onde o atacante "sequestra" o papel do modelo — faz a IA assumir uma identidade ou conjunto de regras diferente do definido no system prompt. |
 | **Jailbreak** | Técnica de contornar as restrições de um modelo via narrativa, roleplay ou framing especial ("DAN", "modo de manutenção", "fins educacionais"). |
 | **Guardrails** | Camada de validação externa que intercepta o prompt *antes* de chegar ao modelo executor. Um modelo validador (sem acesso a ferramentas) classifica o input como SAFE ou UNSAFE. |
@@ -153,3 +153,7 @@ Referência rápida. Para profundidade, vá ao documento específico de cada con
 | --- | --- |
 | **Equity** | Participação societária numa empresa (ações). Compensação comum para Founding Engineers. |
 | **Founding Engineer** | Primeiro engenheiro de uma startup. Define stack, arquitetura e coloca a primeira versão em produção. Alto risco, potencial de equity significativo. |
+
+---
+
+⬅️ Anterior: [05 · Prompt Injection e Guardrails](./05-prompt-injection.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 05, [05-safeguard-prompt-injection](../../05-safeguard-prompt-injection/docs/00-START-HERE.md)**

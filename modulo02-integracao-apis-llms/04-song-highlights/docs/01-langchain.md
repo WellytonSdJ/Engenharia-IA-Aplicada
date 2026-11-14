@@ -154,3 +154,7 @@ Para structured output, valores mais baixos tendem a gerar JSON mais confiável.
 | `HumanMessage`, `AIMessage`, `RemoveMessage` | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts), [src/graph/nodes/summarizationNode.ts](../src/graph/nodes/summarizationNode.ts) |
 | `SystemMessage`, `HumanMessage` no invoke | [src/services/openrouterService.ts](../src/services/openrouterService.ts) |
 | Schemas Zod para structured output | [src/prompts/v1/chatResponse.ts](../src/prompts/v1/chatResponse.ts), [src/prompts/v1/summarization.ts](../src/prompts/v1/summarization.ts) |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · LangGraph](./02-langgraph.md)**

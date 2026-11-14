@@ -18,11 +18,11 @@ começa no projeto 02 com LangGraph).
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Trilha de leitura, mapa do código, como rodar |
-| [model-routing.md](./model-routing.md) | O conceito central: roteamento de modelos por preço, throughput ou latência |
-| [openrouter-sdk.md](./openrouter-sdk.md) | Como o `@openrouter/sdk` unifica o acesso a múltiplos provedores de LLM |
-| [fastify.md](./fastify.md) | Servidor HTTP com validação de schema nativa |
-| [testes-e2e-injecao-dependencia.md](./testes-e2e-injecao-dependencia.md) | Testes E2E com `node:test` e injeção de dependência via `configOverride` |
-| [glossario.md](./glossario.md) | Referência rápida dos termos novos |
+| [01-model-routing.md](./01-model-routing.md) | O conceito central: roteamento de modelos por preço, throughput ou latência |
+| [02-openrouter-sdk.md](./02-openrouter-sdk.md) | Como o `@openrouter/sdk` unifica o acesso a múltiplos provedores de LLM |
+| [03-fastify.md](./03-fastify.md) | Servidor HTTP com validação de schema nativa |
+| [04-testes-e2e-injecao-dependencia.md](./04-testes-e2e-injecao-dependencia.md) | Testes E2E com `node:test` e injeção de dependência via `configOverride` |
+| [05-glossario.md](./05-glossario.md) | Referência rápida dos termos novos |
 
 ## Contexto do projeto
 
@@ -33,3 +33,7 @@ começa no projeto 02 com LangGraph).
 | **TypeScript** | Tipagem do projeto, executado nativamente pelo Node.js sem compilação prévia |
 | **Node.js `--experimental-strip-types`** | Execução direta de `.ts` sem `tsc`/`ts-node` |
 | **`node:test`** | Runner de testes E2E nativo do Node.js |
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

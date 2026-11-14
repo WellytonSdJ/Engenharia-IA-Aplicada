@@ -122,3 +122,7 @@ Os projetos seguintes (especialmente `04-song-highlights`) usam `messages` para 
 | Leitura da última mensagem | `src/graph/nodes/identifyIntentNode.ts` | `state.messages.at(-1)?.text` |
 | AIMessage como output | `src/graph/nodes/chatResponseNode.ts` | `new AIMessage(responseText)` |
 | AIMessage no fallback | `src/graph/nodes/fallbackNode.ts` | `.content.toString()` para acessar o texto |
+
+---
+
+⬅️ Anterior: [01 · LangGraph](./01-langgraph-intro.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Glossário](./03-glossario.md)**

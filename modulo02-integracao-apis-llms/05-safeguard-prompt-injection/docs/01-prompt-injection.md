@@ -1,6 +1,6 @@
 # Prompt Injection
 
-> Se você já leu o [prompt-injection.md do projeto 02](../../02-song-highlights/docs/prompt-injection.md), este documento vai mais fundo: aqui o ataque é executado de verdade, não apenas descrito. O foco está na demonstração prática e no por quê de cada vetor funcionar.
+> Se você já leu o [05-prompt-injection.md do projeto 04](../../04-song-highlights/docs/05-prompt-injection.md), este documento vai mais fundo: aqui o ataque é executado de verdade, não apenas descrito. O foco está na demonstração prática e no por quê de cada vetor funcionar.
 
 ---
 
@@ -154,7 +154,7 @@ Sem MCP:   injeção → LLM responde texto indevido
 Com MCP:   injeção → LLM executa tool → arquivo lido, dado exfiltrado, ação realizada
 ```
 
-Isso torna guardrails não apenas uma boa prática, mas uma necessidade arquitetural quando ferramentas estão envolvidas. Ver [mcp.md](./mcp.md) para o detalhamento.
+Isso torna guardrails não apenas uma boa prática, mas uma necessidade arquitetural quando ferramentas estão envolvidas. Ver [03-mcp.md](./03-mcp.md) para o detalhamento.
 
 ---
 
@@ -167,3 +167,7 @@ Isso torna guardrails não apenas uma boa prática, mas uma necessidade arquitet
 | Exemplos de ataque | [prompts/user/](../prompts/user/) | Os dois vetores usados nos testes |
 | PromptTemplate em uso | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts) | Substituição segura vs. manual (comentada) |
 | Verificação do guardrail | [src/services/openrouterService.ts](../src/services/openrouterService.ts) | `checkGuardRails`: como o safeguard model é chamado |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Guardrails](./02-guardrails.md)**

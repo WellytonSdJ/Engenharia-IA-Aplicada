@@ -11,11 +11,11 @@ Documentação de estudo do projeto `03-medical-appointment`.
 | Documento | O que cobre |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Trilha de leitura, mapa do código, fluxo do projeto |
-| [prompt-chaining.md](./prompt-chaining.md) | O padrão central: múltiplas chamadas LLM em pipeline via grafo |
-| [structured-output.md](./structured-output.md) | Zod schemas para forçar saída estruturada do LLM, `generateStructured`, `createAgent`, `providerStrategy` |
-| [node-factory-pattern.md](./node-factory-pattern.md) | Como injetar dependências (LLM client, services) em nós via factory functions |
-| [domain-vs-llm-service.md](./domain-vs-llm-service.md) | Separação entre `AppointmentService` (lógica de negócio) e `OpenRouterService` (chamadas ao LLM) |
-| [glossario.md](./glossario.md) | Termos novos deste projeto — referência rápida |
+| [01-prompt-chaining.md](./01-prompt-chaining.md) | O padrão central: múltiplas chamadas LLM em pipeline via grafo |
+| [02-structured-output.md](./02-structured-output.md) | Zod schemas para forçar saída estruturada do LLM, `generateStructured`, `createAgent`, `providerStrategy` |
+| [03-node-factory-pattern.md](./03-node-factory-pattern.md) | Como injetar dependências (LLM client, services) em nós via factory functions |
+| [04-domain-vs-llm-service.md](./04-domain-vs-llm-service.md) | Separação entre `AppointmentService` (lógica de negócio) e `OpenRouterService` (chamadas ao LLM) |
+| [05-glossario.md](./05-glossario.md) | Termos novos deste projeto — referência rápida |
 
 ---
 
@@ -28,8 +28,12 @@ Sistema de agendamento médico por linguagem natural. O usuário digita em lingu
 3. Usa outro LLM para gerar a resposta amigável em português
 
 Tecnologias:
-- **LangGraph** (`@langchain/langgraph`) — orquestra o pipeline via `StateGraph` (ver [langgraph-intro.md](../../02-langchain-intro/docs/langgraph-intro.md))
+- **LangGraph** (`@langchain/langgraph`) — orquestra o pipeline via `StateGraph` (ver [01-langgraph-intro.md](../../02-langchain-intro/docs/01-langgraph-intro.md))
 - **LangChain** (`langchain`) — `ChatOpenAI`, `createAgent`, `providerStrategy`, tipos de mensagem
 - **OpenRouter** — gateway de LLMs (já visto em `01-smart-model-router-gateway`)
 - **Zod** — define e valida os schemas de saída esperados do LLM
 - **AppointmentService** — CRUD in-memory de consultas médicas (sem banco de dados)
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

@@ -35,13 +35,13 @@ A lógica de negócio (checar disponibilidade, inserir na lista) é **determiní
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [prompt-chaining.md](./prompt-chaining.md) | O padrão central do projeto. Entenda o pipeline antes de entrar no código de cada nó. |
-| 2 | [structured-output.md](./structured-output.md) | Como o LLM retorna dados estruturados em vez de texto livre. É o que torna o prompt chaining confiável: sem isso, você teria que parsear texto de LLM manualmente. |
-| 3 | [node-factory-pattern.md](./node-factory-pattern.md) | Como os nós recebem o LLM client e o AppointmentService como dependência — necessário para entender por que os nós são funções que retornam funções. |
-| 4 | [domain-vs-llm-service.md](./domain-vs-llm-service.md) | A separação entre o serviço de agendamento (lógica de negócio) e o serviço de LLM (chamadas ao modelo). |
-| 5 | [glossario.md](./glossario.md) | Termos novos deste projeto. |
+| 1 | [01-prompt-chaining.md](./01-prompt-chaining.md) | O padrão central do projeto. Entenda o pipeline antes de entrar no código de cada nó. |
+| 2 | [02-structured-output.md](./02-structured-output.md) | Como o LLM retorna dados estruturados em vez de texto livre. É o que torna o prompt chaining confiável: sem isso, você teria que parsear texto de LLM manualmente. |
+| 3 | [03-node-factory-pattern.md](./03-node-factory-pattern.md) | Como os nós recebem o LLM client e o AppointmentService como dependência — necessário para entender por que os nós são funções que retornam funções. |
+| 4 | [04-domain-vs-llm-service.md](./04-domain-vs-llm-service.md) | A separação entre o serviço de agendamento (lógica de negócio) e o serviço de LLM (chamadas ao modelo). |
+| 5 | [05-glossario.md](./05-glossario.md) | Termos novos deste projeto. |
 
-Para fundamentos de LangGraph (StateGraph, nodes, edges), consulte o projeto anterior: [`02-langchain-intro/docs/langgraph-intro.md`](../../02-langchain-intro/docs/langgraph-intro.md).
+Para fundamentos de LangGraph (StateGraph, nodes, edges), consulte o projeto anterior: [`02-langchain-intro/docs/01-langgraph-intro.md`](../../02-langchain-intro/docs/01-langgraph-intro.md).
 
 ---
 
@@ -98,3 +98,7 @@ npm test
 ```
 
 Observe os logs do console ao rodar. Cada nó emite emoji de status (🔍 ✅ 📅 💬 ❌) que tornam o fluxo do grafo visível em tempo real.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Prompt Chaining](./01-prompt-chaining.md)**

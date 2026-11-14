@@ -118,3 +118,7 @@ O LLM nunca "chuta" a estrutura do banco — ele a recebe dinamicamente a cada r
 | Regras de negócio nos prompts | [src/prompts/v1/salesContext.ts](../src/prompts/v1/salesContext.ts) |
 | Injeção de schema no gerador | [src/graph/nodes/cypherGeneratorNode.ts](../src/graph/nodes/cypherGeneratorNode.ts) |
 | Docker com Neo4j | [docker-compose.yaml](../docker-compose.yaml) |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · LangGraph](./02-langgraph-pipeline.md)**

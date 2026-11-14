@@ -133,3 +133,7 @@ O `AppointmentService` nunca chama o LLM. O `OpenRouterService` nunca acessa a l
 | Injeção dos dois | `src/graph/graph.ts` | `buildAppointmentGraph(llmClient, appointmentService)` |
 | Integração no nó | `src/graph/nodes/identifyIntentNode.ts` | `professionals` no prompt + `llmClient.generateStructured` |
 | Execução determinística | `src/graph/nodes/schedulerNode.ts` | `appointmentService.bookAppointment(...)` — sem LLM |
+
+---
+
+⬅️ Anterior: [03 · Node Factory Pattern](./03-node-factory-pattern.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [05 · Glossário](./05-glossario.md)**

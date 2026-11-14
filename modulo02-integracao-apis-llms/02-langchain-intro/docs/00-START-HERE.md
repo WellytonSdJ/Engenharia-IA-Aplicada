@@ -28,9 +28,9 @@ else                              lowercase → chatResponse → END
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [langgraph-intro.md](./langgraph-intro.md) | A base: o que é `StateGraph`, como o estado funciona com Zod, como nós e edges são definidos. Leia antes do código — os arquivos fazem muito mais sentido depois. |
-| 2 | [langchain-messages.md](./langchain-messages.md) | Por que o estado guarda `messages: BaseMessage[]` em vez de `messages: string[]`. O sistema de mensagens do LangChain é o formato padrão que todos os projetos seguintes vão usar. |
-| 3 | [glossario.md](./glossario.md) | Referência rápida dos termos novos. |
+| 1 | [01-langgraph-intro.md](./01-langgraph-intro.md) | A base: o que é `StateGraph`, como o estado funciona com Zod, como nós e edges são definidos. Leia antes do código — os arquivos fazem muito mais sentido depois. |
+| 2 | [02-langchain-messages.md](./02-langchain-messages.md) | Por que o estado guarda `messages: BaseMessage[]` em vez de `messages: string[]`. O sistema de mensagens do LangChain é o formato padrão que todos os projetos seguintes vão usar. |
+| 3 | [03-glossario.md](./03-glossario.md) | Referência rápida dos termos novos. |
 
 ---
 
@@ -94,3 +94,7 @@ curl localhost:3000/chat \
 ```
 
 Os testes cobrem exatamente esses três cenários — leia `tests/router.e2e.test.ts` para ver como o Fastify é testado com `.inject()` sem precisar subir o servidor de verdade.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · LangGraph](./01-langgraph-intro.md)**

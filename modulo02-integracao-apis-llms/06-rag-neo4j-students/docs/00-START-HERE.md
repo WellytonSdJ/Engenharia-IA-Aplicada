@@ -27,11 +27,11 @@ Pergunta em português → Cypher → Neo4j → Prosa analítica
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [rag-com-grafos.md](./rag-com-grafos.md) | Fundação: o que é RAG, por que grafo é diferente de vetor, como o Neo4j organiza o domínio de vendas. Sem isso, o propósito do projeto fica vago. |
-| 2 | [langgraph-pipeline.md](./langgraph-pipeline.md) | A arquitetura central: como o StateGraph orquestra os 6 nós, o que é o estado compartilhado, como as edges condicionais decidem o fluxo. |
-| 3 | [text-to-cypher.md](./text-to-cypher.md) | O núcleo técnico: como o LLM gera Cypher a partir de schema real, como a validação com `EXPLAIN` funciona, e como a autocorreção fecha o loop quando a query falha. |
-| 4 | [multi-step.md](./multi-step.md) | Como perguntas complexas são decompostas em sub-queries sequenciais e os resultados são sintetizados ao final. |
-| 5 | [glossario.md](./glossario.md) | Referência rápida de todos os termos. Consulte quando encontrar algo que não reconhece. |
+| 1 | [01-rag-com-grafos.md](./01-rag-com-grafos.md) | Fundação: o que é RAG, por que grafo é diferente de vetor, como o Neo4j organiza o domínio de vendas. Sem isso, o propósito do projeto fica vago. |
+| 2 | [02-langgraph-pipeline.md](./02-langgraph-pipeline.md) | A arquitetura central: como o StateGraph orquestra os 6 nós, o que é o estado compartilhado, como as edges condicionais decidem o fluxo. |
+| 3 | [03-text-to-cypher.md](./03-text-to-cypher.md) | O núcleo técnico: como o LLM gera Cypher a partir de schema real, como a validação com `EXPLAIN` funciona, e como a autocorreção fecha o loop quando a query falha. |
+| 4 | [04-multi-step.md](./04-multi-step.md) | Como perguntas complexas são decompostas em sub-queries sequenciais e os resultados são sintetizados ao final. |
+| 5 | [05-glossario.md](./05-glossario.md) | Referência rápida de todos os termos. Consulte quando encontrar algo que não reconhece. |
 
 ---
 
@@ -81,3 +81,7 @@ Este projeto é o módulo de RAG com grafos. Os conceitos implementados aqui:
 - **LangGraph:** StateGraph com edges condicionais e estado compartilhado (ver módulo 2)
 - **Structured Output com Zod:** validação de respostas LLM em todos os nós (ver módulo 2)
 - **Self-correction:** loop automático de correção quando a query gerada é inválida — padrão agentic
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · RAG com Grafos](./01-rag-com-grafos.md)**

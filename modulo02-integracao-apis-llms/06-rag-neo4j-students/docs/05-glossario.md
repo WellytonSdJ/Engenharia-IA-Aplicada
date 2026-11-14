@@ -93,3 +93,7 @@ Referência rápida. Para profundidade, vá ao documento específico de cada con
 | **Neo4jGraph** | Abstração do LangChain Community que encapsula o driver e expõe `.schema` e `.query()`. |
 | **Faker** | Biblioteca para geração de dados fictícios. Usada no seed para criar alunos com nome, email e telefone realistas. |
 | **LangSmith** | Plataforma de observabilidade do LangChain — mostra nós executados, prompts enviados, respostas, latência e tokens. Opcional neste projeto. |
+
+---
+
+⬅️ Anterior: [04 · Multi-Step](./04-multi-step.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: módulo 03, projeto 01, [01-multiple-mcp-tools](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/00-START-HERE.md)**

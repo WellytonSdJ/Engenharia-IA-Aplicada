@@ -1,7 +1,7 @@
 # Glossário — Medical Appointment
 
 Termos já cobertos nos projetos anteriores não são repetidos aqui. Consulte:
-- [`02-langchain-intro/docs/glossario.md`](../../02-langchain-intro/docs/glossario.md) — LangGraph (StateGraph, nós, edges, reducer, MessagesZodMeta)
+- [`02-langchain-intro/docs/03-glossario.md`](../../02-langchain-intro/docs/03-glossario.md) — LangGraph (StateGraph, nós, edges, reducer, MessagesZodMeta)
 - [`01-smart-model-router-gateway/docs/`](../../01-smart-model-router-gateway/docs/) — OpenRouter, Fastify
 
 ---
@@ -43,3 +43,7 @@ Termos já cobertos nos projetos anteriores não são repetidos aqui. Consulte:
 | **Intent** | A intenção do usuário extraída via LLM: `schedule` (agendar), `cancel` (cancelar) ou `unknown` (desconhecida). |
 | **Scenario** | String composta de `intent + "_" + resultado` usada pelo `messageGeneratorNode` para selecionar o tom da resposta: `schedule_success`, `cancel_error`, `unknown_undefined`, etc. |
 | **In-memory CRUD** | Implementação de banco de dados usando apenas um array JavaScript em memória. Os dados são perdidos quando o processo encerra — substituto de banco real para fins de demonstração. |
+
+---
+
+⬅️ Anterior: [04 · Domain Service vs LLM Service](./04-domain-vs-llm-service.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 04, [04-song-highlights](../../04-song-highlights/docs/00-START-HERE.md)**

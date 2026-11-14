@@ -214,3 +214,7 @@ LANGCHAIN_PROJECT=song-highlights
 | Checkpointer + Store | [src/services/memoryService.ts](../src/services/memoryService.ts) |
 | Compilação e configuração | [src/graph/factory.ts](../src/graph/factory.ts) |
 | Invoke com thread_id e context | [src/index.ts](../src/index.ts) |
+
+---
+
+⬅️ Anterior: [01 · LangChain](./01-langchain.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Sumarização de Conversas](./03-conversation-summarization.md)**

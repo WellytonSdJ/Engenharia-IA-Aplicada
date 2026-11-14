@@ -38,3 +38,7 @@ Termos do projeto anterior (`01-smart-model-router-gateway`) não são repetidos
 | **Grafo de estado** | Padrão arquitetural onde um estado compartilhado flui por uma rede de funções conectadas (nós). O LangGraph implementa esse padrão. |
 | **Roteamento condicional** | Decisão de qual caminho seguir baseada no estado atual do grafo, em vez de if/else no código imperativo. |
 | **Intent detection** | Identificação da intenção do usuário a partir do input. Neste projeto é determinístico (substring). No `03-medical-appointment`, passa a ser feito via LLM. |
+
+---
+
+⬅️ Anterior: [02 · LangChain Messages](./02-langchain-messages.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 03, [03-medical-appointment](../../03-medical-appointment/docs/00-START-HERE.md)**

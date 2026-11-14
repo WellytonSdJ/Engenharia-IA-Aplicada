@@ -57,7 +57,7 @@ Pontos a observar:
   `400` sozinho.
 - `createServer` recebe o `routerService` **por parâmetro**, em vez de importar um singleton
   fixo. Essa é a mesma técnica de injeção de dependência explorada em
-  [testes-e2e-injecao-dependencia.md](./testes-e2e-injecao-dependencia.md).
+  [04-testes-e2e-injecao-dependencia.md](./04-testes-e2e-injecao-dependencia.md).
 
 ## Por que schema no Fastify em vez de Zod aqui
 
@@ -74,3 +74,7 @@ não há Zod neste projeto.
 | Schema de validação do body | `src/server.ts` | Bloco `schema.body` com `required` e `minLength` |
 | Subida do servidor | `src/index.ts` | `app.listen({ port: 3000, host: '0.0.0.0' })` |
 | Testes contra o app sem subir porta | `tests/router.e2e.test.ts` | Uso de `app.inject(...)` |
+
+---
+
+⬅️ Anterior: [02 · OpenRouter SDK](./02-openrouter-sdk.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Testes E2E e Injeção de Dependência](./04-testes-e2e-injecao-dependencia.md)**

@@ -177,3 +177,7 @@ O agente é inicializado na primeira chamada ao `generate` e reutilizado nas seg
 | Agente com ferramentas MCP | [src/services/openrouterService.ts](../src/services/openrouterService.ts) | `createAgent`, `getMCPTools`, lazy init |
 | Nó que usa as ferramentas | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts) | Chama `openRouterService.generate` com sistema de permissões |
 | Dependência MCP | [package.json](../package.json) | `@langchain/mcp-adapters` e `@modelcontextprotocol/server-filesystem` |
+
+---
+
+⬅️ Anterior: [02 · Guardrails](./02-guardrails.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · RBAC](./04-rbac.md)**

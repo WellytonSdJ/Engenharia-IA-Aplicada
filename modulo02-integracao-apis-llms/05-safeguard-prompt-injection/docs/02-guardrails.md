@@ -222,3 +222,7 @@ Cada bloqueio é um evento de segurança. Em produção, você quer saber: quem 
 | Roteamento de segurança | [src/graph/nodes/edgeConditions.ts](../src/graph/nodes/edgeConditions.ts) | A decisão em código: `'chat'` ou `'blocked'` |
 | Prompt do guardrail | [prompts/guardrails.txt](../prompts/guardrails.txt) | Instrução simples: SAFE ou UNSAFE + motivo |
 | Prompt de bloqueio | [prompts/blocked.txt](../prompts/blocked.txt) | Template da mensagem mostrada ao usuário bloqueado |
+
+---
+
+⬅️ Anterior: [01 · Prompt Injection](./01-prompt-injection.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · MCP](./03-mcp.md)**

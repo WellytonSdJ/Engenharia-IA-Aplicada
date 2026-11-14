@@ -2,7 +2,7 @@
 
 Referência rápida dos termos deste projeto. Para profundidade, vá ao documento específico de cada conceito.
 
-Termos já cobertos no [glossário do projeto 02](../../02-song-highlights/docs/glossario.md) (LangGraph, LangChain, OpenRouter, Zod, etc.) não são repetidos aqui — consulte lá quando necessário.
+Termos já cobertos no [glossário do projeto 04](../../04-song-highlights/docs/06-glossario.md) (LangGraph, LangChain, OpenRouter, Zod, etc.) não são repetidos aqui — consulte lá quando necessário.
 
 ---
 
@@ -73,3 +73,7 @@ Termos já cobertos no [glossário do projeto 02](../../02-song-highlights/docs/
 | **routeAfterGuardrails** | Função de roteamento condicional: lê `guardrailsEnabled` e `guardrailCheck` do estado e retorna `'chat'` ou `'blocked'`. Decisão em código. |
 | **blockedNode** | Nó que monta mensagem de bloqueio usando template de texto — sem invocar nenhum LLM. Resulta de um roteamento UNSAFE. |
 | **Single-shot** | Grafo que processa uma mensagem por invocação, sem histórico entre invocações (sem checkpointer). Diferente do projeto 02, que retoma sessões via `thread_id`. |
+
+---
+
+⬅️ Anterior: [05 · LangGraph neste projeto](./05-langgraph.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 06, [06-rag-neo4j-students](../../06-rag-neo4j-students/docs/00-START-HERE.md)**

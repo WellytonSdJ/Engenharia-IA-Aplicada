@@ -141,3 +141,7 @@ Os dois padrões funcionam com LangGraph — este projeto usa o segundo que é m
 | Composição no entry point | `src/index.ts` | `new OpenRouterService()`, `new AppointmentService()`, `buildAppointmentGraph(...)` |
 | Validação no nó | `src/graph/nodes/schedulerNode.ts` | `ScheduleRequiredFieldsSchema.safeParse(state)` antes de executar |
 | Partial return | Todos os nós async | `Promise<Partial<GraphState>>` — retorna só os campos que mudaram |
+
+---
+
+⬅️ Anterior: [02 · Structured Output](./02-structured-output.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Domain Service vs LLM Service](./04-domain-vs-llm-service.md)**

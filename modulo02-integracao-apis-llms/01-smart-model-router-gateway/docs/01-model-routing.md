@@ -89,3 +89,7 @@ fora do escopo deste projeto.
 | Envio do critério para a API | `src/openrouterService.ts` | Parâmetro `provider` em `client.chat.send` |
 | Auditoria do modelo escolhido | `src/openrouterService.ts` | Campo `response.model` retornado ao cliente |
 | Verificação do roteamento | `tests/router.e2e.test.ts` | Testes que trocam `sort.by` e checam `body.model` |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · OpenRouter SDK](./02-openrouter-sdk.md)**

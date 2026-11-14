@@ -111,3 +111,7 @@ preferencias_previamente_armazenadas: userContext || 'Nenhuma'
 | SQLite / preferências | [src/services/preferencesService.ts](../src/services/preferencesService.ts) |
 | Injeção no grafo | [src/graph/factory.ts](../src/graph/factory.ts) |
 | Leitura na inicialização | [src/index.ts](../src/index.ts) |
+
+---
+
+⬅️ Anterior: [03 · Sumarização de Conversas](./03-conversation-summarization.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [05 · Prompt Injection e Guardrails](./05-prompt-injection.md)**

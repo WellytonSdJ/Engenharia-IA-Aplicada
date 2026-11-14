@@ -38,3 +38,7 @@ glossário anterior para referenciar.
 | **`configOverride`** | Parâmetro opcional do construtor de `OpenRouterService` que permite substituir a configuração padrão por uma configuração customizada (usado nos testes) |
 | **`node:test`** | Runner de testes nativo do Node.js, usado neste projeto sem dependência de Jest/Vitest/Mocha |
 | **Execução nativa de TypeScript** | Recurso do Node.js 22.6+ (`--experimental-strip-types`) que executa arquivos `.ts` diretamente, sem `tsc` ou `ts-node` |
+
+---
+
+⬅️ Anterior: [04 · Testes E2E e Injeção de Dependência](./04-testes-e2e-injecao-dependencia.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 02, [02-langchain-intro](../../02-langchain-intro/docs/00-START-HERE.md)**

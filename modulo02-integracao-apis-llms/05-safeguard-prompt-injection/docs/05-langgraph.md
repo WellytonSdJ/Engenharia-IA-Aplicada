@@ -1,6 +1,6 @@
 # LangGraph neste projeto
 
-> Este documento foca no grafo específico do `03-safeguard-prompt-injection`. Se você ainda não leu sobre LangGraph em geral, leia primeiro o [langgraph.md do projeto 02](../../02-song-highlights/docs/langgraph.md) — ele cobre os fundamentos de StateGraph, nós, edges e checkpointer. Aqui o foco é no que é diferente: um grafo orientado a segurança, sem checkpointer, com roteamento baseado em resultado de validação.
+> Este documento foca no grafo específico do `03-safeguard-prompt-injection`. Se você ainda não leu sobre LangGraph em geral, leia primeiro o [02-langgraph.md do projeto 04](../../04-song-highlights/docs/02-langgraph.md) — ele cobre os fundamentos de StateGraph, nós, edges e checkpointer. Aqui o foco é no que é diferente: um grafo orientado a segurança, sem checkpointer, com roteamento baseado em resultado de validação.
 
 ---
 
@@ -269,3 +269,7 @@ Este nó não é uma factory function — não recebe serviços via injeção de
 | Nó de chat com MCP | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts) | Fallback para Studio, `generate` com agente |
 | Nó de bloqueio | [src/graph/nodes/blockedNode.ts](../src/graph/nodes/blockedNode.ts) | Sem LLM, factory direta |
 | Entry point do grafo | [src/graph/factory.ts](../src/graph/factory.ts) | `buildGraph` e `graph` exportado para Studio |
+
+---
+
+⬅️ Anterior: [04 · RBAC](./04-rbac.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [06 · Glossário](./06-glossario.md)**

@@ -62,7 +62,7 @@ export class OpenRouterService {
 Pontos a observar:
 
 - `client.chat.send` aceita **uma lista de modelos** (`models`), não um único modelo — é essa
-  lista que alimenta o [roteamento](./model-routing.md).
+  lista que alimenta o [roteamento](./01-model-routing.md).
 - `httpReferer` e `xTitle` são metadados de identificação da aplicação exigidos pelo
   OpenRouter para exibir no painel de uso/billing — não afetam a geração da resposta.
 - A resposta segue o formato `choices[].message.content`, o mesmo shape usado pela API da
@@ -76,7 +76,7 @@ O `OpenRouterService` isola o Fastify de qualquer detalhe do SDK: a rota HTTP em
 `server.ts` não sabe nada sobre `@openrouter/sdk`, só chama `routerService.generate(question)`
 e recebe `{ model, content }`. Essa separação é o que permite, por exemplo, os testes
 instanciarem o serviço com uma configuração diferente (ver
-[testes-e2e-injecao-dependencia.md](./testes-e2e-injecao-dependencia.md)) sem tocar no código
+[04-testes-e2e-injecao-dependencia.md](./04-testes-e2e-injecao-dependencia.md)) sem tocar no código
 da rota.
 
 ## Referências no projeto
@@ -87,3 +87,7 @@ da rota.
 | Chamada ao modelo | `src/openrouterService.ts` | Método `generate`, chamada `client.chat.send` |
 | Configuração de credenciais | `src/config.ts` | Campos `apiKey`, `httpReferer`, `xTitle` |
 | Dependência declarada | `package.json` | `"@openrouter/sdk": "^0.5.1"` |
+
+---
+
+⬅️ Anterior: [01 · Roteamento de Modelos (Model Routing)](./01-model-routing.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Fastify](./03-fastify.md)**

@@ -11,12 +11,12 @@ Documentação de estudo do projeto `03-safeguard-prompt-injection`.
 | Documento | O que cobre |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Trilha de leitura ordenada, mapa do código, fluxo do projeto |
-| [prompt-injection.md](./prompt-injection.md) | O que é prompt injection, vetores de ataque, demonstração prática — com e sem guardrails |
-| [guardrails.md](./guardrails.md) | O que são guardrails, como funcionam, por que são defesa determinística e não probabilística |
-| [mcp.md](./mcp.md) | Model Context Protocol: o que é, como conecta ferramentas ao LLM, por que amplia a superfície de ataque |
-| [rbac.md](./rbac.md) | Role-Based Access Control: sistema admin/member, permissões, por que RBAC via prompt falha sem guardrail |
-| [langgraph.md](./langgraph.md) | StateGraph deste projeto: guardrails_check → chat/blocked, estado de segurança, roteamento condicional |
-| [glossario.md](./glossario.md) | Todos os termos do projeto com definições — referência rápida |
+| [01-prompt-injection.md](./01-prompt-injection.md) | O que é prompt injection, vetores de ataque, demonstração prática — com e sem guardrails |
+| [02-guardrails.md](./02-guardrails.md) | O que são guardrails, como funcionam, por que são defesa determinística e não probabilística |
+| [03-mcp.md](./03-mcp.md) | Model Context Protocol: o que é, como conecta ferramentas ao LLM, por que amplia a superfície de ataque |
+| [04-rbac.md](./04-rbac.md) | Role-Based Access Control: sistema admin/member, permissões, por que RBAC via prompt falha sem guardrail |
+| [05-langgraph.md](./05-langgraph.md) | StateGraph deste projeto: guardrails_check → chat/blocked, estado de segurança, roteamento condicional |
+| [06-glossario.md](./06-glossario.md) | Todos os termos do projeto com definições — referência rápida |
 
 ---
 
@@ -40,3 +40,7 @@ Chatbot com sistema de controle de acesso com:
 - **MCP (Model Context Protocol)** expondo ferramentas de sistema de arquivos ao LLM
 - **RBAC** separando permissões entre admin e member
 - **Prompt injection** demonstrada em dois modos: vulnerável (`--unsafe`) e protegido (padrão)
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

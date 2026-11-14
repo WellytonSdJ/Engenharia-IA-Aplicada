@@ -40,7 +40,7 @@ export type GraphState = z.infer<typeof GraphState>
 ```
 
 Três campos:
-- **`messages`** — o histórico de mensagens (HumanMessage, AIMessage). O wrapper `withLangGraph(..., MessagesZodMeta)` instrui o LangGraph a aplicar um reducer especial que acumula mensagens em vez de substituir. Ver [langchain-messages.md](./langchain-messages.md).
+- **`messages`** — o histórico de mensagens (HumanMessage, AIMessage). O wrapper `withLangGraph(..., MessagesZodMeta)` instrui o LangGraph a aplicar um reducer especial que acumula mensagens em vez de substituir. Ver [02-langchain-messages.md](./02-langchain-messages.md).
 - **`output`** — a string que será transformada pelos nós de processamento (upper/lower)
 - **`command`** — o enum que o nó de intent detecta e que a edge condicional usa para rotear
 
@@ -84,7 +84,7 @@ export function identifyIntent(state: GraphState): GraphState {
 }
 ```
 
-Observe: `state.messages.at(-1)?.text` lê a última mensagem do histórico. Isso é possível porque o estado guarda `BaseMessage[]`, não strings. Ver [langchain-messages.md](./langchain-messages.md).
+Observe: `state.messages.at(-1)?.text` lê a última mensagem do histórico. Isso é possível porque o estado guarda `BaseMessage[]`, não strings. Ver [02-langchain-messages.md](./02-langchain-messages.md).
 
 ---
 
@@ -182,3 +182,7 @@ return reply.send(response.output)
 | Nó de fallback | `src/graph/nodes/fallbackNode.ts` | Como `AIMessage` é construído para retorno |
 | Execução | `src/server.ts` | `.invoke({ messages: [...] })` e leitura de `response.output` |
 | Factory LangGraph | `src/graph/factory.ts` | Exporta `graph()` para o servidor de dev do LangGraph |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · LangChain Messages](./02-langchain-messages.md)**

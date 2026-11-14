@@ -69,6 +69,6 @@ Documentação aprofundada em [`docs/`](./docs/) — comece por [`docs/00-START-
 
 | Documento | Conteúdo |
 | --- | --- |
-| [langgraph-intro.md](./docs/langgraph-intro.md) | StateGraph, state com Zod, nós, edges condicionais, `withLangGraph`, compilação do grafo |
-| [langchain-messages.md](./docs/langchain-messages.md) | HumanMessage, AIMessage, BaseMessage, MessagesZodMeta, reducer de mensagens |
-| [glossario.md](./docs/glossario.md) | Termos novos deste projeto — referência rápida |
+| [01-langgraph-intro.md](./docs/01-langgraph-intro.md) | StateGraph, state com Zod, nós, edges condicionais, `withLangGraph`, compilação do grafo |
+| [02-langchain-messages.md](./docs/02-langchain-messages.md) | HumanMessage, AIMessage, BaseMessage, MessagesZodMeta, reducer de mensagens |
+| [03-glossario.md](./docs/03-glossario.md) | Termos novos deste projeto — referência rápida |

@@ -28,12 +28,12 @@ Controle de acesso precisa ser código determinístico.
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [prompt-injection.md](./prompt-injection.md) | O problema: o que é, como funciona, quais são os vetores de ataque. Leia isso antes de qualquer código — sem entender o problema, a solução não faz sentido. |
-| 2 | [guardrails.md](./guardrails.md) | A solução: como a camada de guardrail funciona, por que ela é determinística enquanto o system prompt não é, e como o modelo safeguard é diferente do modelo executor. |
-| 3 | [mcp.md](./mcp.md) | O que torna este projeto perigoso sem guardrails: o MCP dá ferramentas reais ao LLM. Se o modelo for injetado, ele pode executar ações reais no sistema de arquivos. |
-| 4 | [rbac.md](./rbac.md) | O sistema de permissões: admin vs member, como as permissões são verificadas, por que isso sozinho não protege sem guardrail. |
-| 5 | [langgraph.md](./langgraph.md) | Como tudo é orquestrado: o grafo de segurança, o estado, o roteamento condicional entre os três nós. |
-| 6 | [glossario.md](./glossario.md) | Referência rápida de todos os termos. Consulte quando encontrar algo que não reconhece. |
+| 1 | [01-prompt-injection.md](./01-prompt-injection.md) | O problema: o que é, como funciona, quais são os vetores de ataque. Leia isso antes de qualquer código — sem entender o problema, a solução não faz sentido. |
+| 2 | [02-guardrails.md](./02-guardrails.md) | A solução: como a camada de guardrail funciona, por que ela é determinística enquanto o system prompt não é, e como o modelo safeguard é diferente do modelo executor. |
+| 3 | [03-mcp.md](./03-mcp.md) | O que torna este projeto perigoso sem guardrails: o MCP dá ferramentas reais ao LLM. Se o modelo for injetado, ele pode executar ações reais no sistema de arquivos. |
+| 4 | [04-rbac.md](./04-rbac.md) | O sistema de permissões: admin vs member, como as permissões são verificadas, por que isso sozinho não protege sem guardrail. |
+| 5 | [05-langgraph.md](./05-langgraph.md) | Como tudo é orquestrado: o grafo de segurança, o estado, o roteamento condicional entre os três nós. |
+| 6 | [06-glossario.md](./06-glossario.md) | Referência rápida de todos os termos. Consulte quando encontrar algo que não reconhece. |
 
 ---
 
@@ -107,3 +107,7 @@ Isso demonstra duas coisas:
 
 1. Você não pode confiar que o LLM vai seguir suas regras quando pressionado
 2. A defesa eficaz não é convencer o LLM — é impedir que o prompt chegue até ele
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Prompt Injection](./01-prompt-injection.md)**

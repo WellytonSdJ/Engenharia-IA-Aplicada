@@ -190,3 +190,7 @@ A lógica de roteamento vive em um único lugar — as funções de edge — e n
 | Prompts de correção | [src/prompts/v1/cypherCorrection.ts](../src/prompts/v1/cypherCorrection.ts) |
 | Contexto de negócio | [src/prompts/v1/salesContext.ts](../src/prompts/v1/salesContext.ts) |
 | Serviço Neo4j | [src/services/neo4jService.ts](../src/services/neo4jService.ts) |
+
+---
+
+⬅️ Anterior: [02 · LangGraph](./02-langgraph-pipeline.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Multi-Step](./04-multi-step.md)**

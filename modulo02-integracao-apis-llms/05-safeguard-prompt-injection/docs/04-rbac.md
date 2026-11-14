@@ -234,3 +234,7 @@ const blockedMessage = await template.format({
 | Papel injetado no prompt | [src/graph/nodes/chatNode.ts](../src/graph/nodes/chatNode.ts) | `PromptTemplate.format({ USER_ROLE, USER_NAME })` |
 | Permissões na mensagem de bloqueio | [src/graph/nodes/blockedNode.ts](../src/graph/nodes/blockedNode.ts) | `state.user.permissions.join(', ')` |
 | CLI recebe o usuário | [src/index.ts](../src/index.ts) | Flag `--user` e validação |
+
+---
+
+⬅️ Anterior: [03 · MCP](./03-mcp.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [05 · LangGraph neste projeto](./05-langgraph.md)**

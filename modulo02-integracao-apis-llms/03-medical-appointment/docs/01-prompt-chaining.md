@@ -143,3 +143,7 @@ O nó único mistura responsabilidades, é difícil de testar isoladamente e imp
 | Etapa 3 (LLM) | `src/graph/nodes/messageGeneratorNode.ts` | Constrói o cenário (`schedule_success`, `cancel_error`, etc.) e chama LLM |
 | Routing do pipeline | `src/graph/graph.ts` | `.addConditionalEdges` após `identifyIntent` |
 | Prompts das etapas | `src/prompts/v1/identifyIntent.ts` e `messageGenerator.ts` | Como os templates são construídos como JSON para cada etapa |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Structured Output](./02-structured-output.md)**
