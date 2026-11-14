@@ -15,24 +15,24 @@ Comece por [00-START-HERE.md](./00-START-HERE.md).
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | O que muda nesta unidade, trilha de leitura, mapa do código, mapa referência → nosso e como rodar |
-| [embeddings-e-similaridade.md](./embeddings-e-similaridade.md) | O que é embedding, cosseno = produto escalar com vetor normalizado, `all-MiniLM-L6-v2` local, lazy singleton |
-| [memoria-semantica.md](./memoria-semantica.md) | Curto × longo prazo, vector store em SQLite (BLOB + força bruta), `remember`/`recall`/`forget`, limiares 0,92 e 0,3, `userId` e memórias no `/chat`, `POST /memories` |
-| [refletor-de-aprendizado.md](./refletor-de-aprendizado.md) | Reflection apontada para a mensagem do usuário, `{ hasLearning, fact }`, durável × pontual × segredo, fire-and-forget |
-| [forget-preference.md](./forget-preference.md) | Tool recall + forget, `userId` por closure (e não pelo schema), por que a referência usa `AsyncLocalStorage` |
-| [testando-memoria.md](./testando-memoria.md) | `FakeEmbedder`, `*.semantic-test.ts` fora do `npm test`, teste do "não esperou" com portão |
-| [glossario.md](./glossario.md) | Termos novos desta unidade |
+| [01-embeddings-e-similaridade.md](./01-embeddings-e-similaridade.md) | O que é embedding, cosseno = produto escalar com vetor normalizado, `all-MiniLM-L6-v2` local, lazy singleton |
+| [02-memoria-semantica.md](./02-memoria-semantica.md) | Curto × longo prazo, vector store em SQLite (BLOB + força bruta), `remember`/`recall`/`forget`, limiares 0,92 e 0,3, `userId` e memórias no `/chat`, `POST /memories` |
+| [03-refletor-de-aprendizado.md](./03-refletor-de-aprendizado.md) | Reflection apontada para a mensagem do usuário, `{ hasLearning, fact }`, durável × pontual × segredo, fire-and-forget |
+| [04-forget-preference.md](./04-forget-preference.md) | Tool recall + forget, `userId` por closure (e não pelo schema), por que a referência usa `AsyncLocalStorage` |
+| [05-testando-memoria.md](./05-testando-memoria.md) | `FakeEmbedder`, `*.semantic-test.ts` fora do `npm test`, teste do "não esperou" com portão |
+| [06-glossario.md](./06-glossario.md) | Termos novos desta unidade |
 
 ## O que já está documentado antes (não repetido aqui)
 
 | Documento | Conteúdo |
 | --- | --- |
-| [01 / reflection.md](../../01-padroes-de-raciocinio-e-execucao/docs/reflection.md) | O padrão Reflection original (crítico + regeneração), base do refletor de aprendizado |
-| [01 / tools-e-store-deterministico.md](../../01-padroes-de-raciocinio-e-execucao/docs/tools-e-store-deterministico.md) | Tools com `tool()` + Zod, store injetado, testes sem rede |
-| [01 / contrato-de-estrategia-e-trace.md](../../01-padroes-de-raciocinio-e-execucao/docs/contrato-de-estrategia-e-trace.md) | `ReasoningStrategy`, `ReasoningOptions`, trace e métricas |
-| [01 / plan-and-execute.md](../../01-padroes-de-raciocinio-e-execucao/docs/plan-and-execute.md) | Planner, executor e replanner |
-| [01 / spec-driven-com-spec-kit.md](../../01-padroes-de-raciocinio-e-execucao/docs/spec-driven-com-spec-kit.md) | O processo Spec Kit e a constituição |
+| [01 / 06-reflection.md](../../01-padroes-de-raciocinio-e-execucao/docs/06-reflection.md) | O padrão Reflection original (crítico + regeneração), base do refletor de aprendizado |
+| [01 / 03-tools-e-store-deterministico.md](../../01-padroes-de-raciocinio-e-execucao/docs/03-tools-e-store-deterministico.md) | Tools com `tool()` + Zod, store injetado, testes sem rede |
+| [01 / 02-contrato-de-estrategia-e-trace.md](../../01-padroes-de-raciocinio-e-execucao/docs/02-contrato-de-estrategia-e-trace.md) | `ReasoningStrategy`, `ReasoningOptions`, trace e métricas |
+| [01 / 05-plan-and-execute.md](../../01-padroes-de-raciocinio-e-execucao/docs/05-plan-and-execute.md) | Planner, executor e replanner |
+| [01 / 01-spec-driven-com-spec-kit.md](../../01-padroes-de-raciocinio-e-execucao/docs/01-spec-driven-com-spec-kit.md) | O processo Spec Kit e a constituição |
 | [02 / README.md](../../02-function-calling-e-tool-use/docs/README.md) | `POST /chat`, SQLite, MCP e conversa persistente (spec 008) |
-| [modulo02 / rag-com-grafos.md](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/rag-com-grafos.md) | Onde "RAG com vetor" apareceu pela primeira vez, só como comparação |
+| [modulo02 / 01-rag-com-grafos.md](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/01-rag-com-grafos.md) | Onde "RAG com vetor" apareceu pela primeira vez, só como comparação |
 
 ---
 
@@ -54,3 +54,7 @@ A dependência nova exigiu a **emenda v1.2.0 da constituição** ([`.specify/mem
 | --- | --- | --- |
 | `POST /chat` | `userId` **obrigatório**; resposta ganha `metrics.recalledMemories` | 400 sem `userId`; 503 `EMBEDDING_UNAVAILABLE` |
 | `POST /memories` | **nova**: `{ userId, fact }` | 201 gravado; 200 deduplicado; 400; 503 |
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

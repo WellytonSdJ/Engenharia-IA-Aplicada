@@ -8,7 +8,7 @@ Este é o primeiro projeto do módulo 04. O último projeto que estudamos foi o 
 
 > O OpsPilot é um copiloto de plantão. A pessoa de plantão escreve "quais serviços têm alertas ativos?" ou "abra três incidentes sev2 para checkout, payment e catalog e resolva o primeiro" — e o agente decide sozinho quais ferramentas chamar, em que ordem, até resolver.
 
-No módulo 03, em [`01-multiple-mcp-tools`](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/agente-autonomo-vs-orquestracao-explicita.md), você já viu um agente autônomo com `createAgent`: um loop de "pensar → chamar tool → observar" escondido dentro de uma única chamada. Funcionava — mas era **uma caixa-preta**, e só havia **um jeito** de raciocinar.
+No módulo 03, em [`01-multiple-mcp-tools`](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/02-agente-autonomo-vs-orquestracao-explicita.md), você já viu um agente autônomo com `createAgent`: um loop de "pensar → chamar tool → observar" escondido dentro de uma única chamada. Funcionava — mas era **uma caixa-preta**, e só havia **um jeito** de raciocinar.
 
 Este projeto abre a caixa e coloca três jeitos diferentes de raciocinar lado a lado:
 
@@ -35,22 +35,22 @@ E tem uma novidade de **processo**: o projeto é conduzido com **Spec Kit** — 
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [spec-driven-com-spec-kit.md](./spec-driven-com-spec-kit.md) | Entender o processo que já seguimos (e o que o `implement` vai fazer) antes de olhar código |
-| 2 | [contrato-de-estrategia-e-trace.md](./contrato-de-estrategia-e-trace.md) | A interface que **todas** as estratégias implementam — base de tudo o que vem depois |
-| 3 | [tools-e-store-deterministico.md](./tools-e-store-deterministico.md) | As mãos do agente: tools com Zod sobre um store em memória, testáveis sem rede |
-| 4 | [react.md](./react.md) | O primeiro padrão de raciocínio, o mais simples |
-| 5 | [plan-and-execute.md](./plan-and-execute.md) | O segundo padrão, com um `StateGraph` próprio de três nós |
-| 6 | [reflection.md](./reflection.md) | A camada que envolve as outras duas (spec 002) |
-| 7 | [arena-e-bench.md](./arena-e-bench.md) | Como comparar as estratégias e medir acerto de verdade |
-| 8 | [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) | O mapa prático do `/speckit.implement` no nosso projeto, com o status de cada armadilha |
-| 9 | [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md) | Antes de rodar a arena: como o `.env` chega ao processo (e por que só criar o arquivo não basta) |
-| 10 | [glossario.md](./glossario.md) | Referência rápida |
+| 1 | [01-spec-driven-com-spec-kit.md](./01-spec-driven-com-spec-kit.md) | Entender o processo que já seguimos (e o que o `implement` vai fazer) antes de olhar código |
+| 2 | [02-contrato-de-estrategia-e-trace.md](./02-contrato-de-estrategia-e-trace.md) | A interface que **todas** as estratégias implementam — base de tudo o que vem depois |
+| 3 | [03-tools-e-store-deterministico.md](./03-tools-e-store-deterministico.md) | As mãos do agente: tools com Zod sobre um store em memória, testáveis sem rede |
+| 4 | [04-react.md](./04-react.md) | O primeiro padrão de raciocínio, o mais simples |
+| 5 | [05-plan-and-execute.md](./05-plan-and-execute.md) | O segundo padrão, com um `StateGraph` próprio de três nós |
+| 6 | [06-reflection.md](./06-reflection.md) | A camada que envolve as outras duas (spec 002) |
+| 7 | [07-arena-e-bench.md](./07-arena-e-bench.md) | Como comparar as estratégias e medir acerto de verdade |
+| 8 | [08-roteiro-de-implementacao.md](./08-roteiro-de-implementacao.md) | O mapa prático do `/speckit.implement` no nosso projeto, com o status de cada armadilha |
+| 9 | [09-variaveis-de-ambiente-com-env-file.md](./09-variaveis-de-ambiente-com-env-file.md) | Antes de rodar a arena: como o `.env` chega ao processo (e por que só criar o arquivo não basta) |
+| 10 | [10-glossario.md](./10-glossario.md) | Referência rápida |
 
 ---
 
 ## Mapa do código
 
-O nosso `src/` está implementado na estrutura definida pelo `plan.md`: `src/models/` (domínio, store), `src/services/` (tools, seed, erros), `src/agents/` (estratégias de raciocínio, modelo, trace) e `src/controllers/` (arena, bench). A correspondência detalhada arquivo a arquivo, com o histórico de decisões de nomenclatura, está em [roteiro-de-implementacao.md](./roteiro-de-implementacao.md).
+O nosso `src/` está implementado na estrutura definida pelo `plan.md`: `src/models/` (domínio, store), `src/services/` (tools, seed, erros), `src/agents/` (estratégias de raciocínio, modelo, trace) e `src/controllers/` (arena, bench). A correspondência detalhada arquivo a arquivo, com o histórico de decisões de nomenclatura, está em [08-roteiro-de-implementacao.md](./08-roteiro-de-implementacao.md).
 
 ---
 
@@ -104,6 +104,10 @@ npm run bench -- --scenario C2 --no-replanner
 >
 > O que continua acontecendo: o modelo às vezes devolve `undefined` no structured output (o erro do Zod `received: "undefined"`), às vezes responde sem planejar nenhum passo, e o replanner às vezes erra o formato **duas vezes**. A suspeita principal é o `openrouter/free`, que sorteia um modelo gratuito diferente a cada chamada, com suporte desigual a structured output. Próximo experimento: fixar um modelo com structured output confiável e rodar `npm run bench` de novo.
 
-O bench está explicado em [arena-e-bench.md](./arena-e-bench.md#o-nosso-bench-implementado). Se a arena reclamar de `OPENROUTER_API_KEY` com o `.env` preenchido, leia [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md).
+O bench está explicado em [07-arena-e-bench.md](./07-arena-e-bench.md#o-nosso-bench-implementado). Se a arena reclamar de `OPENROUTER_API_KEY` com o `.env` preenchido, leia [09-variaveis-de-ambiente-com-env-file.md](./09-variaveis-de-ambiente-com-env-file.md).
 
 O comando que mais ensina é o 2: olhe o trace de cada estratégia e conte quantas vezes o LLM foi chamado. Depois rode o 3 e veja que "a resposta parece boa" e "o store ficou certo" são coisas diferentes.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Spec-Driven Development com Spec Kit](./01-spec-driven-com-spec-kit.md)**

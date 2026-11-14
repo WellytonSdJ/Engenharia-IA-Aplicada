@@ -26,7 +26,7 @@ Este é o maior arquivo da unidade (`src/agents/plan-and-execute.ts`). Vamos por
 
 ### O estado do grafo
 
-Você conhece `Annotation.Root` e reducers de [`langgraph.md`](../../../modulo02-integracao-apis-llms/04-song-highlights/docs/langgraph.md). O estado aqui tem dois tipos de reducer, e a escolha de cada um é o coração do padrão:
+Você conhece `Annotation.Root` e reducers de [`02-langgraph.md`](../../../modulo02-integracao-apis-llms/04-song-highlights/docs/02-langgraph.md). O estado aqui tem dois tipos de reducer, e a escolha de cada um é o coração do padrão:
 
 ```typescript
 const PlanExecuteState = Annotation.Root({
@@ -99,7 +99,7 @@ O limite de 8 passos aparece **três vezes**: no schema (`.max(MAX_STEPS)`), no 
 
 E se o planner falhar (modelo devolve algo fora do schema)? O `catch` cria um plano de **um passo** que é basicamente "faça o pedido" — o executor vira um ReAct comum. Degrada, mas não quebra.
 
-`plannerModel` é `this.modelFactory().withStructuredOutput(planSchema)` — o structured output que você estudou em [`structured-output.md`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/structured-output.md), agora usado para produzir um **plano**.
+`plannerModel` é `this.modelFactory().withStructuredOutput(planSchema)` — o structured output que você estudou em [`02-structured-output.md`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/02-structured-output.md), agora usado para produzir um **plano**.
 
 ### Executor: um mini-ReAct por passo
 
@@ -218,3 +218,7 @@ const stepLimit = Math.min(MAX_STEPS, this.maxIterations);
 | Tarefas relacionadas | [`specs/.../tasks.md`](../specs/001-nucleo-raciocinio-opspilot/tasks.md) | T022, T023, T025 |
 | Estratégia (nosso) | [`src/agents/plan-and-execute.ts`](../src/agents/plan-and-execute.ts) | Reducers, schemas, os três nós e as duas topologias |
 | Trace específico (nosso) | [`src/agents/trace.ts`](../src/agents/trace.ts) | `buildPlanExecuteTrace` e os testes de replanning com `critique` |
+
+---
+
+⬅️ Anterior: [04 · ReAct](./04-react.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [06 · Reflection](./06-reflection.md)**

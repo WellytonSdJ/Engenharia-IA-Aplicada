@@ -1,6 +1,6 @@
 # Embeddings e similaridade — transformar texto em "endereço de significado"
 
-> Este doc cobre a base da **spec 009** ([`009-semantic-memory`](../specs/009-semantic-memory/spec.md)): o que é um embedding, como o comparamos e como o modelo roda localmente em [`src/services/embeddings.ts`](../src/services/embeddings.ts). O uso disso como memória fica em [memoria-semantica.md](./memoria-semantica.md).
+> Este doc cobre a base da **spec 009** ([`009-semantic-memory`](../specs/009-semantic-memory/spec.md)): o que é um embedding, como o comparamos e como o modelo roda localmente em [`src/services/embeddings.ts`](../src/services/embeddings.ts). O uso disso como memória fica em [02-memoria-semantica.md](./02-memoria-semantica.md).
 >
 > **Em 30 segundos**
 >
@@ -13,7 +13,7 @@
 
 ## O que é
 
-Você já viu "RAG com vetor" citado de passagem em [`rag-com-grafos.md`](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/rag-com-grafos.md), na tabela que compara RAG vetorial com RAG em grafo: "Embedding + similaridade cosseno". Aqui é onde a gente finalmente abre essa caixa.
+Você já viu "RAG com vetor" citado de passagem em [`01-rag-com-grafos.md`](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/01-rag-com-grafos.md), na tabela que compara RAG vetorial com RAG em grafo: "Embedding + similaridade cosseno". Aqui é onde a gente finalmente abre essa caixa.
 
 **Analogia: o GPS do significado.** Imagine que cada frase recebe uma coordenada num mapa gigante. Mas o mapa não é de cidades, é de *assuntos*. Frases sobre "pagamento lento" ficam num bairro, frases sobre "resumos curtos" ficam em outro. Duas frases podem não ter **nenhuma palavra em comum** e mesmo assim morar na mesma rua:
 
@@ -89,7 +89,7 @@ export interface Embedder {
 - **`Xenova/...`**: a versão convertida para ONNX, o formato que o `@huggingface/transformers` (Transformers.js) consegue rodar em Node.
 - **Local**: na primeira execução o pacote baixa os pesos do Hugging Face e guarda em cache (em `node_modules/@huggingface/transformers/.cache`). Depois disso, tudo roda offline. Não existe `OPENROUTER_API_KEY` para embeddings.
 
-A interface `Embedder` é o detalhe que torna tudo testável: o `MemoryStore` só conhece `embed(text)`. Em produção entra o modelo real; nos testes entra o `FakeEmbedder` (ver [testando-memoria.md](./testando-memoria.md)).
+A interface `Embedder` é o detalhe que torna tudo testável: o `MemoryStore` só conhece `embed(text)`. Em produção entra o modelo real; nos testes entra o `FakeEmbedder` (ver [05-testando-memoria.md](./05-testando-memoria.md)).
 
 ### `pooling: "mean"` e `normalize: true`
 
@@ -145,7 +145,7 @@ Três detalhes que valem ouro:
   }
 ```
 
-O `EmbeddingError` é um erro de domínio (padrão de [`contrato-de-estrategia-e-trace.md`](../../01-padroes-de-raciocinio-e-execucao/docs/contrato-de-estrategia-e-trace.md) e dos erros do projeto 01). Na borda HTTP ele vira **503 `EMBEDDING_UNAVAILABLE`**: é uma dependência indisponível, não um erro de quem chamou.
+O `EmbeddingError` é um erro de domínio (padrão de [`02-contrato-de-estrategia-e-trace.md`](../../01-padroes-de-raciocinio-e-execucao/docs/02-contrato-de-estrategia-e-trace.md) e dos erros do projeto 01). Na borda HTTP ele vira **503 `EMBEDDING_UNAVAILABLE`**: é uma dependência indisponível, não um erro de quem chamou.
 
 > ✅ **Checkpoint**: o modelo carrega uma vez, na primeira necessidade, e um cold start que falhou pode tentar de novo.
 
@@ -171,3 +171,7 @@ O `EmbeddingError` é um erro de domínio (padrão de [`contrato-de-estrategia-e
 | Produto escalar | [`src/models/memory-store.ts`](../src/models/memory-store.ts) | `dot(a, b)` |
 | Erro → 503 | [`src/controllers/chat-controller.ts`](../src/controllers/chat-controller.ts) | `EmbeddingError` em `toErrorResponse` |
 | Modelo real em ação | [`src/models/memory-store.semantic-test.ts`](../src/models/memory-store.semantic-test.ts) | Vetor de 384 com norma ~1; recall sem palavras em comum |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Memória semântica](./02-memoria-semantica.md)**

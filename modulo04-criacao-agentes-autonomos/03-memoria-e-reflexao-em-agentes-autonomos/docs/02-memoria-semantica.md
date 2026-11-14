@@ -1,6 +1,6 @@
 # Memória semântica — o vector store "na mão" com SQLite
 
-> Este doc cobre a **spec 009** ([`009-semantic-memory`](../specs/009-semantic-memory/spec.md)): o `SqliteMemoryStore` ([`src/models/memory-store.ts`](../src/models/memory-store.ts)), a rota `POST /memories` e a injeção das memórias no `/chat`. Antes, leia [embeddings-e-similaridade.md](./embeddings-e-similaridade.md): aqui assumimos que você já sabe o que é embedding e cosseno.
+> Este doc cobre a **spec 009** ([`009-semantic-memory`](../specs/009-semantic-memory/spec.md)): o `SqliteMemoryStore` ([`src/models/memory-store.ts`](../src/models/memory-store.ts)), a rota `POST /memories` e a injeção das memórias no `/chat`. Antes, leia [01-embeddings-e-similaridade.md](./01-embeddings-e-similaridade.md): aqui assumimos que você já sabe o que é embedding e cosseno.
 >
 > **Em 30 segundos**
 >
@@ -223,7 +223,7 @@ export const MEMORY_GUIDANCE =
 ```
 
 - O **ReAct** usa o `OPSPILOT_SYSTEM_PROMPT` completo, que além da memória padroniza o formato da resposta (**Resumo → Achados → Próximos passos**).
-- O **Plan-and-Execute** recebe só o `MEMORY_GUIDANCE` no prompt do planner. Sem isso, o planner poderia transformar "checkout primeiro" num passo do plano. O executor dele não usa `createReactAgent` (veja [plan-and-execute.md](../../01-padroes-de-raciocinio-e-execucao/docs/plan-and-execute.md)), então não há onde encaixar o system prompt inteiro.
+- O **Plan-and-Execute** recebe só o `MEMORY_GUIDANCE` no prompt do planner. Sem isso, o planner poderia transformar "checkout primeiro" num passo do plano. O executor dele não usa `createReactAgent` (veja [05-plan-and-execute.md](../../01-padroes-de-raciocinio-e-execucao/docs/05-plan-and-execute.md)), então não há onde encaixar o system prompt inteiro.
 
 A resposta 200 ganha `metrics.recalledMemories`, irmã da `historyMessages` da spec 008.
 
@@ -242,7 +242,7 @@ A resposta 200 ganha `metrics.recalledMemories`, irmã da `historyMessages` da s
 | 400 | `userId` ou `fact` vazio/ausente |
 | 503 | modelo de embeddings indisponível |
 
-`GET /memories` e `DELETE /memories` ficaram de fora, como no material de referência. Esquecer acontece pela tool `forget_preference` (ver [forget-preference.md](./forget-preference.md)).
+`GET /memories` e `DELETE /memories` ficaram de fora, como no material de referência. Esquecer acontece pela tool `forget_preference` (ver [04-forget-preference.md](./04-forget-preference.md)).
 
 > ✅ **Checkpoint**: `userId` obrigatório → recall da mensagem → bloco no topo do prompt → `recalledMemories` na resposta.
 
@@ -280,3 +280,7 @@ Não são números mágicos universais. Com outro modelo, ou com textos só em p
 | `userId` obrigatório | [`src/controllers/chat-controller.ts`](../src/controllers/chat-controller.ts) | `ChatRequestSchema` |
 | Rota de gravação | [`src/controllers/memory-controller.ts`](../src/controllers/memory-controller.ts) | 201 × 200 |
 | System prompt | [`src/agents/system-prompt.ts`](../src/agents/system-prompt.ts) | `MEMORY_GUIDANCE`, `OPSPILOT_SYSTEM_PROMPT` |
+
+---
+
+⬅️ Anterior: [01 · Embeddings e similaridade](./01-embeddings-e-similaridade.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Refletor de aprendizado](./03-refletor-de-aprendizado.md)**

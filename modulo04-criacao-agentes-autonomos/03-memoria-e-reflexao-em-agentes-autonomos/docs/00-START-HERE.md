@@ -30,12 +30,12 @@ Leia nesta ordem. Cada doc tem um bloco **"Em 30 segundos"** no topo e **checkpo
 | # | Documento | Por que ler |
 | --- | --- | --- |
 | 0 | Trilhas do [01](../../01-padroes-de-raciocinio-e-execucao/docs/00-START-HERE.md#trilha-de-leitura) e do [02](../../02-function-calling-e-tool-use/docs/00-START-HERE.md) | Reflection, tools, store e `/chat` não são repetidos aqui |
-| 1 | [embeddings-e-similaridade.md](./embeddings-e-similaridade.md) | A base de tudo: texto → vetor, cosseno, modelo local, lazy singleton |
-| 2 | [memoria-semantica.md](./memoria-semantica.md) | O vector store em SQLite, as 3 operações, os limiares e como a memória entra no `/chat` |
-| 3 | [refletor-de-aprendizado.md](./refletor-de-aprendizado.md) | Reflection reaproveitada para aprender + fire-and-forget |
-| 4 | [forget-preference.md](./forget-preference.md) | Como uma tool sabe o usuário sem o modelo escolher (closure) |
-| 5 | [testando-memoria.md](./testando-memoria.md) | `FakeEmbedder`, teste semântico separado e como testar "não esperou" |
-| 6 | [glossario.md](./glossario.md) | Consulta rápida dos termos novos |
+| 1 | [01-embeddings-e-similaridade.md](./01-embeddings-e-similaridade.md) | A base de tudo: texto → vetor, cosseno, modelo local, lazy singleton |
+| 2 | [02-memoria-semantica.md](./02-memoria-semantica.md) | O vector store em SQLite, as 3 operações, os limiares e como a memória entra no `/chat` |
+| 3 | [03-refletor-de-aprendizado.md](./03-refletor-de-aprendizado.md) | Reflection reaproveitada para aprender + fire-and-forget |
+| 4 | [04-forget-preference.md](./04-forget-preference.md) | Como uma tool sabe o usuário sem o modelo escolher (closure) |
+| 5 | [05-testando-memoria.md](./05-testando-memoria.md) | `FakeEmbedder`, teste semântico separado e como testar "não esperou" |
+| 6 | [06-glossario.md](./06-glossario.md) | Consulta rápida dos termos novos |
 
 ---
 
@@ -76,7 +76,7 @@ A referência do curso põe tudo em `src/memory/`. Aqui os arquivos mantêm **o 
 | `src/memory/fake-embedder.ts` | `src/services/fake-embedder.ts` |
 | `src/memory/memory-store.ts` | `src/models/memory-store.ts` |
 | `src/memory/learning-reflector.ts` | `src/services/learning-reflector.ts` |
-| `src/memory/chat-user-context.ts` (`AsyncLocalStorage`) | não existe: closure ([por quê](./forget-preference.md#por-que-o-professor-usou-asynclocalstorage-e-nós-não)) |
+| `src/memory/chat-user-context.ts` (`AsyncLocalStorage`) | não existe: closure ([por quê](./04-forget-preference.md#por-que-o-professor-usou-asynclocalstorage-e-nós-não)) |
 | `src/agents/system-prompt.ts` | `src/agents/system-prompt.ts` |
 | `src/agents/tools.ts` (`createForgetPreferenceTool`) | `src/services/tools.ts` |
 | `src/chat/run-chat.ts` | `src/services/chat.ts` |
@@ -100,7 +100,7 @@ POST /chat {userId, message}
 
 ## Como rodar e ver o que importa
 
-Requisitos e `.env` iguais aos do [01](../../01-padroes-de-raciocinio-e-execucao/docs/variaveis-de-ambiente-com-env-file.md). O `.env` **não** foi copiado do 02: crie o seu a partir do `.env.example`.
+Requisitos e `.env` iguais aos do [01](../../01-padroes-de-raciocinio-e-execucao/docs/09-variaveis-de-ambiente-com-env-file.md). O `.env` **não** foi copiado do 02: crie o seu a partir do `.env.example`.
 
 ```powershell
 npm install                  # inclui @huggingface/transformers
@@ -128,3 +128,7 @@ curl -X POST http://localhost:3000/chat -H "content-type: application/json" \
 ```
 
 > ⚠️ `userId` agora é obrigatório no `/chat`: os exemplos `curl` do projeto 02 sem ele recebem 400.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Embeddings e similaridade](./01-embeddings-e-similaridade.md)**

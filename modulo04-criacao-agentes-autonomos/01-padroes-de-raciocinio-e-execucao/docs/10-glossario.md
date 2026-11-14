@@ -1,6 +1,6 @@
 # Glossário — 01-padroes-de-raciocinio-e-execucao
 
-Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pratica/07-api-security-auth-rate-limiting/customers-mcp/docs/glossario.md) e no [glossário do `01-multiple-mcp-tools`](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/glossario.md) (agente autônomo, tool calling loop, callbacks) não são repetidos aqui. Termos de LangGraph (`StateGraph`, `Annotation`, reducer, edges condicionais) estão no [glossário do `04-song-highlights`](../../../modulo02-integracao-apis-llms/04-song-highlights/docs/glossario.md).
+Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pratica/07-api-security-auth-rate-limiting/customers-mcp/docs/05-glossario.md) e no [glossário do `01-multiple-mcp-tools`](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/04-glossario.md) (agente autônomo, tool calling loop, callbacks) não são repetidos aqui. Termos de LangGraph (`StateGraph`, `Annotation`, reducer, edges condicionais) estão no [glossário do `04-song-highlights`](../../../modulo02-integracao-apis-llms/04-song-highlights/docs/06-glossario.md).
 
 ---
 
@@ -102,3 +102,7 @@ Termos cobertos no [glossário do projeto anterior](../../../modulo03-mcp-na-pra
 | **sev1..sev4** | Jargão de severidade mapeado para `critical`, `high`, `medium`, `low`. |
 | **`InMemoryOpsStore`** | Store em memória semeado, usado em testes, bench e arena. |
 | **Seed** | Estado inicial fixo (6 serviços, incluindo `catalog` sem alertas, e 6 alertas) que torna as execuções comparáveis. |
+
+---
+
+⬅️ Anterior: [09 · Variáveis de ambiente com `--env-file-if-exists`](./09-variaveis-de-ambiente-com-env-file.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 02, [02-function-calling-e-tool-use](../../02-function-calling-e-tool-use/docs/00-START-HERE.md)**

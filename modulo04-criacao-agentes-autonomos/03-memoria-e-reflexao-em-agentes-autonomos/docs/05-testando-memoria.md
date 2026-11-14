@@ -1,6 +1,6 @@
 # Testando memória — FakeEmbedder, teste semântico e fire-and-forget
 
-> A filosofia de testes sem rede e com doubles vem do projeto 01 ([tools-e-store-deterministico.md](../../01-padroes-de-raciocinio-e-execucao/docs/tools-e-store-deterministico.md)). Este doc cobre só os três problemas **novos** que memória e aprendizado trazem para os testes.
+> A filosofia de testes sem rede e com doubles vem do projeto 01 ([03-tools-e-store-deterministico.md](../../01-padroes-de-raciocinio-e-execucao/docs/03-tools-e-store-deterministico.md)). Este doc cobre só os três problemas **novos** que memória e aprendizado trazem para os testes.
 >
 > **Em 30 segundos**
 >
@@ -151,3 +151,7 @@ function structuredModel(reply: LearningReflection | Error, seen: BaseLanguageMo
 | Portão do fire-and-forget | [`src/services/chat.test.ts`](../src/services/chat.test.ts) | `releaseRemember`, `setImmediate` |
 | Fake de modelo estruturado | [`src/services/learning-reflector.test.ts`](../src/services/learning-reflector.test.ts) | `structuredModel` |
 | Scripts | [`package.json`](../package.json) | `test` × `test:semantic` |
+
+---
+
+⬅️ Anterior: [04 · forget_preference](./04-forget-preference.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [06 · Glossário](./06-glossario.md)**

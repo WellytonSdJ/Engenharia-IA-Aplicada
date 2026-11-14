@@ -214,7 +214,7 @@ Rodando `npm run bench` e depois `npm run bench -- --no-replanner`, você compar
 
 ## O nosso bench (implementado)
 
-O bench saiu do papel fora do `tasks.md` da spec 001 (era a armadilha 8 do [roteiro](./roteiro-de-implementacao.md)). Ele segue a mesma divisão da arena:
+O bench saiu do papel fora do `tasks.md` da spec 001 (era a armadilha 8 do [roteiro](./08-roteiro-de-implementacao.md)). Ele segue a mesma divisão da arena:
 
 ```text
 src/bench.ts                        → entrypoint: escolhe as estratégias e imprime
@@ -311,3 +311,7 @@ A nossa arena fixou duas decisões de contrato:
 | Entrypoint do bench | [`src/bench.ts`](../src/bench.ts) | `benchStrategies(noReplanner)`, `check` no estado, `--scenario`, `--no-replanner` |
 | Testes do bench | [`src/bench.test.ts`](../src/bench.test.ts) | Estratégia "sloppy": a resposta parece certa e o estado reprova |
 | Modo sem replanner | [`src/agents/plan-and-execute.ts`](../src/agents/plan-and-execute.ts) | `createPlanAndExecuteStrategy({ replanner })`, nó `finalizer` |
+
+---
+
+⬅️ Anterior: [06 · Reflection](./06-reflection.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [08 · Roteiro de Implementação](./08-roteiro-de-implementacao.md)**

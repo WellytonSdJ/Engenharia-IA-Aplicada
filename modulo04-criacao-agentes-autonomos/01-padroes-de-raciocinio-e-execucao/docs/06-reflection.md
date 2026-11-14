@@ -13,7 +13,7 @@ withReflection(reactStrategy)            → name: "reflect:react"
 withReflection(planAndExecuteStrategy)   → name: "reflect:plan-and-execute"
 ```
 
-Isso só é possível porque o contrato comum (veja [contrato-de-estrategia-e-trace.md](./contrato-de-estrategia-e-trace.md)) é mínimo: um `name` e um `run(input, options?)`. O decorator implementa a mesma interface e, por dentro, chama a estratégia original quantas vezes precisar. Quem usa não percebe a diferença — a arena trata `reflect:react` exatamente como trata `react`.
+Isso só é possível porque o contrato comum (veja [02-contrato-de-estrategia-e-trace.md](./02-contrato-de-estrategia-e-trace.md)) é mínimo: um `name` e um `run(input, options?)`. O decorator implementa a mesma interface e, por dentro, chama a estratégia original quantas vezes precisar. Quem usa não percebe a diferença — a arena trata `reflect:react` exatamente como trata `react`.
 
 ```
 run(input)
@@ -61,7 +61,7 @@ function observationsOf(trace: readonly TraceEvent[]): string {
 
 É uma escolha esperta: as observações são a **verdade de campo**. Se a resposta diz "4 alertas críticos" e a observação diz "Found 3 firing alert(s)", o crítico tem como pegar a contradição. Os pensamentos (`thought`) e ações (`action`) do agente ficam de fora — o `reflection.test.ts` confere isso diretamente, fabricando um trace com um `thought` e uma `action` "desnecessários" e checando que o texto enviado ao modelo-crítico (`model.inputs`) não contém esse conteúdo (`assert.doesNotMatch(criticInputs, /Private reasoning not available/)`).
 
-Esse é o mesmo mecanismo de "LLM avaliando LLM" que você viu nos guardrails de [`guardrails.md`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/guardrails.md) — só que lá o avaliador bloqueava entradas maliciosas; aqui ele avalia a **qualidade da saída** e pode pedir uma nova tentativa.
+Esse é o mesmo mecanismo de "LLM avaliando LLM" que você viu nos guardrails de [`02-guardrails.md`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/02-guardrails.md) — só que lá o avaliador bloqueava entradas maliciosas; aqui ele avalia a **qualidade da saída** e pode pedir uma nova tentativa.
 
 ```typescript
 // src/agents/reflection.ts
@@ -222,3 +222,7 @@ Não há `modelFactory` nem `tools` para passar na composição: `withReflection
 | Decorator (nosso) | [`src/agents/reflection.ts`](../src/agents/reflection.ts) | `withReflection`, crítica `{ aproved, feedback }`, sem fail-safe no erro do crítico |
 | Testes (nosso) | [`src/agents/reflection.test.ts`](../src/agents/reflection.test.ts) | `ControlledCriticModel`, `controlledStrategy`, contas de `llmCalls` |
 | Composição na arena (nosso) | [`src/arena.ts`](../src/arena.ts) | `reflect:react` e `reflect:plan-and-execute` no registro `arenaStrategies` |
+
+---
+
+⬅️ Anterior: [05 · Plan-and-Execute](./05-plan-and-execute.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [07 · Arena e Bench](./07-arena-e-bench.md)**

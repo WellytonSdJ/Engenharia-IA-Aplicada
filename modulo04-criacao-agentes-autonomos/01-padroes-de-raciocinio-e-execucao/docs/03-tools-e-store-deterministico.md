@@ -46,7 +46,7 @@ private resetSync(): void {
 }
 ```
 
-É o mesmo princípio de [`zod-schemas-e-tipos.md`](../../../modulo03-mcp-na-pratica/06-your-legacy-api-as-mcp/customers-mcp/docs/zod-schemas-e-tipos.md) aplicado ao seed: se alguém editar `DEFAULT_ALERTS` com uma severidade inválida, o erro aparece na primeira instância do store (inclusive em qualquer teste), não no meio de uma execução do agente. O `src/services/seed.ts` é outra coisa — um script que zera o `JsonOpsStore` persistido em `src/data/ops-store.json` e imprime um resumo (`npm run seed`); quem a arena e o bench usam para isolar execuções é sempre um `InMemoryOpsStore` novo.
+É o mesmo princípio de [`03-zod-schemas-e-tipos.md`](../../../modulo03-mcp-na-pratica/06-your-legacy-api-as-mcp/customers-mcp/docs/03-zod-schemas-e-tipos.md) aplicado ao seed: se alguém editar `DEFAULT_ALERTS` com uma severidade inválida, o erro aparece na primeira instância do store (inclusive em qualquer teste), não no meio de uma execução do agente. O `src/services/seed.ts` é outra coisa — um script que zera o `JsonOpsStore` persistido em `src/data/ops-store.json` e imprime um resumo (`npm run seed`); quem a arena e o bench usam para isolar execuções é sempre um `InMemoryOpsStore` novo.
 
 ### O store: métodos assíncronos, erros de domínio nas transições inválidas
 
@@ -74,7 +74,7 @@ Todo método da interface `OpsStore` é **assíncrono** (`Promise<...>`), mesmo 
 
 ### As tools: `tool()` + Zod + store injetado
 
-Você já embrulhou uma função como tool do LangChain em [`google-trends-tool.md`](../../../modulo03-mcp-na-pratica/02-google-trends-agent/docs/google-trends-tool.md). A novidade aqui é a **injeção do store** por uma factory, e a validação Zod tanto na entrada quanto na saída:
+Você já embrulhou uma função como tool do LangChain em [`01-google-trends-tool.md`](../../../modulo03-mcp-na-pratica/02-google-trends-agent/docs/01-google-trends-tool.md). A novidade aqui é a **injeção do store** por uma factory, e a validação Zod tanto na entrada quanto na saída:
 
 ```typescript
 // src/services/tools.ts
@@ -150,7 +150,7 @@ if (!service) {
 }
 ```
 
-É a mesma ideia de "traduzir o erro na borda" que você viu em [`erros-de-dominio-e-tratamento.md`](../../../modulo03-mcp-na-pratica/07-api-security-auth-rate-limiting/customers-mcp/docs/erros-de-dominio-e-tratamento.md) — só que aqui a borda é a conversa com o LLM, não uma resposta HTTP: a mensagem de erro lista os nomes válidos para que o próprio agente consiga se corrigir numa tentativa seguinte.
+É a mesma ideia de "traduzir o erro na borda" que você viu em [`04-erros-de-dominio-e-tratamento.md`](../../../modulo03-mcp-na-pratica/07-api-security-auth-rate-limiting/customers-mcp/docs/04-erros-de-dominio-e-tratamento.md) — só que aqui a borda é a conversa com o LLM, não uma resposta HTTP: a mensagem de erro lista os nomes válidos para que o próprio agente consiga se corrigir numa tentativa seguinte.
 
 ### Default tolerante no schema de entrada
 
@@ -208,7 +208,7 @@ Algumas decisões de design valem registro porque não são óbvias de antemão:
 | Validação das tools | Zod na entrada **e na saída** (`executeTool`); erro de domínio captado na fronteira vira `ToolBoundaryError`, preservando `code` e causa |
 | Persistência | Três implementações da mesma interface `OpsStore`: `InMemoryOpsStore` (arena, bench, testes), `JsonOpsStore` (arquivo, usado pela CLI/tools por padrão) e `SequelizeOpsStore` (MySQL) |
 
-A resolução de nome para `serviceId` é o ponto mais sutil: o prompt do usuário fala em **nomes** ("checkout", "payment"), e é assim que `createIncident({ service: "payments", ... })` é chamado pela tool — por dentro, o store procura `this.services.find((item) => item.name === input.service)` e, se não achar, lança `ResourceNotFoundError` listando os nomes conhecidos. Isso é o que permite ao agente se recuperar de "payment" → "payments" numa tentativa seguinte (veja o cenário C2 do bench em [arena-e-bench.md](./arena-e-bench.md)).
+A resolução de nome para `serviceId` é o ponto mais sutil: o prompt do usuário fala em **nomes** ("checkout", "payment"), e é assim que `createIncident({ service: "payments", ... })` é chamado pela tool — por dentro, o store procura `this.services.find((item) => item.name === input.service)` e, se não achar, lança `ResourceNotFoundError` listando os nomes conhecidos. Isso é o que permite ao agente se recuperar de "payment" → "payments" numa tentativa seguinte (veja o cenário C2 do bench em [07-arena-e-bench.md](./07-arena-e-bench.md)).
 
 ## Referências no projeto
 
@@ -220,3 +220,7 @@ A resolução de nome para `serviceId` é o ponto mais sutil: o prompt do usuár
 | Seed (nosso) | [`src/services/seed.ts`](../src/services/seed.ts) | Script que zera o `JsonOpsStore` e imprime o resumo (`npm run seed`) |
 | Store (nosso) | [`src/models/in-memory-store.ts`](../src/models/in-memory-store.ts) | `DEFAULT_SERVICES`/`DEFAULT_ALERTS`, resolução de nome → `serviceId`, erro de domínio |
 | Tools (nosso) | [`src/services/tools.ts`](../src/services/tools.ts) | Factory com store injetado, `description` como prompt, `executeTool` e `ToolBoundaryError` |
+
+---
+
+⬅️ Anterior: [02 · Contrato de Estratégia, Trace e Métricas](./02-contrato-de-estrategia-e-trace.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · ReAct](./04-react.md)**

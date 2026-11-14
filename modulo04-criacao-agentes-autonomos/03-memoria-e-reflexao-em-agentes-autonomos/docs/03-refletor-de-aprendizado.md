@@ -1,6 +1,6 @@
 # Refletor de aprendizado — Reflection que olha para o futuro
 
-> Este doc cobre a **spec 010** ([`010-learning-reflector`](../specs/010-learning-reflector/spec.md)), implementada em [`src/services/learning-reflector.ts`](../src/services/learning-reflector.ts). Ele **estende** o padrão Reflection do projeto 01: se ainda não leu [reflection.md](../../01-padroes-de-raciocinio-e-execucao/docs/reflection.md), leia antes. Aqui focamos só no que muda.
+> Este doc cobre a **spec 010** ([`010-learning-reflector`](../specs/010-learning-reflector/spec.md)), implementada em [`src/services/learning-reflector.ts`](../src/services/learning-reflector.ts). Ele **estende** o padrão Reflection do projeto 01: se ainda não leu [06-reflection.md](../../01-padroes-de-raciocinio-e-execucao/docs/06-reflection.md), leia antes. Aqui focamos só no que muda.
 >
 > **Em 30 segundos**
 >
@@ -195,3 +195,7 @@ O `scheduleLearning` fica **depois** do `conversationStore.append`. Se a estrat�
 | Ligação no servidor real | [`src/index.ts`](../src/index.ts) | `createLLMLearningReflector(createModel)` |
 | Comparação com o crítico | [`src/agents/reflection.ts`](../src/agents/reflection.ts) | `withReflection`, `ReflectionCritiqueSchema` |
 | Prova do não-bloqueio | [`src/services/chat.test.ts`](../src/services/chat.test.ts) | `runChat returns before the learning reflector's remember finishes` |
+
+---
+
+⬅️ Anterior: [02 · Memória semântica](./02-memoria-semantica.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · forget_preference](./04-forget-preference.md)**

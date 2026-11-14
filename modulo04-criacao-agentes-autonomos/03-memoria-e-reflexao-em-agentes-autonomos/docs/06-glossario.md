@@ -1,6 +1,6 @@
 # Glossário — 03-memoria-e-reflexao-em-agentes-autonomos
 
-Termos já cobertos no [glossário do projeto 01](../../01-padroes-de-raciocinio-e-execucao/docs/glossario.md) (Reflection, crítico, structured output, estratégias, Spec Kit) não são repetidos aqui. O projeto 02 não tem glossário próprio.
+Termos já cobertos no [glossário do projeto 01](../../01-padroes-de-raciocinio-e-execucao/docs/10-glossario.md) (Reflection, crítico, structured output, estratégias, Spec Kit) não são repetidos aqui. Os termos de tools, SQLite, MCP e conversa persistente estão no [glossário do projeto 02](../../02-function-calling-e-tool-use/docs/07-glossario.md).
 
 ---
 
@@ -81,3 +81,7 @@ Termos já cobertos no [glossário do projeto 01](../../01-padroes-de-raciocinio
 | **`setAxis`** | Dá a um texto um vetor unitário num eixo: mesmo eixo = similaridade 1. |
 | **`*.semantic-test.ts`** | Testes com o modelo real, fora do `npm test`; rodam com `npm run test:semantic`. |
 | **Portão (gate)** | Promise que só o teste resolve; serve para provar que uma função **não** esperou outra. |
+
+---
+
+⬅️ Anterior: [05 · Testando memória](./05-testando-memoria.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: veja o [roteiro do módulo](../../README.md#roteiro-do-módulo-orientação-não-implementado-ainda)**

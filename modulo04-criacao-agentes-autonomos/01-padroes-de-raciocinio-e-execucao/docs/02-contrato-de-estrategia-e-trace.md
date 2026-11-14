@@ -12,7 +12,7 @@ Esse contrato tem três peças:
 | `trace` | **Como** ele chegou lá — passo a passo, com tipos |
 | `metrics` | Quanto custou — chamadas de LLM e tempo |
 
-No módulo 03 ([`observabilidade-agent-loop.md`](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/observabilidade-agent-loop.md)) você enxergava o loop do agente com **callbacks** que imprimiam no console enquanto ele rodava — útil para depurar, mas o que ia para a tela se perdia. Aqui o trace é **dado**: uma lista tipada que volta junto com a resposta, que dá para testar, comparar e imprimir do jeito que quiser.
+No módulo 03 ([`03-observabilidade-agent-loop.md`](../../../modulo03-mcp-na-pratica/01-multiple-mcp-tools/docs/03-observabilidade-agent-loop.md)) você enxergava o loop do agente com **callbacks** que imprimiam no console enquanto ele rodava — útil para depurar, mas o que ia para a tela se perdia. Aqui o trace é **dado**: uma lista tipada que volta junto com a resposta, que dá para testar, comparar e imprimir do jeito que quiser.
 
 ## Como está sendo usado
 
@@ -85,7 +85,7 @@ Cada tipo representa um momento diferente do raciocínio, e cada estratégia usa
 
 ### Do histórico de mensagens para o trace
 
-O ReAct do LangGraph não devolve um trace — devolve o **histórico de mensagens** (as mesmas `AIMessage`/`ToolMessage` que você viu em [`langchain-messages.md`](../../../modulo02-integracao-apis-llms/02-langchain-intro/docs/langchain-messages.md)). A função `traceFromMessages` traduz uma coisa na outra:
+O ReAct do LangGraph não devolve um trace — devolve o **histórico de mensagens** (as mesmas `AIMessage`/`ToolMessage` que você viu em [`02-langchain-messages.md`](../../../modulo02-integracao-apis-llms/02-langchain-intro/docs/02-langchain-messages.md)). A função `traceFromMessages` traduz uma coisa na outra:
 
 ```typescript
 // src/agents/react.ts
@@ -201,7 +201,7 @@ O `contracts/strategy.md` e o `data-model.md` da spec 001 fixaram um conjunto de
 | Métricas | `llmCalls`, `latencyMs` e um `iterations?` opcional |
 | Arquivos | `src/agents/strategy.ts` + `src/agents/trace.ts` |
 
-A união discriminada é uma melhoria real: com ela, o TypeScript e o Zod **proíbem** um `action` sem `tool`, algo que de outra forma só seria garantido por disciplina. O evento `critique` do schema (`src/agents/trace.ts`) só exige `type` e `content` — a camada de Reflection (veja [reflection.md](./reflection.md)) serializa seu veredito (`{ aproved, feedback }`) como JSON dentro desse `content`, em vez de adicionar campos extras ao evento.
+A união discriminada é uma melhoria real: com ela, o TypeScript e o Zod **proíbem** um `action` sem `tool`, algo que de outra forma só seria garantido por disciplina. O evento `critique` do schema (`src/agents/trace.ts`) só exige `type` e `content` — a camada de Reflection (veja [06-reflection.md](./06-reflection.md)) serializa seu veredito (`{ aproved, feedback }`) como JSON dentro desse `content`, em vez de adicionar campos extras ao evento.
 
 ## Referências no projeto
 
@@ -213,3 +213,7 @@ A união discriminada é uma melhoria real: com ela, o TypeScript e o Zod **pro�
 | Contrato de estratégia (nosso) | [`src/agents/strategy.ts`](../src/agents/strategy.ts) | `ReasoningStrategy` e `ReasoningOptions` |
 | Builder do trace (nosso) | [`src/agents/trace.ts`](../src/agents/trace.ts) | Regra mensagem → evento e o `answer` garantido |
 | Testes do trace (nosso) | [`src/agents/trace.test.ts`](../src/agents/trace.test.ts) | Mensagens fabricadas à mão, zero rede |
+
+---
+
+⬅️ Anterior: [01 · Spec-Driven Development com Spec Kit](./01-spec-driven-com-spec-kit.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Tools e Store Determinístico](./03-tools-e-store-deterministico.md)**

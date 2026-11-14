@@ -19,7 +19,7 @@ Arena failed: OPENROUTER_API_KEY and OPENROUTER_MODEL are required to run an LLM
 
 O arquivo estava lá, as variáveis também. O problema é que **ninguém lia o arquivo**. O script era `tsx src/arena.ts`, e nem o `tsx` nem o Node carregam `.env` por conta própria. Quem faz isso "sozinho" são frameworks como Next.js e Vite. O Node puro só carrega quando você pede.
 
-Esse bug estava previsto: era a armadilha 3 do [roteiro-de-implementacao.md](./roteiro-de-implementacao.md). A implementação seguiu o `tasks.md`, que preservou os scripts originais, e o problema só apareceu na primeira execução com LLM de verdade. Os testes não pegaram porque eles **de propósito** não usam credenciais.
+Esse bug estava previsto: era a armadilha 3 do [08-roteiro-de-implementacao.md](./08-roteiro-de-implementacao.md). A implementação seguiu o `tasks.md`, que preservou os scripts originais, e o problema só apareceu na primeira execução com LLM de verdade. Os testes não pegaram porque eles **de propósito** não usam credenciais.
 
 ---
 
@@ -231,4 +231,8 @@ Nunca use `console.log(process.env)`: isso joga todas as chaves no terminal e, �
 | Modelo do `.env` | [`.env.example`](../.env.example) | Variáveis exigidas, com comentários |
 | `.env` fora do git | [`.gitignore`](../.gitignore) | `.env`, `.env.*`, `!.env.example` |
 | Regra "sem `dotenv`" | [`.specify/memory/constitution.md`](../.specify/memory/constitution.md) | "carregue variáveis de ambiente usando o suporte nativo do Node.js" |
-| Onde o bug foi previsto | [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) | Armadilhas 3 e 4 |
+| Onde o bug foi previsto | [08-roteiro-de-implementacao.md](./08-roteiro-de-implementacao.md) | Armadilhas 3 e 4 |
+
+---
+
+⬅️ Anterior: [08 · Roteiro de Implementação](./08-roteiro-de-implementacao.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [10 · Glossário](./10-glossario.md)**

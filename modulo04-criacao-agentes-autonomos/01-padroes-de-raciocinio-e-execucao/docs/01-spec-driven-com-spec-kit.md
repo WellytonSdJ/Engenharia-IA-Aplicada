@@ -2,7 +2,7 @@
 
 ## O que é
 
-No módulo 03, em [`03-dev-instructions-agents`](../../../modulo03-mcp-na-pratica/03-dev-instructions-agents/docs/custom-agents-copilot.md), você viu que dá para **programar o comportamento de um agente de código** escrevendo Markdown (`.agent.md`): persona, ferramentas permitidas e fluxo de trabalho. O Spec Kit leva essa ideia um passo adiante: em vez de um agente só, ele instala **um processo inteiro** — um conjunto de comandos que conduzem o agente de código (aqui, o GitHub Copilot) por etapas com artefatos versionados entre elas.
+No módulo 03, em [`03-dev-instructions-agents`](../../../modulo03-mcp-na-pratica/03-dev-instructions-agents/docs/01-custom-agents-copilot.md), você viu que dá para **programar o comportamento de um agente de código** escrevendo Markdown (`.agent.md`): persona, ferramentas permitidas e fluxo de trabalho. O Spec Kit leva essa ideia um passo adiante: em vez de um agente só, ele instala **um processo inteiro** — um conjunto de comandos que conduzem o agente de código (aqui, o GitHub Copilot) por etapas com artefatos versionados entre elas.
 
 A analogia é uma obra. Ninguém começa levantando parede: primeiro vem o **programa de necessidades** (o que a família precisa), depois a **planta** (como vai ser), depois o **cronograma** (em que ordem se faz) — e só então o **pedreiro**. Se no meio da obra alguém quiser uma suíte a mais, volta-se para a planta, não se quebra parede no improviso.
 
@@ -59,7 +59,7 @@ Esse é o ganho real: decisões como "sem `dotenv`" ou "testes sem rede" não de
   skills/speckit-*/SKILL.md       → um comando por skill (specify, plan, tasks, implement, ...)
 ```
 
-Repare que os comandos do Spec Kit chegam ao Copilot como **Agent Skills** (`SKILL.md`) — exatamente o formato que você estudou em [`04-skills`](../../../modulo03-mcp-na-pratica/04-skills/docs/formato-skill-md.md). Não é um mecanismo novo: é um uso novo de algo que você já conhece.
+Repare que os comandos do Spec Kit chegam ao Copilot como **Agent Skills** (`SKILL.md`) — exatamente o formato que você estudou em [`04-skills`](../../../modulo03-mcp-na-pratica/04-skills/docs/01-formato-skill-md.md). Não é um mecanismo novo: é um uso novo de algo que você já conhece.
 
 ### O que já produzimos (checkpoint)
 
@@ -104,7 +104,7 @@ Além dos quatro principais, o Spec Kit instalou skills de apoio que você pode 
 | `speckit-taskstoissues` | Transforma o `tasks.md` em issues do GitHub |
 | `speckit-constitution` | Cria ou emenda a constituição (com versão e data de emenda) |
 
-> Sugestão para o próximo passo: rodar `/speckit.analyze` antes do `/speckit.implement`. O [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) já lista algumas inconsistências que um analyze provavelmente apontaria (ex.: divergências de nome entre `data-model.md` e o seed implementado).
+> Sugestão para o próximo passo: rodar `/speckit.analyze` antes do `/speckit.implement`. O [08-roteiro-de-implementacao.md](./08-roteiro-de-implementacao.md) já lista algumas inconsistências que um analyze provavelmente apontaria (ex.: divergências de nome entre `data-model.md` e o seed implementado).
 
 ## Por que isso importa para agentes
 
@@ -127,3 +127,7 @@ Esse tipo de desvio é comum mesmo com processo: uma feature planejada para fech
 | Spec | [`specs/001-nucleo-raciocinio-opspilot/spec.md`](../specs/001-nucleo-raciocinio-opspilot/spec.md) | User stories com "Independent Test" e requisitos FR-xxx |
 | Constitution Check | [`specs/001-nucleo-raciocinio-opspilot/plan.md`](../specs/001-nucleo-raciocinio-opspilot/plan.md) | PASS por princípio, antes e depois do design |
 | Tarefas | [`specs/001-nucleo-raciocinio-opspilot/tasks.md`](../specs/001-nucleo-raciocinio-opspilot/tasks.md) | Fases, `[P]`, `[USn]` e critérios de conclusão |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Contrato de Estratégia, Trace e Métricas](./02-contrato-de-estrategia-e-trace.md)**

@@ -35,7 +35,7 @@ Os próximos projetos seguem a trilha de temas do módulo. Como o OpsPilot é um
 | **Conta OpenRouter** | — | `OPENROUTER_API_KEY` (e `OPENROUTER_MODEL`); modelos `:free` custam zero |
 | **Spec Kit** | 1.0.x | Integração `copilot`, scripts PowerShell (`.specify/`) |
 | **GitHub Copilot** | — | Agente de código que executa os comandos `speckit.*` |
-| **SQLite** | nativo (`node:sqlite`) | Usado a partir do projeto 02 (spec 005) como persistência real via `DatabaseSync`, sem servidor externo; testes e bench usam `:memory:` |
+| **SQLite** | nativo (`node:sqlite`) | Usado a partir do projeto 02 (spec 005) como persistência real via `DatabaseSync`, sem servidor externo; testes usam `:memory:` e o bench segue no store em memória |
 | **`@huggingface/transformers`** | 4.2.x | A partir do projeto 03 (spec 009): roda o modelo de embeddings `all-MiniLM-L6-v2` localmente (sem API key). A primeira execução baixa ~23 MB; `npm test` não depende disso (usa `FakeEmbedder`) |
 
 > Cada projeto tem seu próprio `docs/` com requisitos detalhados e instruções de execução.
@@ -52,7 +52,8 @@ Os próximos projetos seguem a trilha de temas do módulo. Como o OpsPilot é um
 - Avaliação de agentes: arena (comparação lado a lado) e bench com acerto medido no estado do sistema
 - Testes determinísticos sem rede com doubles de modelo, estratégia e crítico
 - Carregamento nativo de `.env` (`--env-file-if-exists`) sem `dotenv`, e por que os testes não o carregam
-- Persistência real sem servidor externo (`node:sqlite`), tool de runbook, tool de status de provedores externos, servidor MCP de operações e conversa persistente no `/chat`
+- Function calling e design de tools ("o schema é o prompt", 6 regras de descrição) com uma fonte única de definições para o agente e o MCP
+- Persistência real sem servidor externo (`node:sqlite`, prepared statements, transações), tool de runbook, tool externa resiliente (timeout, retry seletivo, erro como observação), servidor MCP de operações e conversa persistente no `/chat`
 - Memória de curto prazo (histórico por `conversationId`) × longo prazo (fatos por `userId`)
 - Embeddings locais com Transformers.js, similaridade de cosseno como produto escalar de vetores normalizados, lazy singleton do modelo
 - Vector store "na mão" com SQLite (vetor em BLOB, busca por força bruta), dedup semântico (> 0,92) e recall top-3 com piso (≥ 0,3)
@@ -63,21 +64,36 @@ Os próximos projetos seguem a trilha de temas do módulo. Como o OpsPilot é um
 
 Documentação aprofundada disponível em [`01-padroes-de-raciocinio-e-execucao/docs/`](./01-padroes-de-raciocinio-e-execucao/docs/). Os docs de conceito foram escritos antes da implementação, e cada doc registra onde a implementação final divergiu do desenho inicial. O roteiro registra o que mudou depois da implementação.
 
-O projeto 02 nasce como cópia do 01 e **não repete** essa documentação — seu [`docs/README.md`](./02-function-calling-e-tool-use/docs/README.md) linka de volta para cada doc abaixo e documenta só o que é novo (persistência SQLite, tool `consultar_runbook`, status de provedores externos, servidor MCP, conversa persistente).
+Os projetos seguintes nascem como cópia do anterior e **não repetem** essa documentação: linkam de volta para cada doc abaixo e documentam só o que é novo.
 
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./01-padroes-de-raciocinio-e-execucao/docs/00-START-HERE.md) | Por onde começar: o OpsPilot, trilha de leitura, mapa do código de referência e comandos |
-| [spec-driven-com-spec-kit.md](./01-padroes-de-raciocinio-e-execucao/docs/spec-driven-com-spec-kit.md) | O processo Spec Kit, a constituição, o que já produzimos e os comandos de apoio |
-| [contrato-de-estrategia-e-trace.md](./01-padroes-de-raciocinio-e-execucao/docs/contrato-de-estrategia-e-trace.md) | `ReasoningStrategy`, `TraceEvent` tipado, `buildTraceFromMessages` e métricas |
-| [tools-e-store-deterministico.md](./01-padroes-de-raciocinio-e-execucao/docs/tools-e-store-deterministico.md) | Tools com `tool()` + Zod, store injetado, seed validado e testes sem rede |
-| [react.md](./01-padroes-de-raciocinio-e-execucao/docs/react.md) | ReAct com `createReactAgent`, `modelFactory` e limite de iterações |
-| [plan-and-execute.md](./01-padroes-de-raciocinio-e-execucao/docs/plan-and-execute.md) | `StateGraph` planner → executor → replanner, schemas planos e modo sem replanner |
-| [reflection.md](./01-padroes-de-raciocinio-e-execucao/docs/reflection.md) | Reflection como decorator: crítico, feedback injetado e métricas somadas |
-| [arena-e-bench.md](./01-padroes-de-raciocinio-e-execucao/docs/arena-e-bench.md) | Arena lado a lado e bench com acerto no estado (C1/C2/C3), com lista de motivos quando o cenário falha |
-| [variaveis-de-ambiente-com-env-file.md](./01-padroes-de-raciocinio-e-execucao/docs/variaveis-de-ambiente-com-env-file.md) | `.env` com `node --env-file-if-exists --import tsx`: o bug da arena, outros usos e montagem do zero |
-| [roteiro-de-implementacao.md](./01-padroes-de-raciocinio-e-execucao/docs/roteiro-de-implementacao.md) | Ponte `tasks.md` × referência, divergências e armadilhas já identificadas |
-| [glossario.md](./01-padroes-de-raciocinio-e-execucao/docs/glossario.md) | Termos novos do projeto |
+| [01-spec-driven-com-spec-kit.md](./01-padroes-de-raciocinio-e-execucao/docs/01-spec-driven-com-spec-kit.md) | O processo Spec Kit, a constituição, o que já produzimos e os comandos de apoio |
+| [02-contrato-de-estrategia-e-trace.md](./01-padroes-de-raciocinio-e-execucao/docs/02-contrato-de-estrategia-e-trace.md) | `ReasoningStrategy`, `TraceEvent` tipado, `buildTraceFromMessages` e métricas |
+| [03-tools-e-store-deterministico.md](./01-padroes-de-raciocinio-e-execucao/docs/03-tools-e-store-deterministico.md) | Tools com `tool()` + Zod, store injetado, seed validado e testes sem rede |
+| [04-react.md](./01-padroes-de-raciocinio-e-execucao/docs/04-react.md) | ReAct com `createReactAgent`, `modelFactory` e limite de iterações |
+| [05-plan-and-execute.md](./01-padroes-de-raciocinio-e-execucao/docs/05-plan-and-execute.md) | `StateGraph` planner → executor → replanner, schemas planos e modo sem replanner |
+| [06-reflection.md](./01-padroes-de-raciocinio-e-execucao/docs/06-reflection.md) | Reflection como decorator: crítico, feedback injetado e métricas somadas |
+| [07-arena-e-bench.md](./01-padroes-de-raciocinio-e-execucao/docs/07-arena-e-bench.md) | Arena lado a lado e bench com acerto no estado (C1/C2/C3), com lista de motivos quando o cenário falha |
+| [09-variaveis-de-ambiente-com-env-file.md](./01-padroes-de-raciocinio-e-execucao/docs/09-variaveis-de-ambiente-com-env-file.md) | `.env` com `node --env-file-if-exists --import tsx`: o bug da arena, outros usos e montagem do zero |
+| [08-roteiro-de-implementacao.md](./01-padroes-de-raciocinio-e-execucao/docs/08-roteiro-de-implementacao.md) | Ponte `tasks.md` × referência, divergências e armadilhas já identificadas |
+| [10-glossario.md](./01-padroes-de-raciocinio-e-execucao/docs/10-glossario.md) | Termos novos do projeto |
+
+## Documentação de conceitos (projeto 02)
+
+Documentação aprofundada em [`02-function-calling-e-tool-use/docs/`](./02-function-calling-e-tool-use/docs/):
+
+| Documento | Conteúdo |
+| --- | --- |
+| [00-START-HERE.md](./02-function-calling-e-tool-use/docs/00-START-HERE.md) | O que muda nesta unidade, trilha de leitura, mapa do código, como rodar e exercícios |
+| [01-function-calling-e-design-de-tools.md](./02-function-calling-e-tool-use/docs/01-function-calling-e-design-de-tools.md) | O modelo pede e o código executa; "o schema é o prompt"; as 6 regras de descrição; `list_incidents`, `consultar_runbook`; fonte única de tools |
+| [04-api-chat-http.md](./02-function-calling-e-tool-use/docs/04-api-chat-http.md) | `POST /chat`: Zod na fronteira, registry de estratégias, `reflect`, timeout e erro → status HTTP |
+| [02-persistencia-sqlite.md](./02-function-calling-e-tool-use/docs/02-persistencia-sqlite.md) | `node:sqlite`, DDL idempotente, `CHECK`, prepared statements, transações, seed e `:memory:` |
+| [03-tool-externa-resiliente.md](./02-function-calling-e-tool-use/docs/03-tool-externa-resiliente.md) | `check_provider_status`: timeout, retry seletivo, Zod na resposta, erro como observação, `fetch` injetável |
+| [05-servidor-mcp.md](./02-function-calling-e-tool-use/docs/05-servidor-mcp.md) | O OpsPilot como provedor MCP: 3 tools da mesma fonte, stdio sem `console.log`, testes em memória, prova circular |
+| [06-conversa-persistente.md](./02-function-calling-e-tool-use/docs/06-conversa-persistente.md) | `conversationId`, janela de 12 mensagens, gravar só após sucesso, 422 `UNKNOWN_CONVERSATION` |
+| [07-glossario.md](./02-function-calling-e-tool-use/docs/07-glossario.md) | Termos novos do projeto |
 
 ## Documentação de conceitos (projeto 03)
 
@@ -86,9 +102,9 @@ O projeto 03 nasce como cópia do 02 e, do mesmo jeito, **não repete** a docume
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/00-START-HERE.md) | O que muda na unidade, trilha de leitura, mapa do código, mapa referência → nosso e como rodar |
-| [embeddings-e-similaridade.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/embeddings-e-similaridade.md) | Embedding, cosseno como produto escalar, `all-MiniLM-L6-v2` local e lazy singleton |
-| [memoria-semantica.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/memoria-semantica.md) | Curto × longo prazo, vector store em SQLite, `remember`/`recall`/`forget`, limiares e memórias no `/chat` |
-| [refletor-de-aprendizado.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/refletor-de-aprendizado.md) | Reflection como loop de aprendizado, durável × pontual × segredo, fire-and-forget |
-| [forget-preference.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/forget-preference.md) | Tool presa ao usuário do turno por closure (e por que a referência usa `AsyncLocalStorage`) |
-| [testando-memoria.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/testando-memoria.md) | `FakeEmbedder`, testes semânticos fora do `npm test` e teste do "não esperou" |
-| [glossario.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/glossario.md) | Termos novos da unidade |
+| [01-embeddings-e-similaridade.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/01-embeddings-e-similaridade.md) | Embedding, cosseno como produto escalar, `all-MiniLM-L6-v2` local e lazy singleton |
+| [02-memoria-semantica.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/02-memoria-semantica.md) | Curto × longo prazo, vector store em SQLite, `remember`/`recall`/`forget`, limiares e memórias no `/chat` |
+| [03-refletor-de-aprendizado.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/03-refletor-de-aprendizado.md) | Reflection como loop de aprendizado, durável × pontual × segredo, fire-and-forget |
+| [04-forget-preference.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/04-forget-preference.md) | Tool presa ao usuário do turno por closure (e por que a referência usa `AsyncLocalStorage`) |
+| [05-testando-memoria.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/05-testando-memoria.md) | `FakeEmbedder`, testes semânticos fora do `npm test` e teste do "não esperou" |
+| [06-glossario.md](./03-memoria-e-reflexao-em-agentes-autonomos/docs/06-glossario.md) | Termos novos da unidade |

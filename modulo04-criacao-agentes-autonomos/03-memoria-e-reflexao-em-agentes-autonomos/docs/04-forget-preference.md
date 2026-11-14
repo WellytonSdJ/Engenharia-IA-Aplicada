@@ -1,6 +1,6 @@
 # `forget_preference` — uma tool presa ao usuário do turno
 
-> Este doc cobre a parte de tools da **spec 010** ([`010-learning-reflector`](../specs/010-learning-reflector/spec.md)). Como criar tools com `tool()` + Zod está em [tools-e-store-deterministico.md](../../01-padroes-de-raciocinio-e-execucao/docs/tools-e-store-deterministico.md) e não é repetido aqui. O foco é uma pergunta nova: **como uma tool sabe quem é o usuário, sem deixar o modelo escolher?**
+> Este doc cobre a parte de tools da **spec 010** ([`010-learning-reflector`](../specs/010-learning-reflector/spec.md)). Como criar tools com `tool()` + Zod está em [03-tools-e-store-deterministico.md](../../01-padroes-de-raciocinio-e-execucao/docs/03-tools-e-store-deterministico.md) e não é repetido aqui. O foco é uma pergunta nova: **como uma tool sabe quem é o usuário, sem deixar o modelo escolher?**
 >
 > **Em 30 segundos**
 >
@@ -13,7 +13,7 @@
 
 ## O que é
 
-Se o agente aprende sozinho (ver [refletor-de-aprendizado.md](./refletor-de-aprendizado.md)), ele também vai aprender errado de vez em quando. O usuário precisa de um jeito de corrigir **conversando**, sem chamar uma API.
+Se o agente aprende sozinho (ver [03-refletor-de-aprendizado.md](./03-refletor-de-aprendizado.md)), ele também vai aprender errado de vez em quando. O usuário precisa de um jeito de corrigir **conversando**, sem chamar uma API.
 
 A tool é simples: recall + forget.
 
@@ -136,3 +136,7 @@ No nosso OpsPilot, o ReAct **cria as tools a cada `run`** (é assim desde o proj
 | Contrato das opções | [`src/agents/strategy.ts`](../src/agents/strategy.ts) | `ReasoningOptions.memory` |
 | De onde vem o `userId` | [`src/services/chat.ts`](../src/services/chat.ts) | `options.memory = { store, userId }` |
 | Testes | [`src/services/tools.test.ts`](../src/services/tools.test.ts), [`src/agents/react.test.ts`](../src/agents/react.test.ts) | Apaga só o fato certo do usuário certo; tool só com `memory` |
+
+---
+
+⬅️ Anterior: [03 · Refletor de aprendizado](./03-refletor-de-aprendizado.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [05 · Testando memória](./05-testando-memoria.md)**

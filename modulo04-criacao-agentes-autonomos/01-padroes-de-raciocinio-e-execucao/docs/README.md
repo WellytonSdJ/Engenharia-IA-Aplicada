@@ -11,16 +11,16 @@ Este é o primeiro projeto do módulo 04 neste repositório e o nascimento do **
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Por onde começar: o que é o OpsPilot, trilha de leitura, mapa do código de referência e comandos |
-| [spec-driven-com-spec-kit.md](./spec-driven-com-spec-kit.md) | Spec-Driven Development com o Spec Kit: constituição, `specify → plan → tasks → implement`, o que já produzimos e o que vem |
-| [contrato-de-estrategia-e-trace.md](./contrato-de-estrategia-e-trace.md) | A interface `ReasoningStrategy`, o `TraceEvent` tipado (`thought/action/observation/plan/critique/answer`) e as métricas `llmCalls`/`latencyMs` |
-| [tools-e-store-deterministico.md](./tools-e-store-deterministico.md) | As tools `list_alerts`/`open_incident`/`resolve_incident` com `tool()` + Zod, store injetado, seed validado e testes sem rede |
-| [react.md](./react.md) | O padrão ReAct (Thought → Action → Observation) com `createReactAgent`, `recursionLimit` e `GraphRecursionError` |
-| [plan-and-execute.md](./plan-and-execute.md) | Plan-and-Execute como `StateGraph`: planner → executor → replanner, schemas planos, teto de 8 passos e modo sem replanner |
-| [reflection.md](./reflection.md) | A camada de Reflection (spec 002) como **decorator**: crítico com saída estruturada, feedback injetado, sem fail-safe no erro do crítico, e métricas acumuladas |
-| [arena-e-bench.md](./arena-e-bench.md) | Arena (comparação lado a lado) e bench (acerto medido no store, cenários C1/C2/C3 e diagnóstico) |
-| [variaveis-de-ambiente-com-env-file.md](./variaveis-de-ambiente-com-env-file.md) | Como o `.env` chega ao `process.env` com `node --env-file-if-exists=.env --import tsx`, o bug que isso resolveu, outros usos e como montar do zero |
-| [roteiro-de-implementacao.md](./roteiro-de-implementacao.md) | Ponte entre o nosso `tasks.md` e o código de referência: ordem de implementação, divergências e armadilhas já identificadas |
-| [glossario.md](./glossario.md) | Termos novos deste projeto — os cobertos no módulo 03 não são repetidos |
+| [01-spec-driven-com-spec-kit.md](./01-spec-driven-com-spec-kit.md) | Spec-Driven Development com o Spec Kit: constituição, `specify → plan → tasks → implement`, o que já produzimos e o que vem |
+| [02-contrato-de-estrategia-e-trace.md](./02-contrato-de-estrategia-e-trace.md) | A interface `ReasoningStrategy`, o `TraceEvent` tipado (`thought/action/observation/plan/critique/answer`) e as métricas `llmCalls`/`latencyMs` |
+| [03-tools-e-store-deterministico.md](./03-tools-e-store-deterministico.md) | As tools `list_alerts`/`open_incident`/`resolve_incident` com `tool()` + Zod, store injetado, seed validado e testes sem rede |
+| [04-react.md](./04-react.md) | O padrão ReAct (Thought → Action → Observation) com `createReactAgent`, `recursionLimit` e `GraphRecursionError` |
+| [05-plan-and-execute.md](./05-plan-and-execute.md) | Plan-and-Execute como `StateGraph`: planner → executor → replanner, schemas planos, teto de 8 passos e modo sem replanner |
+| [06-reflection.md](./06-reflection.md) | A camada de Reflection (spec 002) como **decorator**: crítico com saída estruturada, feedback injetado, sem fail-safe no erro do crítico, e métricas acumuladas |
+| [07-arena-e-bench.md](./07-arena-e-bench.md) | Arena (comparação lado a lado) e bench (acerto medido no store, cenários C1/C2/C3 e diagnóstico) |
+| [09-variaveis-de-ambiente-com-env-file.md](./09-variaveis-de-ambiente-com-env-file.md) | Como o `.env` chega ao `process.env` com `node --env-file-if-exists=.env --import tsx`, o bug que isso resolveu, outros usos e como montar do zero |
+| [08-roteiro-de-implementacao.md](./08-roteiro-de-implementacao.md) | Ponte entre o nosso `tasks.md` e o código de referência: ordem de implementação, divergências e armadilhas já identificadas |
+| [10-glossario.md](./10-glossario.md) | Termos novos deste projeto — os cobertos no módulo 03 não são repetidos |
 
 ---
 
@@ -36,3 +36,7 @@ Este é o primeiro projeto do módulo 04 neste repositório e o nascimento do **
 | **`node:test` + `tsx`** | Testes determinísticos sem rede (store, trace, reflection com mocks) |
 | **`--env-file-if-exists` (Node ≥ 22.9)** | Carrega o `.env` nos scripts `dev`/`arena`/`bench`/`seed` sem `dotenv`, como exige a constituição |
 | **Sequelize + MySQL** | Fronteira de persistência inicialmente prevista no plano deste projeto, substituída depois por SQLite nativo (projeto 02, spec 005) |
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**
