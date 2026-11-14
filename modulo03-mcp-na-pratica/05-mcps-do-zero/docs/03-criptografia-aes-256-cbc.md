@@ -49,7 +49,7 @@ O ciphertext em hex nunca contém `:` (hex só usa `0-9a-f`), então na prática
 
 ## Por que os erros de `decrypt` viram `isError: true` na tool, não uma exceção não tratada
 
-`decipher.final()` lança exceção quando o padding do texto decifrado não bate — o que acontece tanto para uma passphrase errada (a chave derivada não corresponde ao IV/ciphertext) quanto para um ciphertext malformado. `service.ts` deixa essa exceção propagar; é a tool `decrypt_message`, em `mcp.ts`, que captura o erro e o transforma numa resposta MCP válida com `isError: true` — ver [construindo-mcp-server-do-zero.md](./construindo-mcp-server-do-zero.md) para o porquê dessa escolha no nível do protocolo.
+`decipher.final()` lança exceção quando o padding do texto decifrado não bate — o que acontece tanto para uma passphrase errada (a chave derivada não corresponde ao IV/ciphertext) quanto para um ciphertext malformado. `service.ts` deixa essa exceção propagar; é a tool `decrypt_message`, em `mcp.ts`, que captura o erro e o transforma numa resposta MCP válida com `isError: true` — ver [01-construindo-mcp-server-do-zero.md](./01-construindo-mcp-server-do-zero.md) para o porquê dessa escolha no nível do protocolo.
 
 ---
 
@@ -62,3 +62,7 @@ O ciphertext em hex nunca contém `:` (hex só usa `0-9a-f`), então na prática
 | Formato de saída | [src/service.ts](../src/service.ts) | `${iv.toString('hex')}:${encrypted.toString('hex')}` |
 | Descrição do algoritmo exposta ao cliente | [src/mcp.ts](../src/mcp.ts) | Resource `encryption://info` |
 | Caminho de erro (não coberto por teste automatizado hoje) | [src/mcp.ts](../src/mcp.ts) | `catch` na tool `decrypt_message` — dispara quando `decipher.final()` falha (passphrase errada ou ciphertext malformado) |
+
+---
+
+⬅️ Anterior: [02 · Transporte STDIO e testes via MCP client](./02-transporte-stdio-e-testes-mcp-client.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Glossário](./04-glossario.md)**

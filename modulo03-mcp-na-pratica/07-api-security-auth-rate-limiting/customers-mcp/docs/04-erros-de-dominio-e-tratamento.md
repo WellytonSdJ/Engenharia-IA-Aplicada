@@ -119,3 +119,7 @@ O custo é subir um processo Node por teste — caro, mas necessário para isola
 | Captura na tool | [src/mcp/tools/list-customers.ts](../src/mcp/tools/list-customers.ts) | `catch (err)` → `structuredContent: { isError: true, message }` |
 | Teste de token inválido | [tests/tools/customers.test.ts](../tests/tools/customers.test.ts) | `createTestClient('invalid-token-that-does-not-exist')` |
 | `beforeEach`/`afterEach` | [tests/tools/customers.test.ts](../tests/tools/customers.test.ts) | Por que novo token/client por teste |
+
+---
+
+⬅️ Anterior: [03 · Rate Limiting](./03-rate-limiting.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [05 · Glossário](./05-glossario.md)**

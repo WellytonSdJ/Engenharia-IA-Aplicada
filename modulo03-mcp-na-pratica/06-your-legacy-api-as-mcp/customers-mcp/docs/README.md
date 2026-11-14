@@ -24,7 +24,11 @@ O sub-projeto `customers-mcp/` é o servidor MCP. O sub-projeto `nodejs-fastify-
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Por onde começar: motivação, trilha de leitura, mapa do código e comandos |
-| [legacy-api-como-mcp.md](./legacy-api-como-mcp.md) | O conceito central: por que e como embrulhar uma API REST legada como servidor MCP |
-| [arquitetura-em-camadas-mcp.md](./arquitetura-em-camadas-mcp.md) | As quatro camadas do customers-mcp (domain, infrastructure, application, mcp) e por que essa divisão importa |
-| [zod-schemas-e-tipos.md](./zod-schemas-e-tipos.md) | Zod no contexto deste projeto: `z.infer`, `.extend()`, `.shape`, `.nullable()`, e `CustomerMutationSchema` unificado |
-| [glossario.md](./glossario.md) | Termos novos deste projeto — os já cobertos em 05-mcps-do-zero não são repetidos aqui |
+| [01-legacy-api-como-mcp.md](./01-legacy-api-como-mcp.md) | O conceito central: por que e como embrulhar uma API REST legada como servidor MCP |
+| [02-arquitetura-em-camadas-mcp.md](./02-arquitetura-em-camadas-mcp.md) | As quatro camadas do customers-mcp (domain, infrastructure, application, mcp) e por que essa divisão importa |
+| [03-zod-schemas-e-tipos.md](./03-zod-schemas-e-tipos.md) | Zod no contexto deste projeto: `z.infer`, `.extend()`, `.shape`, `.nullable()`, e `CustomerMutationSchema` unificado |
+| [04-glossario.md](./04-glossario.md) | Termos novos deste projeto — os já cobertos em 05-mcps-do-zero não são repetidos aqui |
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

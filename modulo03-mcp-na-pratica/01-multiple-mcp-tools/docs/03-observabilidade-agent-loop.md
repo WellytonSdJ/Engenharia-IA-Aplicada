@@ -2,7 +2,7 @@
 
 ## O problema que este documento resolve
 
-Depois de ler [agente-autonomo-vs-orquestracao-explicita.md](./agente-autonomo-vs-orquestracao-explicita.md), fica uma pergunta óbvia: se o agente decide sozinho quantas tools chamar e em qual ordem, **como eu vejo o que ele está fazendo de dentro para fora?** Em um grafo explícito, cada nó tem um `console.log` próprio e você sabe exatamente em que etapa está. Dentro do loop interno do `createAgent`, isso não existe por padrão — é uma "caixa preta" que só devolve o resultado final.
+Depois de ler [02-agente-autonomo-vs-orquestracao-explicita.md](./02-agente-autonomo-vs-orquestracao-explicita.md), fica uma pergunta óbvia: se o agente decide sozinho quantas tools chamar e em qual ordem, **como eu vejo o que ele está fazendo de dentro para fora?** Em um grafo explícito, cada nó tem um `console.log` próprio e você sabe exatamente em que etapa está. Dentro do loop interno do `createAgent`, isso não existe por padrão — é uma "caixa preta" que só devolve o resultado final.
 
 A resposta deste projeto: **callbacks do LangChain**, passados na chamada de `agent.invoke`.
 
@@ -89,3 +89,7 @@ O projeto também suporta tracing via LangSmith (`LANGSMITH_API_KEY`, `LANGCHAIN
 | Callbacks no `agent.invoke` | [src/services/openRouterService.ts](../src/services/openRouterService.ts) | `handleChatModelStart`, `handleLLMEnd`, `handleToolStart`, `handleToolEnd` |
 | Tipo `ChatGeneration` | [src/services/openRouterService.ts](../src/services/openRouterService.ts) | Usado para tipar `output.generations` dentro de `handleLLMEnd` |
 | Onde rodar e ver o log | [src/index.ts](../src/index.ts) → `npm start` | O terminal mostra a sequência completa de pensamentos/tools em tempo real |
+
+---
+
+⬅️ Anterior: [02 · Agente Autônomo vs. Orquestração Explícita](./02-agente-autonomo-vs-orquestracao-explicita.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Glossário](./04-glossario.md)**

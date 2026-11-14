@@ -25,9 +25,9 @@ Isso é relevante porque é uma alternativa real, e mais leve, a escrever um age
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [custom-agents-copilot.md](./custom-agents-copilot.md) | O formato do arquivo `.agent.md` em si: o que cada campo do frontmatter faz, e como o corpo em Markdown vira o "system prompt" do agente. Base para entender os outros 3 documentos. |
-| 2 | [pipeline-playwright-agents.md](./pipeline-playwright-agents.md) | Como os três agentes de teste (`planner`, `generator`, `healer`) se encaixam em um fluxo sequencial, cada um lendo a saída do anterior. |
-| 3 | [glossario.md](./glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
+| 1 | [01-custom-agents-copilot.md](./01-custom-agents-copilot.md) | O formato do arquivo `.agent.md` em si: o que cada campo do frontmatter faz, e como o corpo em Markdown vira o "system prompt" do agente. Base para entender os outros 3 documentos. |
+| 2 | [02-pipeline-playwright-agents.md](./02-pipeline-playwright-agents.md) | Como os três agentes de teste (`planner`, `generator`, `healer`) se encaixam em um fluxo sequencial, cada um lendo a saída do anterior. |
+| 3 | [03-glossario.md](./03-glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
 
 ---
 
@@ -47,3 +47,7 @@ Não há `src/`, `package.json`, `docker-compose.yaml` ou qualquer artefato de e
 ## Como "rodar" isto
 
 Não há comando `npm start`. Esses arquivos são consumidos pelo GitHub Copilot dentro do VS Code (ou de outro editor com suporte a custom agents): ao colocar `.agent.md` em `.github/agents/`, cada um passa a aparecer como uma opção de agente no seletor de modo do chat do Copilot. Selecionar `playwright-test-planner`, por exemplo, faz o Copilot assumir a persona e as restrições de ferramentas descritas naquele arquivo para a conversa corrente.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Custom agents do GitHub Copilot (`.agent.md`)](./01-custom-agents-copilot.md)**

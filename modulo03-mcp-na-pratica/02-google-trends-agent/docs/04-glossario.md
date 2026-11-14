@@ -2,7 +2,7 @@
 
 Referência rápida. Para profundidade, vá ao documento específico de cada conceito.
 
-Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling, Agente, Lazy initialization) e de LangGraph/LangChain/Zod genéricos (StateGraph, State, Node, Edge, `createAgent`, Zod, `z.infer`) já cobertos nos glossários de `05-safeguard-prompt-injection` (módulo 02) e [`01-multiple-mcp-tools`](../../01-multiple-mcp-tools/docs/glossario.md) não são repetidos aqui.
+Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling, Agente, Lazy initialization) e de LangGraph/LangChain/Zod genéricos (StateGraph, State, Node, Edge, `createAgent`, Zod, `z.infer`) já cobertos nos glossários de `05-safeguard-prompt-injection` (módulo 02) e [`01-multiple-mcp-tools`](../../01-multiple-mcp-tools/docs/04-glossario.md) não são repetidos aqui.
 
 ---
 
@@ -40,3 +40,7 @@ Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling,
 | **`KeywordsSchema`** | Schema Zod (`src/prompts/v1/keywords.ts`) descrevendo `{ keywords: string[] }`. Existe como scaffolding para uma futura extração estruturada no `researcher`, mas não é passado a `generateStructured` hoje. |
 | **`VideoTrendsSchema`** | Schema Zod (`src/prompts/v1/videoTrends.ts`) descrevendo `{ answer: string }`. Mesma situação: definido, mas não conectado à chamada do `responder`. |
 | **Schema de input de tool** | A validação Zod que está de fato ativa no projeto: o argumento `keywords` da tool `google_trends`, que restringe o que o modelo pode passar ao chamá-la. |
+
+---
+
+⬅️ Anterior: [03 · Structured output com Zod](./03-structured-output-zod.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 03, [03-dev-instructions-agents](../../03-dev-instructions-agents/docs/00-START-HERE.md)**

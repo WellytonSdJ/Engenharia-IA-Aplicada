@@ -152,3 +152,7 @@ export async function createTestClient(serviceToken: string) {
 | SERVICE_TOKEN via env | [src/index.ts](../src/index.ts) | Validação antes de conectar o transport |
 | Token injetado no processo filho | [tests/helpers.ts](../tests/helpers.ts) | `env: { ...process.env, SERVICE_TOKEN: serviceToken }` |
 | Script para obter tokens manualmente | [getServiceToken.sh](../getServiceToken.sh) | `curl` para `/v1/auth/service-token` com jq |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · RBAC: Roles e Permissões](./02-rbac-roles-e-permissoes.md)**

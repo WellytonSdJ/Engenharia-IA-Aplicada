@@ -2,7 +2,7 @@
 
 Referência rápida. Para profundidade, vá ao documento específico de cada conceito.
 
-Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling, Agente) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/glossario.md) e no [glossário de `01-multiple-mcp-tools`](../../01-multiple-mcp-tools/docs/glossario.md) não são repetidos aqui.
+Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling, Agente) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/06-glossario.md) e no [glossário de `01-multiple-mcp-tools`](../../01-multiple-mcp-tools/docs/04-glossario.md) não são repetidos aqui.
 
 ---
 
@@ -43,3 +43,7 @@ Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling,
 | **QPP (Quantified Path Pattern)** | Sintaxe do Cypher moderno para casar caminhos de tamanho variável com filtragem inline durante a travessia (ex: `(a)((n WHERE n.active)-[]->(m)){1,5}(b)`), mais eficiente que o padrão antigo de relacionamento de comprimento variável (`-[*1..5]->`) porque poda caminhos durante a expansão em vez de depois. |
 | **`elementId()`** | Função Cypher moderna que substitui a função removida `id()`; retorna uma string (não um inteiro) identificando um nó ou relacionamento. |
 | **Remotion** | Framework citado como contexto de uso da skill `ffmpeg` (renderização de vídeo programática); os presets de FFmpeg da skill preparam assets de entrada/saída compatíveis com pipelines Remotion. |
+
+---
+
+⬅️ Anterior: [02 · Skills vs. MCP, e como as skills chegam nesta pasta](./02-skills-vs-mcp-e-gerenciamento.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 05, [05-mcps-do-zero](../../05-mcps-do-zero/docs/00-START-HERE.md)**

@@ -11,9 +11,9 @@ Documentação de estudo do subprojeto `04-skills`, o quarto do módulo 3 (MCP n
 | Documento | O que cobre |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Trilha de leitura ordenada, o que estamos vendo e por quê, mapa dos arquivos |
-| [formato-skill-md.md](./formato-skill-md.md) | Estrutura de um `SKILL.md` (frontmatter + corpo), arquivos de `references/`, e como o agente decide carregar cada um |
-| [skills-vs-mcp-e-gerenciamento.md](./skills-vs-mcp-e-gerenciamento.md) | Skills como alternativa ao MCP para empacotar capacidades, e como são instaladas/versionadas (Skills CLI, lockfile) |
-| [glossario.md](./glossario.md) | Todos os termos novos deste subprojeto — referência rápida |
+| [01-formato-skill-md.md](./01-formato-skill-md.md) | Estrutura de um `SKILL.md` (frontmatter + corpo), arquivos de `references/`, e como o agente decide carregar cada um |
+| [02-skills-vs-mcp-e-gerenciamento.md](./02-skills-vs-mcp-e-gerenciamento.md) | Skills como alternativa ao MCP para empacotar capacidades, e como são instaladas/versionadas (Skills CLI, lockfile) |
+| [03-glossario.md](./03-glossario.md) | Todos os termos novos deste subprojeto — referência rápida |
 
 ---
 
@@ -26,3 +26,7 @@ Três skills instaladas em `.agents/skills/`, cada uma resolvendo um domínio be
 - **`neo4j-cypher-guide`** — guia de sintaxe moderna de Cypher para geração de queries Neo4j
 
 Mais os arquivos `refs.txt` (anotações de origem) e `skills-lock.json` (lockfile do gerenciador de skills).
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

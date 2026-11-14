@@ -1,6 +1,6 @@
 # Glossário — 06-your-legacy-api-as-mcp
 
-Termos já cobertos em [`05-mcps-do-zero/docs/glossario.md`](../../../05-mcps-do-zero/docs/glossario.md) (McpServer, registerTool, registerResource, registerPrompt, StdioServerTransport, Client, structuredContent, isError, etc.) não são repetidos aqui — este glossário cobre só o que é novo neste projeto.
+Termos já cobertos em [`05-mcps-do-zero/docs/04-glossario.md`](../../../05-mcps-do-zero/docs/04-glossario.md) (McpServer, registerTool, registerResource, registerPrompt, StdioServerTransport, Client, structuredContent, isError, etc.) não são repetidos aqui — este glossário cobre só o que é novo neste projeto.
 
 ---
 
@@ -49,3 +49,7 @@ Termos já cobertos em [`05-mcps-do-zero/docs/glossario.md`](../../../05-mcps-do
 | --- | --- |
 | **`Omit<Customer, '_id'>`** | Tipo TypeScript que exclui um campo de um tipo existente. Usado em `createCustomer(customer: Omit<Customer, '_id'>)` — ao criar, o `_id` ainda não existe. |
 | **`structuredContent`** | Ver glossário do `05-mcps-do-zero`. Neste projeto, os testes acessam `result.structuredContent.customers`, `.customer`, `.id`, `.message` — a tipagem é feita com interfaces locais nos testes (ex: `type CustomersResult = { structuredContent: { customers: Customer[] } }`). |
+
+---
+
+⬅️ Anterior: [03 · Zod: Schemas e Tipos TypeScript](./03-zod-schemas-e-tipos.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 07, [07-api-security-auth-rate-limiting/customers-mcp](../../../07-api-security-auth-rate-limiting/customers-mcp/docs/00-START-HERE.md)**

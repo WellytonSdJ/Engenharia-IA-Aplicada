@@ -2,7 +2,7 @@
 
 Referência rápida. Para profundidade, vá ao documento específico de cada conceito.
 
-Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/glossario.md) e no [glossário de `01-multiple-mcp-tools`](../../01-multiple-mcp-tools/docs/glossario.md) não são repetidos aqui.
+Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/06-glossario.md) e no [glossário de `01-multiple-mcp-tools`](../../01-multiple-mcp-tools/docs/04-glossario.md) não são repetidos aqui.
 
 ---
 
@@ -44,3 +44,7 @@ Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling)
 | **`developer.agent.md`** | Custom agent genérico de codificação Node.js/TypeScript, independente do pipeline de testes Playwright — implementa features, corrige bugs e refatora com disciplina de testes. |
 | **Success Criteria** | Seção do `developer.agent.md` que define quando uma tarefa está concluída: sem erros de tipo, testes relevantes e suíte completa passando, critério de aceite do usuário atendido. |
 | **Won't do** | Seção do `developer.agent.md` listando limites explícitos do agente (não usar `eval`, não prosseguir com requisito ambíguo, não criar `types.ts` nem `index.ts` de re-export, entre outros). |
+
+---
+
+⬅️ Anterior: [02 · O pipeline de agentes Playwright: planner → generator → healer](./02-pipeline-playwright-agents.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 04, [04-skills](../../04-skills/docs/00-START-HERE.md)**

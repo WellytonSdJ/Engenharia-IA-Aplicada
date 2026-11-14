@@ -35,8 +35,12 @@ Os sub-projetos têm sufixo `-z` (`nodejs-fastify-mongodb-crud-z`, `customers-mc
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Por onde começar: contexto, trilha, mapa do código e comandos |
-| [jwt-e-service-tokens.md](./jwt-e-service-tokens.md) | Dois tipos de autenticação: JWT (usuário humano) vs Service Token (máquina) — por que os dois, como cada um funciona |
-| [rbac-roles-e-permissoes.md](./rbac-roles-e-permissoes.md) | Role-Based Access Control: roles admin/member, `requireRole()` middleware, como o role viaja no token |
-| [rate-limiting.md](./rate-limiting.md) | Rate limiting com `@fastify/rate-limit`: `keyGenerator` por token, janela de 1 minuto, teste de esgotamento |
-| [erros-de-dominio-e-tratamento.md](./erros-de-dominio-e-tratamento.md) | Hierarquia de erros de domínio (`UnauthorizedError`, `ForbiddenError`, `RateLimitError`), `#assertOk()` e propagação até `isError: true` no MCP |
-| [glossario.md](./glossario.md) | Termos novos — os cobertos em 05 e 06 não são repetidos |
+| [01-jwt-e-service-tokens.md](./01-jwt-e-service-tokens.md) | Dois tipos de autenticação: JWT (usuário humano) vs Service Token (máquina) — por que os dois, como cada um funciona |
+| [02-rbac-roles-e-permissoes.md](./02-rbac-roles-e-permissoes.md) | Role-Based Access Control: roles admin/member, `requireRole()` middleware, como o role viaja no token |
+| [03-rate-limiting.md](./03-rate-limiting.md) | Rate limiting com `@fastify/rate-limit`: `keyGenerator` por token, janela de 1 minuto, teste de esgotamento |
+| [04-erros-de-dominio-e-tratamento.md](./04-erros-de-dominio-e-tratamento.md) | Hierarquia de erros de domínio (`UnauthorizedError`, `ForbiddenError`, `RateLimitError`), `#assertOk()` e propagação até `isError: true` no MCP |
+| [05-glossario.md](./05-glossario.md) | Termos novos — os cobertos em 05 e 06 não são repetidos |
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

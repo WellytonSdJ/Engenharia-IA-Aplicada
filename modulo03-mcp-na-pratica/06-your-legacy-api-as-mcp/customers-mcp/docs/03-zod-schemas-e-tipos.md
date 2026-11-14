@@ -4,7 +4,7 @@
 
 Zod é uma biblioteca de validação e inferência de tipos que aparece em três camadas do projeto: no domínio (definindo os schemas), nas tools (como `inputSchema`/`outputSchema`), e nos testes (tipando os resultados). O projeto anterior (`05-mcps-do-zero`) já usou Zod nos schemas de tools — aqui, Zod também vira a fonte da tipagem TypeScript do domínio.
 
-> Conceitos básicos de Zod (campo→schema, `z.string()`, `z.object()`, `.describe()`) já cobertos em [`05-mcps-do-zero/docs/construindo-mcp-server-do-zero.md`](../../../05-mcps-do-zero/docs/construindo-mcp-server-do-zero.md). Este doc cobre só o que é novo.
+> Conceitos básicos de Zod (campo→schema, `z.string()`, `z.object()`, `.describe()`) já cobertos em [`05-mcps-do-zero/docs/01-construindo-mcp-server-do-zero.md`](../../../05-mcps-do-zero/docs/01-construindo-mcp-server-do-zero.md). Este doc cobre só o que é novo.
 
 ---
 
@@ -122,3 +122,7 @@ Todos esses campos estarem no mesmo schema criou um problema em `structuredConte
 | `.shape` | [src/mcp/tools/updateCustomer.ts](../src/mcp/tools/updateCustomer.ts) | `inputSchema: CustomerUpdateSchema.shape` |
 | `.nullable()` | [src/mcp/tools/getCustomer.ts](../src/mcp/tools/getCustomer.ts) | `customer: CustomerSchema.nullable()` |
 | Schema unificado | [src/domain/customer.ts](../src/domain/customer.ts) | `CustomerMutationSchema` com campos opcionais e o FIX comentado |
+
+---
+
+⬅️ Anterior: [02 · Arquitetura em Camadas no MCP](./02-arquitetura-em-camadas-mcp.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Glossário](./04-glossario.md)**

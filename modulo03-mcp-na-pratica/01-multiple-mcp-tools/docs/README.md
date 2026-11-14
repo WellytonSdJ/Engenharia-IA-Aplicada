@@ -11,10 +11,10 @@ Documentação de estudo do projeto `01-multiple-mcp-tools`, o primeiro do módu
 | Documento | O que cobre |
 | --- | --- |
 | [00-START-HERE.md](./00-START-HERE.md) | Trilha de leitura ordenada, mapa do código, fluxo do projeto |
-| [mcp-multiplos-servidores.md](./mcp-multiplos-servidores.md) | Dois servidores MCP (filesystem + MongoDB) no mesmo cliente, e uma tool nativa do LangChain misturada com tools de MCP |
-| [agente-autonomo-vs-orquestracao-explicita.md](./agente-autonomo-vs-orquestracao-explicita.md) | Por que o grafo tem só 2 nós e como o agente passa a decidir sozinho a sequência de execução do pipeline |
-| [observabilidade-agent-loop.md](./observabilidade-agent-loop.md) | Callbacks do LangChain (`handleChatModelStart`, `handleLLMEnd`, `handleToolStart`, `handleToolEnd`) para enxergar o loop de decisões do agente |
-| [glossario.md](./glossario.md) | Todos os termos novos deste projeto — referência rápida |
+| [01-mcp-multiplos-servidores.md](./01-mcp-multiplos-servidores.md) | Dois servidores MCP (filesystem + MongoDB) no mesmo cliente, e uma tool nativa do LangChain misturada com tools de MCP |
+| [02-agente-autonomo-vs-orquestracao-explicita.md](./02-agente-autonomo-vs-orquestracao-explicita.md) | Por que o grafo tem só 2 nós e como o agente passa a decidir sozinho a sequência de execução do pipeline |
+| [03-observabilidade-agent-loop.md](./03-observabilidade-agent-loop.md) | Callbacks do LangChain (`handleChatModelStart`, `handleLLMEnd`, `handleToolStart`, `handleToolEnd`) para enxergar o loop de decisões do agente |
+| [04-glossario.md](./04-glossario.md) | Todos os termos novos deste projeto — referência rápida |
 
 ---
 
@@ -29,3 +29,7 @@ Agente de processamento de dados de vendas que resolve um pipeline completo (con
 - **Callbacks do LangChain** para observar em tempo real quais tools o agente decide chamar
 - **Fastify** servindo o endpoint `POST /chat`
 - **MongoDB + mongo-express** via Docker Compose como backend de persistência e inspeção
+
+---
+
+**➡️ Próximo passo: [00 · Por onde começar](./00-START-HERE.md)**

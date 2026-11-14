@@ -2,7 +2,7 @@
 
 ## O que muda em relação ao módulo 02
 
-Em [`03-medical-appointment`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/prompt-chaining.md) e [`06-rag-neo4j-students`](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/langgraph-pipeline.md), cada etapa do processamento era **um nó separado do grafo**, escrito explicitamente no código: `identifyIntent → schedule → message`, ou `queryPlanner → cypherGenerator → cypherValidator → ...`. O código decidia a sequência; o LLM só preenchia o conteúdo de cada etapa.
+Em [`03-medical-appointment`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/01-prompt-chaining.md) e [`06-rag-neo4j-students`](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/02-langgraph-pipeline.md), cada etapa do processamento era **um nó separado do grafo**, escrito explicitamente no código: `identifyIntent → schedule → message`, ou `queryPlanner → cypherGenerator → cypherValidator → ...`. O código decidia a sequência; o LLM só preenchia o conteúdo de cada etapa.
 
 Este projeto inverte parte dessa responsabilidade. O grafo tem só **dois nós**:
 
@@ -84,7 +84,7 @@ async generateStructured<T>(
 }
 ```
 
-- **Com `schema`** (usado pelo `intentNode`): o agente não tem tools (`tools: []`), só extrai campos estruturados via `providerStrategy` — o mesmo mecanismo já documentado em [`03-medical-appointment/docs/structured-output.md`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/structured-output.md). Não repetimos essa explicação aqui.
+- **Com `schema`** (usado pelo `intentNode`): o agente não tem tools (`tools: []`), só extrai campos estruturados via `providerStrategy` — o mesmo mecanismo já documentado em [`03-medical-appointment/docs/02-structured-output.md`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/02-structured-output.md). Não repetimos essa explicação aqui.
 - **Sem `schema`** (usado pelo `agentNode`): o agente recebe as tools reais (MCP + `csv_to_json`) e nenhum `responseFormat` — ele é livre para decidir chamar quantas tools quiser, na ordem que quiser, antes de responder em texto livre.
 
 O mesmo `createAgent` do LangChain serve para os dois casos — a diferença de comportamento vem inteiramente de quais argumentos você passa (`tools` vs. `responseFormat`), não de duas APIs diferentes.
@@ -98,7 +98,7 @@ O mesmo `createAgent` do LangChain serve para os dois casos — a diferença de 
 
 **Custa:**
 - Perda de determinismo: nada garante, em código, que o modelo vai seguir os 6 passos na ordem certa — a garantia é textual ("You MUST follow this exact sequence... Never stop early"), não estrutural
-- Depuração mais difícil: se o passo 3 falhar, você não tem um nó `insertMongoNode` isolado para testar — precisa inspecionar o histórico de tool calls dentro de uma única execução do agente (veja [observabilidade-agent-loop.md](./observabilidade-agent-loop.md))
+- Depuração mais difícil: se o passo 3 falhar, você não tem um nó `insertMongoNode` isolado para testar — precisa inspecionar o histórico de tool calls dentro de uma única execução do agente (veja [03-observabilidade-agent-loop.md](./03-observabilidade-agent-loop.md))
 - Custo de tokens maior: cada tool call e seu resultado entram de volta no contexto da conversa, então um pipeline de 6 passos gera várias idas e vindas ao modelo dentro de uma única chamada a `agent.invoke`
 
 Esse é exatamente o trade-off que o material do curso descreve como "dar autonomia ao modelo em vez de controlar rigidamente cada passo no código" — este projeto é a demonstração prática dele, em contraste direto com o pipeline explícito visto no módulo 02.
@@ -113,3 +113,7 @@ Esse é exatamente o trade-off que o material do curso descreve como "dar autono
 | Dois modos no mesmo serviço | [src/services/openRouterService.ts](../src/services/openRouterService.ts) | `agentConfig` ternário: `responseFormat` vs `tools` |
 | Extração de intenção (modo 1) | [src/graph/nodes/intentNode.ts](../src/graph/nodes/intentNode.ts) e [src/prompts/v1/identifyIntent.ts](../src/prompts/v1/identifyIntent.ts) | `IntentSchema` com `intent` livre (string) + `fileContent`/`fileName`/`fileType` |
 | Evidência do pipeline rodando | [reports/](../reports/) | Arquivos `.txt` gerados pelo próprio agente via `write_file` no Step 5 |
+
+---
+
+⬅️ Anterior: [01 · MCP: Múltiplos Servidores + Tool Customizada](./01-mcp-multiplos-servidores.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Observabilidade do Loop do Agente (Callbacks)](./03-observabilidade-agent-loop.md)**

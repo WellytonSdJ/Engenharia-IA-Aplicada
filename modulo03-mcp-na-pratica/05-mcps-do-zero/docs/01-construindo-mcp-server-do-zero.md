@@ -135,3 +135,7 @@ O prompt não chama a tool diretamente — ele só monta a mensagem de usuário 
 | Resource | [src/mcp.ts](../src/mcp.ts) | `registerResource('encryption://info', ...)` |
 | Prompt | [src/mcp.ts](../src/mcp.ts) | `registerPrompt('encrypt_message_prompt', ...)` |
 | Lógica de negócio isolada do protocolo | [src/service.ts](../src/service.ts) | `encrypt`/`decrypt` não sabem nada de MCP — os handlers em `mcp.ts` são a única camada que conhece o SDK |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Transporte STDIO e testes via MCP client](./02-transporte-stdio-e-testes-mcp-client.md)**

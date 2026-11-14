@@ -66,9 +66,9 @@ Documentação aprofundada dos conceitos aplicados disponível em [`01-multiple-
 
 | Documento | Conteúdo |
 | --- | --- |
-| [mcp-multiplos-servidores.md](./01-multiple-mcp-tools/docs/mcp-multiplos-servidores.md) | Dois servidores MCP (filesystem + MongoDB) no mesmo cliente, e uma tool nativa do LangChain misturada com tools de MCP |
-| [agente-autonomo-vs-orquestracao-explicita.md](./01-multiple-mcp-tools/docs/agente-autonomo-vs-orquestracao-explicita.md) | Por que o grafo tem só 2 nós e como o agente passa a decidir sozinho a sequência de execução do pipeline |
-| [observabilidade-agent-loop.md](./01-multiple-mcp-tools/docs/observabilidade-agent-loop.md) | Callbacks do LangChain para enxergar o loop de decisões do agente em tempo real |
+| [01-mcp-multiplos-servidores.md](./01-multiple-mcp-tools/docs/01-mcp-multiplos-servidores.md) | Dois servidores MCP (filesystem + MongoDB) no mesmo cliente, e uma tool nativa do LangChain misturada com tools de MCP |
+| [02-agente-autonomo-vs-orquestracao-explicita.md](./01-multiple-mcp-tools/docs/02-agente-autonomo-vs-orquestracao-explicita.md) | Por que o grafo tem só 2 nós e como o agente passa a decidir sozinho a sequência de execução do pipeline |
+| [03-observabilidade-agent-loop.md](./01-multiple-mcp-tools/docs/03-observabilidade-agent-loop.md) | Callbacks do LangChain para enxergar o loop de decisões do agente em tempo real |
 
 ## Documentação de conceitos (projeto 02)
 
@@ -76,9 +76,9 @@ Documentação aprofundada dos conceitos aplicados disponível em [`02-google-tr
 
 | Documento | Conteúdo |
 | --- | --- |
-| [google-trends-tool.md](./02-google-trends-agent/docs/google-trends-tool.md) | Como o SerpAPI é embrulhado como tool do LangChain (`google_trends`), o schema Zod de entrada, e o fallback para fixture local |
-| [structured-output-zod.md](./02-google-trends-agent/docs/structured-output-zod.md) | O mecanismo `providerStrategy` vs. `tools` do `OpenRouterService`, os schemas Zod definidos no projeto, e por que eles não estão conectados às chamadas atuais |
-| [prompt-chaining-researcher-responder.md](./02-google-trends-agent/docs/prompt-chaining-researcher-responder.md) | O grafo linear de 2 nós (sem condicionais, sem loop) e como o texto flui de um nó ao outro via `state.trendsData` |
+| [01-google-trends-tool.md](./02-google-trends-agent/docs/01-google-trends-tool.md) | Como o SerpAPI é embrulhado como tool do LangChain (`google_trends`), o schema Zod de entrada, e o fallback para fixture local |
+| [03-structured-output-zod.md](./02-google-trends-agent/docs/03-structured-output-zod.md) | O mecanismo `providerStrategy` vs. `tools` do `OpenRouterService`, os schemas Zod definidos no projeto, e por que eles não estão conectados às chamadas atuais |
+| [02-prompt-chaining-researcher-responder.md](./02-google-trends-agent/docs/02-prompt-chaining-researcher-responder.md) | O grafo linear de 2 nós (sem condicionais, sem loop) e como o texto flui de um nó ao outro via `state.trendsData` |
 
 ## Documentação de conceitos (projeto 03)
 
@@ -86,8 +86,8 @@ Documentação aprofundada dos conceitos aplicados disponível em [`03-dev-instr
 
 | Documento | Conteúdo |
 | --- | --- |
-| [custom-agents-copilot.md](./03-dev-instructions-agents/docs/custom-agents-copilot.md) | Formato `.agent.md`: frontmatter, persona, ferramentas restritas — instruções declarativas em vez de código |
-| [pipeline-playwright-agents.md](./03-dev-instructions-agents/docs/pipeline-playwright-agents.md) | Como `playwright-test-planner`, `playwright-test-generator` e `playwright-test-healer` colaboram num pipeline sequencial de automação de testes |
+| [01-custom-agents-copilot.md](./03-dev-instructions-agents/docs/01-custom-agents-copilot.md) | Formato `.agent.md`: frontmatter, persona, ferramentas restritas — instruções declarativas em vez de código |
+| [02-pipeline-playwright-agents.md](./03-dev-instructions-agents/docs/02-pipeline-playwright-agents.md) | Como `playwright-test-planner`, `playwright-test-generator` e `playwright-test-healer` colaboram num pipeline sequencial de automação de testes |
 
 ## Documentação de conceitos (projeto 04)
 
@@ -95,8 +95,8 @@ Documentação aprofundada dos conceitos aplicados disponível em [`04-skills/do
 
 | Documento | Conteúdo |
 | --- | --- |
-| [formato-skill-md.md](./04-skills/docs/formato-skill-md.md) | Estrutura de um `SKILL.md`: frontmatter, corpo, arquivos de `references/`, e como o agente decide carregar cada um |
-| [skills-vs-mcp-e-gerenciamento.md](./04-skills/docs/skills-vs-mcp-e-gerenciamento.md) | Skills como alternativa ao MCP, e como elas são instaladas/versionadas (Skills CLI, `skills-lock.json`, `skills.sh`) |
+| [01-formato-skill-md.md](./04-skills/docs/01-formato-skill-md.md) | Estrutura de um `SKILL.md`: frontmatter, corpo, arquivos de `references/`, e como o agente decide carregar cada um |
+| [02-skills-vs-mcp-e-gerenciamento.md](./04-skills/docs/02-skills-vs-mcp-e-gerenciamento.md) | Skills como alternativa ao MCP, e como elas são instaladas/versionadas (Skills CLI, `skills-lock.json`, `skills.sh`) |
 
 ## Documentação de conceitos (projeto 05)
 
@@ -104,9 +104,9 @@ Documentação aprofundada dos conceitos aplicados disponível em [`05-mcps-do-z
 
 | Documento | Conteúdo |
 | --- | --- |
-| [construindo-mcp-server-do-zero.md](./05-mcps-do-zero/docs/construindo-mcp-server-do-zero.md) | Como um servidor MCP é construído com o SDK oficial: `McpServer`, `registerTool`, `registerResource`, `registerPrompt` |
-| [transporte-stdio-e-testes-mcp-client.md](./05-mcps-do-zero/docs/transporte-stdio-e-testes-mcp-client.md) | Transporte STDIO (servidor como subprocesso) e como os testes conectam um `Client` MCP real ao servidor para validar o comportamento ponta a ponta |
-| [criptografia-aes-256-cbc.md](./05-mcps-do-zero/docs/criptografia-aes-256-cbc.md) | As decisões de criptografia por trás das tools: derivação de chave com `scrypt`, IV aleatório por chamada, formato de saída |
+| [01-construindo-mcp-server-do-zero.md](./05-mcps-do-zero/docs/01-construindo-mcp-server-do-zero.md) | Como um servidor MCP é construído com o SDK oficial: `McpServer`, `registerTool`, `registerResource`, `registerPrompt` |
+| [02-transporte-stdio-e-testes-mcp-client.md](./05-mcps-do-zero/docs/02-transporte-stdio-e-testes-mcp-client.md) | Transporte STDIO (servidor como subprocesso) e como os testes conectam um `Client` MCP real ao servidor para validar o comportamento ponta a ponta |
+| [03-criptografia-aes-256-cbc.md](./05-mcps-do-zero/docs/03-criptografia-aes-256-cbc.md) | As decisões de criptografia por trás das tools: derivação de chave com `scrypt`, IV aleatório por chamada, formato de saída |
 
 ## Documentação de conceitos (projeto 06)
 
@@ -114,9 +114,9 @@ Documentação aprofundada dos conceitos aplicados disponível em [`06-your-lega
 
 | Documento | Conteúdo |
 | --- | --- |
-| [legacy-api-como-mcp.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/legacy-api-como-mcp.md) | O padrão de embrulhar uma API REST legada como MCP sem modificá-la: mapeamento tool→endpoint, resource como documentação viva, busca flexível além da API |
-| [arquitetura-em-camadas-mcp.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/arquitetura-em-camadas-mcp.md) | As quatro camadas (domain/infrastructure/application/mcp) e como elas se comunicam sem acoplamento reverso |
-| [zod-schemas-e-tipos.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/zod-schemas-e-tipos.md) | `z.infer`, `.extend()`, `.shape`, `.nullable()` e o `CustomerMutationSchema` unificado com o FIX de additional properties |
+| [01-legacy-api-como-mcp.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/01-legacy-api-como-mcp.md) | O padrão de embrulhar uma API REST legada como MCP sem modificá-la: mapeamento tool→endpoint, resource como documentação viva, busca flexível além da API |
+| [02-arquitetura-em-camadas-mcp.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/02-arquitetura-em-camadas-mcp.md) | As quatro camadas (domain/infrastructure/application/mcp) e como elas se comunicam sem acoplamento reverso |
+| [03-zod-schemas-e-tipos.md](./06-your-legacy-api-as-mcp/customers-mcp/docs/03-zod-schemas-e-tipos.md) | `z.infer`, `.extend()`, `.shape`, `.nullable()` e o `CustomerMutationSchema` unificado com o FIX de additional properties |
 
 ## Documentação de conceitos (projeto 07)
 
@@ -124,7 +124,7 @@ Documentação aprofundada dos conceitos aplicados disponível em [`07-api-secur
 
 | Documento | Conteúdo |
 | --- | --- |
-| [jwt-e-service-tokens.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/jwt-e-service-tokens.md) | JWT para usuários humanos vs Service Tokens para M2M — como cada um funciona e como o MCP server recebe o token via env var |
-| [rbac-roles-e-permissoes.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/rbac-roles-e-permissoes.md) | Role-Based Access Control: roles admin/member, `requireRole()` como factory de middleware, `preHandler` por rota |
-| [rate-limiting.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/rate-limiting.md) | Rate limiting por token com `@fastify/rate-limit`, `keyGenerator` e teste de esgotamento com loop de 100 chamadas |
-| [erros-de-dominio-e-tratamento.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/erros-de-dominio-e-tratamento.md) | `UnauthorizedError`/`ForbiddenError`/`RateLimitError`, `#assertOk()` com JavaScript private field, e `beforeEach`/`afterEach` para isolamento de testes |
+| [01-jwt-e-service-tokens.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/01-jwt-e-service-tokens.md) | JWT para usuários humanos vs Service Tokens para M2M — como cada um funciona e como o MCP server recebe o token via env var |
+| [02-rbac-roles-e-permissoes.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/02-rbac-roles-e-permissoes.md) | Role-Based Access Control: roles admin/member, `requireRole()` como factory de middleware, `preHandler` por rota |
+| [03-rate-limiting.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/03-rate-limiting.md) | Rate limiting por token com `@fastify/rate-limit`, `keyGenerator` e teste de esgotamento com loop de 100 chamadas |
+| [04-erros-de-dominio-e-tratamento.md](./07-api-security-auth-rate-limiting/customers-mcp/docs/04-erros-de-dominio-e-tratamento.md) | `UnauthorizedError`/`ForbiddenError`/`RateLimitError`, `#assertOk()` com JavaScript private field, e `beforeEach`/`afterEach` para isolamento de testes |

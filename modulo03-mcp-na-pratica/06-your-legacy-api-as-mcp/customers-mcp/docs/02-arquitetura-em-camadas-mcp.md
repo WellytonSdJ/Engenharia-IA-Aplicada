@@ -175,3 +175,7 @@ Cada seta é uma dependência unidirecional — nenhuma camada conhece quem est�
 | Application | [src/application/customerService.ts](../src/application/customerService.ts) | `findCustomer` com busca flexível além da API |
 | MCP (composição) | [src/mcp/server.ts](../src/mcp/server.ts) | Ponto de entrada com todas as registrações |
 | MCP (tool) | [src/mcp/tools/getCustomer.ts](../src/mcp/tools/getCustomer.ts) | Tool que chama service sem saber de HTTP |
+
+---
+
+⬅️ Anterior: [01 · Transformando uma API Legada em Servidor MCP](./01-legacy-api-como-mcp.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Zod: Schemas e Tipos TypeScript](./03-zod-schemas-e-tipos.md)**

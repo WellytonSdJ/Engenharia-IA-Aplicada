@@ -24,11 +24,11 @@ O foco não é segurança de produção (as credenciais são hardcoded no códig
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [jwt-e-service-tokens.md](./jwt-e-service-tokens.md) | Os dois mecanismos de auth do projeto: JWT para usuários humanos, Service Token para o MCP server. Entender a diferença é o núcleo do projeto. |
-| 2 | [rbac-roles-e-permissoes.md](./rbac-roles-e-permissoes.md) | Como os roles `admin`/`member` são embutidos no token e verificados por rota com `requireRole()` |
-| 3 | [rate-limiting.md](./rate-limiting.md) | Como `@fastify/rate-limit` limita por token e como os testes verificam que o limite funciona |
-| 4 | [erros-de-dominio-e-tratamento.md](./erros-de-dominio-e-tratamento.md) | Como erros HTTP (401, 403, 429) viram erros de domínio tipados e chegam ao LLM como `isError: true` |
-| 5 | [glossario.md](./glossario.md) | Referência rápida dos termos novos |
+| 1 | [01-jwt-e-service-tokens.md](./01-jwt-e-service-tokens.md) | Os dois mecanismos de auth do projeto: JWT para usuários humanos, Service Token para o MCP server. Entender a diferença é o núcleo do projeto. |
+| 2 | [02-rbac-roles-e-permissoes.md](./02-rbac-roles-e-permissoes.md) | Como os roles `admin`/`member` são embutidos no token e verificados por rota com `requireRole()` |
+| 3 | [03-rate-limiting.md](./03-rate-limiting.md) | Como `@fastify/rate-limit` limita por token e como os testes verificam que o limite funciona |
+| 4 | [04-erros-de-dominio-e-tratamento.md](./04-erros-de-dominio-e-tratamento.md) | Como erros HTTP (401, 403, 429) viram erros de domínio tipados e chegam ao LLM como `isError: true` |
+| 5 | [05-glossario.md](./05-glossario.md) | Referência rápida dos termos novos |
 
 ---
 
@@ -91,3 +91,7 @@ npm test
 ```
 
 > Os testes do `customers-mcp-z` chamam `getServiceToken()` automaticamente antes de cada teste. A API legada deve estar rodando em `:9999`.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · JWT e Service Tokens](./01-jwt-e-service-tokens.md)**

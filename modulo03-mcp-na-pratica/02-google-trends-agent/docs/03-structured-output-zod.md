@@ -72,8 +72,12 @@ Ou seja: `KeywordsSchema` e `VideoTrendsSchema` são scaffolding — schemas esc
 
 ## Onde a validação por Zod realmente acontece
 
-A validação estruturada que de fato está ativa neste projeto é outra: o **schema de input da tool `google_trends`** (`z.object({ keywords: z.array(z.string()) })`, em `src/tools/googleTrendsTool.ts`). Isso é o LangChain garantindo que, quando o modelo decide chamar a tool, o argumento chega tipado e validado — ver [`google-trends-tool.md`](./google-trends-tool.md).
+A validação estruturada que de fato está ativa neste projeto é outra: o **schema de input da tool `google_trends`** (`z.object({ keywords: z.array(z.string()) })`, em `src/tools/googleTrendsTool.ts`). Isso é o LangChain garantindo que, quando o modelo decide chamar a tool, o argumento chega tipado e validado — ver [`01-google-trends-tool.md`](./01-google-trends-tool.md).
 
 ## Se for conectar os schemas existentes
 
 Para `KeywordsSchema` virar validação real, seria passar `KeywordsSchema` como terceiro argumento em `researcherNode.ts` — mas isso mudaria o comportamento do nó, porque no modo `providerStrategy` a lista de `tools` fica vazia (`tools: []`), então o modelo não conseguiria mais chamar `google_trends` dentro do mesmo agent. Extrair keywords estruturadas e chamar a tool exigiriam duas chamadas separadas ao LLM (uma para extrair `keywords` via schema, outra para chamar a tool com esse array) — não é uma troca de uma linha.
+
+---
+
+⬅️ Anterior: [02 · Prompt chaining: `researcher` → `responder`](./02-prompt-chaining-researcher-responder.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Glossário](./04-glossario.md)**

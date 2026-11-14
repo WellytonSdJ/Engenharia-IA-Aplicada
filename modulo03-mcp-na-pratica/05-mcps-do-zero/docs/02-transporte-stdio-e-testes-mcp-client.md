@@ -85,3 +85,7 @@ O motivo de testar dessa forma, mais cara que um teste unitário direto: valida 
 | Cliente de teste conectado via STDIO | [tests/helpers.ts](../tests/helpers.ts) | `StdioClientTransport({ command: 'node', args: [...] })` sobe o mesmo `src/index.ts` usado em produção |
 | Chamadas ao protocolo nos testes | [tests/mcp.test.ts](../tests/mcp.test.ts) | `client.callTool`, `client.listResources`, `client.getPrompt` |
 | Configuração equivalente para o VS Code | [.vscode/mcp.json](../.vscode/mcp.json) | Mesmo `command`/`args` usado pelo cliente de teste, mas para o Copilot Chat |
+
+---
+
+⬅️ Anterior: [01 · Construindo um servidor MCP do zero](./01-construindo-mcp-server-do-zero.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · As decisões de criptografia por trás das tools](./03-criptografia-aes-256-cbc.md)**

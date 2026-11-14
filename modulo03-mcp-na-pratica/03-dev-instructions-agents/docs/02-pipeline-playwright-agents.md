@@ -44,3 +44,7 @@ Regras notáveis do arquivo: corrige um erro por vez quando há múltiplos; nunc
 Cada estágio tem um conjunto de tools e um `model` diferentes no frontmatter (`planner` e `healer` fixam `Claude Sonnet 4`; `generator` não fixa modelo), e cada um tem uma responsabilidade única e um critério de "pronto" próprio — a mesma lógica de responsabilidade única aplicada a agentes do Copilot em vez de a funções de código. Rodar os três em sequência (planejar → gerar → curar) evita um único agente genérico tentando fazer as três coisas ao mesmo tempo, com um prompt e um conjunto de tools que teriam que cobrir exploração de UI, geração de código e depuração — três habilidades com focos de atenção diferentes.
 
 `developer.agent.md` fica fora desse pipeline: é um agente de propósito geral para desenvolvimento comum (features, bugs, refactors), sem relação com o fluxo de testes Playwright.
+
+---
+
+⬅️ Anterior: [01 · Custom agents do GitHub Copilot (`.agent.md`)](./01-custom-agents-copilot.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Glossário](./03-glossario.md)**

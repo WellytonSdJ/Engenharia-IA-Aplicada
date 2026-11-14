@@ -21,10 +21,10 @@ Cliente MCP → consome servidor pronto.  Servidor MCP → construído do zero, 
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [construindo-mcp-server-do-zero.md](./construindo-mcp-server-do-zero.md) | O núcleo do projeto: `McpServer`, `registerTool`, `registerResource`, `registerPrompt` — a API que qualquer servidor MCP feito com o SDK oficial usa. |
-| 2 | [transporte-stdio-e-testes-mcp-client.md](./transporte-stdio-e-testes-mcp-client.md) | Como o servidor roda como subprocesso via STDIO, e como os testes abrem um `Client` MCP de verdade para validar tools, resource e prompts ponta a ponta. |
-| 3 | [criptografia-aes-256-cbc.md](./criptografia-aes-256-cbc.md) | As decisões de criptografia por trás das duas tools — não é o foco do módulo, mas explica por que o código de `service.ts` é do jeito que é. |
-| 4 | [glossario.md](./glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
+| 1 | [01-construindo-mcp-server-do-zero.md](./01-construindo-mcp-server-do-zero.md) | O núcleo do projeto: `McpServer`, `registerTool`, `registerResource`, `registerPrompt` — a API que qualquer servidor MCP feito com o SDK oficial usa. |
+| 2 | [02-transporte-stdio-e-testes-mcp-client.md](./02-transporte-stdio-e-testes-mcp-client.md) | Como o servidor roda como subprocesso via STDIO, e como os testes abrem um `Client` MCP de verdade para validar tools, resource e prompts ponta a ponta. |
+| 3 | [03-criptografia-aes-256-cbc.md](./03-criptografia-aes-256-cbc.md) | As decisões de criptografia por trás das duas tools — não é o foco do módulo, mas explica por que o código de `service.ts` é do jeito que é. |
+| 4 | [04-glossario.md](./04-glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
 
 ---
 
@@ -69,3 +69,7 @@ npm test
 ```
 
 Não é preciso build: `node --experimental-strip-types` roda o TypeScript diretamente (ver `scripts` em `package.json`).
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Construindo um servidor MCP do zero](./01-construindo-mcp-server-do-zero.md)**

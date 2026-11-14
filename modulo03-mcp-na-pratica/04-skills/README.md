@@ -40,6 +40,6 @@ Aprofundamento em [`docs/`](./docs/):
 | Documento | Conteúdo |
 | --- | --- |
 | [00-START-HERE.md](./docs/00-START-HERE.md) | Trilha de leitura, o que estamos vendo e por quê, mapa dos arquivos |
-| [formato-skill-md.md](./docs/formato-skill-md.md) | Estrutura de um `SKILL.md`: frontmatter, corpo, arquivos de `references/`, e como o agente decide carregar cada um |
-| [skills-vs-mcp-e-gerenciamento.md](./docs/skills-vs-mcp-e-gerenciamento.md) | Skills como alternativa ao MCP, e como elas são instaladas/versionadas (Skills CLI, `skills-lock.json`, `skills.sh`) |
-| [glossario.md](./docs/glossario.md) | Termos novos deste subprojeto |
+| [01-formato-skill-md.md](./docs/01-formato-skill-md.md) | Estrutura de um `SKILL.md`: frontmatter, corpo, arquivos de `references/`, e como o agente decide carregar cada um |
+| [02-skills-vs-mcp-e-gerenciamento.md](./docs/02-skills-vs-mcp-e-gerenciamento.md) | Skills como alternativa ao MCP, e como elas são instaladas/versionadas (Skills CLI, `skills-lock.json`, `skills.sh`) |
+| [03-glossario.md](./docs/03-glossario.md) | Termos novos deste subprojeto |

@@ -2,7 +2,7 @@
 
 Referência rápida. Para profundidade, vá ao documento específico de cada conceito.
 
-Termos gerais de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/glossario.md) não são repetidos aqui — este glossário cobre só o que é novo por este projeto construir um servidor (não consumir um).
+Termos gerais de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/06-glossario.md) não são repetidos aqui — este glossário cobre só o que é novo por este projeto construir um servidor (não consumir um).
 
 ---
 
@@ -43,3 +43,7 @@ Termos gerais de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool c
 | **Salt fixo (`SALT`)** | Constante hardcoded usada na derivação de chave (`scryptSync(passphrase, SALT, 32)`). Simplificação didática: garante que a mesma passphrase sempre derive a mesma chave, mas não protege contra rainbow tables entre instalações diferentes do servidor. |
 | **IV (Initialization Vector)** | 16 bytes aleatórios gerados a cada chamada de `encrypt` (`randomBytes(16)`) — garante que a mesma mensagem cifrada duas vezes com a mesma chave produza saídas diferentes. Não é secreto: viaja junto no formato de saída. |
 | **Formato `iv:ciphertext`** | Formato de saída das tools de criptografia: IV e ciphertext, cada um em hexadecimal, concatenados com `:`. Precisa ser mantido inteiro para a decriptação funcionar. |
+
+---
+
+⬅️ Anterior: [03 · As decisões de criptografia por trás das tools](./03-criptografia-aes-256-cbc.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 06, [06-your-legacy-api-as-mcp/customers-mcp](../../06-your-legacy-api-as-mcp/customers-mcp/docs/00-START-HERE.md)**

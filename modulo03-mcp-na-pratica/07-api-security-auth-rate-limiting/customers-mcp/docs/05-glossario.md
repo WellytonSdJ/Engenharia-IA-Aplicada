@@ -1,6 +1,6 @@
 # Glossário — 07-api-security-auth-rate-limiting
 
-Termos cobertos em [`05-mcps-do-zero/docs/glossario.md`](../../../05-mcps-do-zero/docs/glossario.md) e [`06-your-legacy-api-as-mcp/customers-mcp/docs/glossario.md`](../../../06-your-legacy-api-as-mcp/customers-mcp/docs/glossario.md) não são repetidos aqui — este glossário cobre só o que é novo neste projeto.
+Termos cobertos em [`05-mcps-do-zero/docs/04-glossario.md`](../../../05-mcps-do-zero/docs/04-glossario.md) e [`06-your-legacy-api-as-mcp/customers-mcp/docs/04-glossario.md`](../../../06-your-legacy-api-as-mcp/customers-mcp/docs/04-glossario.md) não são repetidos aqui — este glossário cobre só o que é novo neste projeto.
 
 ---
 
@@ -52,3 +52,7 @@ Termos cobertos em [`05-mcps-do-zero/docs/glossario.md`](../../../05-mcps-do-zer
 | **Private field (`#`)** | Sintaxe de campo/método privado nativo do JavaScript. Métodos com `#` não são acessíveis fora da classe, mesmo em subclasses ou via `Object.getOwnPropertyNames`. |
 | **`beforeEach`/`afterEach`** | Hooks do Node.js Test Runner executados antes/depois de cada `it`. Diferente de `before`/`after` (executados uma vez por suíte). Aqui necessário para isolar service tokens entre testes. |
 | **Env var no processo filho** | `StdioClientTransport` aceita `env` para injetar variáveis de ambiente no processo filho (o MCP server). `{ ...process.env, SERVICE_TOKEN: token }` replica o ambiente atual e adiciona/sobrescreve a variável específica. |
+
+---
+
+⬅️ Anterior: [04 · Erros de Domínio e Tratamento no MCP](./04-erros-de-dominio-e-tratamento.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: módulo 04, projeto 01, [01-padroes-de-raciocinio-e-execucao](../../../../modulo04-criacao-agentes-autonomos/01-padroes-de-raciocinio-e-execucao/docs/00-START-HERE.md)**

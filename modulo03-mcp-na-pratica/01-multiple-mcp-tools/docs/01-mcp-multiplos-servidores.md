@@ -1,6 +1,6 @@
 # MCP: Múltiplos Servidores + Tool Customizada
 
-> Este projeto **não repete** os fundamentos de MCP — isso já foi coberto em [`05-safeguard-prompt-injection/docs/mcp.md`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/mcp.md) (o que é MCP, transporte STDIO, `MultiServerMCPClient`, tool calling, lazy initialization). Leia aquele documento primeiro se esses termos são novos para você. Aqui o foco é só no que muda: **dois servidores MCP ao mesmo tempo** e **uma tool nativa do LangChain misturada com tools vindas de MCP**.
+> Este projeto **não repete** os fundamentos de MCP — isso já foi coberto em [`05-safeguard-prompt-injection/docs/03-mcp.md`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/03-mcp.md) (o que é MCP, transporte STDIO, `MultiServerMCPClient`, tool calling, lazy initialization). Leia aquele documento primeiro se esses termos são novos para você. Aqui o foco é só no que muda: **dois servidores MCP ao mesmo tempo** e **uma tool nativa do LangChain misturada com tools vindas de MCP**.
 
 ## O que já era conhecido vs. o que é novo
 
@@ -152,3 +152,7 @@ const agent = createAgent({ ...agentConfig, model: this.llmClient });
 | Tool nativa (não-MCP) | [src/tools/csvToJSONTool.ts](../src/tools/csvToJSONTool.ts) | `tool()` do `@langchain/core/tools`, roda in-process |
 | Infra do MongoDB | [docker-compose.yaml](../docker-compose.yaml) | `mongodb` (27017) + `mongo-express` (8081, UI) |
 | Onde as tools chegam ao agente | [src/services/openRouterService.ts](../src/services/openRouterService.ts) | `tools: await this.#getTools()` passado ao `createAgent` |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Agente Autônomo vs. Orquestração Explícita](./02-agente-autonomo-vs-orquestracao-explicita.md)**

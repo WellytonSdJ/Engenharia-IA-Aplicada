@@ -27,7 +27,7 @@ export function createGoogleTrendsTool(serpAPIService: SerpAPIService) {
 }
 ```
 
-O `schema` Zod aqui é o que efetivamente restringe a saída do modelo neste projeto: o LLM só consegue chamar essa tool passando um array de strings em `keywords` — não texto livre, não um objeto qualquer. É a única validação estruturada por Zod que está realmente "no caminho" da execução (compare com [`structured-output-zod.md`](./structured-output-zod.md), que trata dos schemas que existem mas não são usados).
+O `schema` Zod aqui é o que efetivamente restringe a saída do modelo neste projeto: o LLM só consegue chamar essa tool passando um array de strings em `keywords` — não texto livre, não um objeto qualquer. É a única validação estruturada por Zod que está realmente "no caminho" da execução (compare com [`03-structured-output-zod.md`](./03-structured-output-zod.md), que trata dos schemas que existem mas não são usados).
 
 A `description` da tool também é o principal mecanismo de controle de comportamento: é ela que instrui o modelo a *sempre* chamar a tool quando o usuário compartilha uma ideia de título — não há verificação de código que force essa chamada.
 
@@ -67,3 +67,7 @@ Duas decisões de resiliência importantes:
 - **Fallback via `disabled`**: se `config.serpAPIConfig.disabled` for `true`, o método retorna direto `risingTrendFixture` (de `data/trendingData.ts`) sem nenhuma chamada de rede — útil para testar o grafo sem gastar quota do SerpAPI.
 
 > Nota: a classe declara `private cache: Map<string, ...>` e a config tem `cacheTTL: 3600000`, mas nenhum método do serviço lê ou escreve nesse `Map` — hoje é campo morto, sem cache efetivo. Se for implementar cache de verdade, esse é o lugar.
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Prompt chaining: `researcher` → `responder`](./02-prompt-chaining-researcher-responder.md)**

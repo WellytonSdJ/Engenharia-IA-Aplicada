@@ -110,3 +110,7 @@ No MCP server, a tool `create_customer` lança `ForbiddenError` (via `#assertOk`
 | `requireRole()` middleware | [nodejs-fastify-mongodb-crud-z/src/auth.js](../../nodejs-fastify-mongodb-crud-z/src/auth.js) | Closure retornando handler |
 | Aplicação por rota | [nodejs-fastify-mongodb-crud-z/src/index.js](../../nodejs-fastify-mongodb-crud-z/src/index.js) | `preHandler: [requireRole('admin')]` em POST, PUT, DELETE |
 | ForbiddenError no MCP | [src/domain/errors.ts](../src/domain/errors.ts) | Erro de domínio mapeado para HTTP 403 |
+
+---
+
+⬅️ Anterior: [01 · JWT e Service Tokens](./01-jwt-e-service-tokens.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Rate Limiting](./03-rate-limiting.md)**

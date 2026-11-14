@@ -22,10 +22,10 @@ A separação em camadas é o que permite que o MCP server não saiba nada de HT
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [legacy-api-como-mcp.md](./legacy-api-como-mcp.md) | A motivação e o padrão central: o que significa "embrulhar uma API como MCP" e como isso se parece no código real |
-| 2 | [arquitetura-em-camadas-mcp.md](./arquitetura-em-camadas-mcp.md) | As quatro camadas do projeto e como elas se comunicam — entender isso facilita muito a leitura de cada arquivo |
-| 3 | [zod-schemas-e-tipos.md](./zod-schemas-e-tipos.md) | Os schemas Zod compartilhados entre camadas: `z.infer`, `.extend()`, `.shape` — padrões que aparecem em vários arquivos |
-| 4 | [glossario.md](./glossario.md) | Referência rápida dos termos novos. Conceitos de servidor MCP já cobertos em `05-mcps-do-zero/docs/` não são repetidos |
+| 1 | [01-legacy-api-como-mcp.md](./01-legacy-api-como-mcp.md) | A motivação e o padrão central: o que significa "embrulhar uma API como MCP" e como isso se parece no código real |
+| 2 | [02-arquitetura-em-camadas-mcp.md](./02-arquitetura-em-camadas-mcp.md) | As quatro camadas do projeto e como elas se comunicam — entender isso facilita muito a leitura de cada arquivo |
+| 3 | [03-zod-schemas-e-tipos.md](./03-zod-schemas-e-tipos.md) | Os schemas Zod compartilhados entre camadas: `z.infer`, `.extend()`, `.shape` — padrões que aparecem em vários arquivos |
+| 4 | [04-glossario.md](./04-glossario.md) | Referência rápida dos termos novos. Conceitos de servidor MCP já cobertos em `05-mcps-do-zero/docs/` não são repetidos |
 
 ---
 
@@ -94,3 +94,7 @@ npm run mcp:inspect
 ```
 
 > Pré-requisito: Docker rodando (para o MongoDB da API legada) e Node.js 24+.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · Transformando uma API Legada em Servidor MCP](./01-legacy-api-como-mcp.md)**

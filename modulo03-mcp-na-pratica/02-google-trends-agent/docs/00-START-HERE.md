@@ -24,10 +24,10 @@ Diferente do `01-multiple-mcp-tools` (um único nó autônomo que decide toda a 
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [google-trends-tool.md](./google-trends-tool.md) | A peça central do projeto: como o Google Trends vira uma tool do LangChain, e o que acontece quando a API externa falha ou está desligada. |
-| 2 | [prompt-chaining-researcher-responder.md](./prompt-chaining-researcher-responder.md) | Como os 2 nós do grafo se conectam e por que essa cadeia é linear, sem condicionais. |
-| 3 | [structured-output-zod.md](./structured-output-zod.md) | Onde entram (e onde na prática *não* entram) os schemas Zod deste projeto — inclui um achado importante sobre código que existe mas não é usado. |
-| 4 | [glossario.md](./glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
+| 1 | [01-google-trends-tool.md](./01-google-trends-tool.md) | A peça central do projeto: como o Google Trends vira uma tool do LangChain, e o que acontece quando a API externa falha ou está desligada. |
+| 2 | [02-prompt-chaining-researcher-responder.md](./02-prompt-chaining-researcher-responder.md) | Como os 2 nós do grafo se conectam e por que essa cadeia é linear, sem condicionais. |
+| 3 | [03-structured-output-zod.md](./03-structured-output-zod.md) | Onde entram (e onde na prática *não* entram) os schemas Zod deste projeto — inclui um achado importante sobre código que existe mas não é usado. |
+| 4 | [04-glossario.md](./04-glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
 
 ---
 
@@ -78,3 +78,7 @@ npm start
 ```
 
 Acompanhe o terminal: você vai ver `🔍 Researcher processing...` → (chamada da tool `google_trends`, com log `🔍 Fetching Google Trends data for keywords: [...]`) → `💬 Responder processing...` → a resposta final. Se `config.serpAPIConfig.disabled` estiver `true` em `src/config.ts`, você verá `⚠️  SerpAPIService is disabled. Returning fixture data.` em vez de uma chamada real ao SerpAPI.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · A tool `google_trends`](./01-google-trends-tool.md)**

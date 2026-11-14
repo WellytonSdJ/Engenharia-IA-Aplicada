@@ -49,7 +49,7 @@ return {
 };
 ```
 
-Como visto em [`structured-output-zod.md`](./structured-output-zod.md), essa chamada roda em modo tools (nenhum schema é passado). O `result.data` é o texto final que o agente produziu depois de (possivelmente) chamar `google_trends` — não é o JSON bruto do SerpAPI. Esse texto é then re-serializado com `JSON.stringify` e guardado em `trendsData` como uma string (com aspas de string dentro, já que a entrada já era texto).
+Como visto em [`03-structured-output-zod.md`](./03-structured-output-zod.md), essa chamada roda em modo tools (nenhum schema é passado). O `result.data` é o texto final que o agente produziu depois de (possivelmente) chamar `google_trends` — não é o JSON bruto do SerpAPI. Esse texto é then re-serializado com `JSON.stringify` e guardado em `trendsData` como uma string (com aspas de string dentro, já que a entrada já era texto).
 
 ## `responder`: transforma dado em recomendação
 
@@ -70,3 +70,7 @@ O `responder` recebe a pergunta original e o `trendsData` produzido pelo `resear
 ## Tratamento de erro
 
 Os dois nós têm `try/catch` e, em caso de falha, retornam uma mensagem de erro amigável em vez de propagar a exceção — o grafo sempre chega ao `END` com alguma resposta, mesmo que degradada. Isso é diferente de interromper o grafo (como o `01-multiple-mcp-tools` faz quando `intentNode` falha): aqui não há verificação de estado de erro entre os nós, o `responder` roda de qualquer forma, mesmo que `trendsData` contenha a string de erro do `researcher`.
+
+---
+
+⬅️ Anterior: [01 · A tool `google_trends`](./01-google-trends-tool.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Structured output com Zod](./03-structured-output-zod.md)**

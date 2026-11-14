@@ -2,7 +2,7 @@
 
 Referência rápida. Para profundidade, vá ao documento específico de cada conceito.
 
-Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling, Agente, Lazy initialization, Escopo MCP) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/glossario.md) não são repetidos aqui. Termos de LangGraph/LangChain/Zod (StateGraph, State, Node, Edge, Structured Output, `providerStrategy`, `createAgent`, Zod, `z.infer`) já cobertos ao longo do módulo 02 (ver [glossário de `06-rag-neo4j-students`](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/glossario.md) e [`structured-output.md` de `03-medical-appointment`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/structured-output.md)) também não são repetidos.
+Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling, Agente, Lazy initialization, Escopo MCP) já cobertos no [glossário de `05-safeguard-prompt-injection`](../../../modulo02-integracao-apis-llms/05-safeguard-prompt-injection/docs/06-glossario.md) não são repetidos aqui. Termos de LangGraph/LangChain/Zod (StateGraph, State, Node, Edge, Structured Output, `providerStrategy`, `createAgent`, Zod, `z.infer`) já cobertos ao longo do módulo 02 (ver [glossário de `06-rag-neo4j-students`](../../../modulo02-integracao-apis-llms/06-rag-neo4j-students/docs/05-glossario.md) e [`02-structured-output.md` de `03-medical-appointment`](../../../modulo02-integracao-apis-llms/03-medical-appointment/docs/02-structured-output.md)) também não são repetidos.
 
 ---
 
@@ -50,3 +50,7 @@ Termos de MCP (MCP, MCP Server, MCP Client, STDIO transport, Tool, Tool calling,
 | **`sales.csv` / `sales-complete.csv`** | Arquivos de exemplo com dados de vendas (produto, preço, data) usados como entrada do pipeline. |
 | **`reports/`** | Diretório onde o próprio agente escreve o relatório final via `write_file`, no último passo do prompt (Step 5). |
 | **`mongo-express`** | UI web (porta 8081) para inspecionar visualmente as coleções inseridas no MongoDB pelo agente. Não faz parte do fluxo do agente — é só uma ferramenta de inspeção manual. |
+
+---
+
+⬅️ Anterior: [03 · Observabilidade do Loop do Agente (Callbacks)](./03-observabilidade-agent-loop.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: projeto 02, [02-google-trends-agent](../../02-google-trends-agent/docs/00-START-HERE.md)**

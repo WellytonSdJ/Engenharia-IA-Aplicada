@@ -25,9 +25,9 @@ Este subprojeto não tem código para rodar. O "produto" é a própria pasta `.a
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [formato-skill-md.md](./formato-skill-md.md) | A peça central: como um `SKILL.md` é estruturado (frontmatter + corpo), e como o agente decide quando carregar a skill inteira ou só um arquivo de `references/`. Usa as 3 skills instaladas como exemplo real. |
-| 2 | [skills-vs-mcp-e-gerenciamento.md](./skills-vs-mcp-e-gerenciamento.md) | Compara skills com MCP/tools ponto a ponto, e explica como as skills chegaram nesta pasta — a Skills CLI, o `skills-lock.json`, o `refs.txt` e o site `skills.sh`. |
-| 3 | [glossario.md](./glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
+| 1 | [01-formato-skill-md.md](./01-formato-skill-md.md) | A peça central: como um `SKILL.md` é estruturado (frontmatter + corpo), e como o agente decide quando carregar a skill inteira ou só um arquivo de `references/`. Usa as 3 skills instaladas como exemplo real. |
+| 2 | [02-skills-vs-mcp-e-gerenciamento.md](./02-skills-vs-mcp-e-gerenciamento.md) | Compara skills com MCP/tools ponto a ponto, e explica como as skills chegaram nesta pasta — a Skills CLI, o `skills-lock.json`, o `refs.txt` e o site `skills.sh`. |
+| 3 | [03-glossario.md](./03-glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
 
 ---
 
@@ -57,3 +57,7 @@ video.mp4, video_bw.mp4                                    → não fazem parte 
 ## Como "usar" este subprojeto
 
 Não há `npm install` nem `npm start` — não é um projeto de código. O jeito de estudar é ler os `SKILL.md` e seus arquivos de referência diretamente, comparando a estrutura entre as três skills (uma delas, `ffmpeg`, tem um arquivo `reference.md` solto na raiz da skill; `neo4j-cypher-guide` organiza suas referências numa subpasta `references/`; `find-skills` não precisa de nenhum arquivo auxiliar). Essa variação de organização é ela mesma parte do que este subprojeto documenta — o formato Skill não impõe uma estrutura rígida de arquivos além do `SKILL.md` na raiz.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · O formato SKILL.md](./01-formato-skill-md.md)**

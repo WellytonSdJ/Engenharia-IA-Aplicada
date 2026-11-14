@@ -130,3 +130,7 @@ Um agente pode consultar esse resource antes de decidir qual tool chamar — é 
 | Registro de todas as tools | [src/mcp/server.ts](../src/mcp/server.ts) | `registerListCustomersTool`, `registerGetCustomerTool`, etc. |
 | Resource de documentação | [src/mcp/resources/apiInfo.ts](../src/mcp/resources/apiInfo.ts) | `customers://api-info` como documentação da API legada |
 | Busca flexível além da API | [src/application/customerService.ts](../src/application/customerService.ts) | `findCustomer` com busca por nome/telefone que a API não tem |
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Arquitetura em Camadas no MCP](./02-arquitetura-em-camadas-mcp.md)**

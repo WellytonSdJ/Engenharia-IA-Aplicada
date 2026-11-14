@@ -71,3 +71,7 @@ A skill `find-skills` não tem pasta de referências — todo o conteúdo (categ
 ## Feedback e proveniência dentro do próprio arquivo
 
 A skill `ffmpeg` termina com uma seção "Feedback & Contributions" que instrui o próprio agente a atualizar o arquivo (`.claude/skills/ffmpeg/SKILL.md`) se o usuário disser "improve this skill", e aponta para o repositório de origem (`github.com/digitalsamba/claude-code-video-toolkit`) para abrir um PR. Isso reforça que uma skill é só um arquivo de texto sob controle de versão — editável tanto pelo agente quanto por humanos, e distribuída como qualquer outro artefato versionado.
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · Skills vs. MCP, e como as skills chegam nesta pasta](./02-skills-vs-mcp-e-gerenciamento.md)**

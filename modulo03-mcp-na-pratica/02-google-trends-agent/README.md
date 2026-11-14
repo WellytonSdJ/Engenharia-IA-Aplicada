@@ -28,7 +28,7 @@ researcher ──► responder ──► END
 | `researcher` | Recebe a última mensagem do usuário e chama `OpenRouterService.generateStructured(...)` sem schema — o que faz o agente rodar em **modo tools** (MCP filesystem + `google_trends`). O modelo decide extrair as palavras-chave e chamar `google_trends` uma única vez, guiado só pelo system prompt. O texto final do agente é salvo em `state.trendsData`. |
 | `responder` | Recebe `question` + `trendsData` e chama `generateStructured(...)` novamente, também sem schema, para gerar a resposta final em português — uma análise dos dados de tendência com recomendações acionáveis. O texto vira a última `AIMessage` do grafo. |
 
-> Nota importante: os dois nós usam o **mesmo método** `generateStructured`, que tem um comportamento ternário — chamado com um schema Zod ele usa `providerStrategy` (saída estruturada); chamado sem schema (como acontece nos dois nós deste projeto) ele usa `tools`. Os schemas Zod deste projeto (`KeywordsSchema`, `VideoTrendsSchema`) existem em `src/prompts/v1/`, mas nenhum dos dois nós os passa como argumento — hoje eles não afetam o comportamento do agente. Veja [`docs/structured-output-zod.md`](./docs/structured-output-zod.md) para o detalhe.
+> Nota importante: os dois nós usam o **mesmo método** `generateStructured`, que tem um comportamento ternário — chamado com um schema Zod ele usa `providerStrategy` (saída estruturada); chamado sem schema (como acontece nos dois nós deste projeto) ele usa `tools`. Os schemas Zod deste projeto (`KeywordsSchema`, `VideoTrendsSchema`) existem em `src/prompts/v1/`, mas nenhum dos dois nós os passa como argumento — hoje eles não afetam o comportamento do agente. Veja [`docs/03-structured-output-zod.md`](./docs/03-structured-output-zod.md) para o detalhe.
 
 ## Como rodar
 
@@ -91,7 +91,7 @@ Documentação aprofundada em [`docs/`](./docs/) — comece por [`docs/00-START-
 
 | Documento | Conteúdo |
 | --- | --- |
-| [google-trends-tool.md](./docs/google-trends-tool.md) | Como o SerpAPI é embrulhado como tool do LangChain (`google_trends`), o schema Zod de entrada, e o fallback para fixture local |
-| [structured-output-zod.md](./docs/structured-output-zod.md) | O mecanismo `providerStrategy` vs `tools` do `OpenRouterService`, os schemas Zod definidos no projeto, e por que eles não estão conectados às chamadas atuais |
-| [prompt-chaining-researcher-responder.md](./docs/prompt-chaining-researcher-responder.md) | O grafo linear de 2 nós (sem condicionais, sem loop) e como o texto flui de um nó ao outro via `state.trendsData` |
-| [glossario.md](./docs/glossario.md) | Termos novos deste projeto |
+| [01-google-trends-tool.md](./docs/01-google-trends-tool.md) | Como o SerpAPI é embrulhado como tool do LangChain (`google_trends`), o schema Zod de entrada, e o fallback para fixture local |
+| [03-structured-output-zod.md](./docs/03-structured-output-zod.md) | O mecanismo `providerStrategy` vs `tools` do `OpenRouterService`, os schemas Zod definidos no projeto, e por que eles não estão conectados às chamadas atuais |
+| [02-prompt-chaining-researcher-responder.md](./docs/02-prompt-chaining-researcher-responder.md) | O grafo linear de 2 nós (sem condicionais, sem loop) e como o texto flui de um nó ao outro via `state.trendsData` |
+| [04-glossario.md](./docs/04-glossario.md) | Termos novos deste projeto |

@@ -68,3 +68,7 @@ vercel skills
 ```
 
 Ou seja: `refs.txt` são anotações de pesquisa/navegação (prováveis links visitados ao escolher quais skills instalar), e `skills-lock.json` é o resultado final — o registro determinístico de proveniência das três skills que acabaram instaladas em `.agents/skills/`. A referência a `supabase.com/blog/postgres-best-practices-for-ai-agents` no mesmo arquivo sugere que o mesmo tipo de "guia de boas práticas para geração de queries" existe para outros bancos de dados além do Neo4j — o mesmo padrão que `neo4j-cypher-guide` aplica a Cypher.
+
+---
+
+⬅️ Anterior: [01 · O formato SKILL.md](./01-formato-skill-md.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [03 · Glossário](./03-glossario.md)**

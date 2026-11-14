@@ -109,3 +109,7 @@ O teste faz até 100 chamadas em loop rápido — com limite de 90/min, ele deve
 | Registro do plugin | [nodejs-fastify-mongodb-crud-z/src/index.js](../../nodejs-fastify-mongodb-crud-z/src/index.js) | `fastify.register(fastifyRateLimit, rateLimitOptions)` |
 | Tratamento de 429 na infra | [src/infrastructure/customer-http-client.ts](../src/infrastructure/customer-http-client.ts) | `#assertOk()` mapeia 429 → `RateLimitError` |
 | Teste de esgotamento | [tests/tools/customers.test.ts](../tests/tools/customers.test.ts) | Loop de 100 chamadas com break no primeiro erro |
+
+---
+
+⬅️ Anterior: [02 · RBAC: Roles e Permissões](./02-rbac-roles-e-permissoes.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [04 · Erros de Domínio e Tratamento no MCP](./04-erros-de-dominio-e-tratamento.md)**

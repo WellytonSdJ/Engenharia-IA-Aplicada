@@ -35,3 +35,7 @@ Essa estrutura (persona + regras do que fazer/não fazer + critério de sucesso 
 ## Por que isso importa no contexto do módulo
 
 O módulo inteiro é sobre como dar a um LLM acesso a ferramentas e contexto externos. `.agent.md` é mais um mecanismo para isso — mas operando em uma camada diferente dos outros projetos: em vez de um agente que você programa e roda como processo próprio (`01-multiple-mcp-tools`), é uma configuração que **personaliza o agente de codificação que já roda dentro do editor**, incluindo a possibilidade de esse agente também se conectar a servidores MCP (visto em `mcp-servers` dos agentes Playwright).
+
+---
+
+⬅️ Anterior: [00 · Por onde começar](./00-START-HERE.md) · 🗺️ [Trilha de leitura](./00-START-HERE.md#trilha-de-leitura) · **➡️ Próximo passo: [02 · O pipeline de agentes Playwright: planner → generator → healer](./02-pipeline-playwright-agents.md)**

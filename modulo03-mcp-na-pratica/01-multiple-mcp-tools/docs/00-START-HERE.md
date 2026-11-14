@@ -23,10 +23,10 @@ Cada etapa é um nó explícito.            que o modelo descobre o "como" chama
 
 | Ordem | Documento | Por que ler |
 | --- | --- | --- |
-| 1 | [mcp-multiplos-servidores.md](./mcp-multiplos-servidores.md) | Como dois servidores MCP (filesystem + MongoDB) são combinados no mesmo cliente, e como uma tool nativa do LangChain (`csv_to_json`) entra na mesma lista. Pressupõe que você já leu o `mcp.md` de `05-safeguard-prompt-injection`. |
-| 2 | [agente-autonomo-vs-orquestracao-explicita.md](./agente-autonomo-vs-orquestracao-explicita.md) | O núcleo do projeto: por que o grafo tem só 2 nós e como a responsabilidade de orquestrar o pipeline migrou do código para o loop de tool calling do agente. |
-| 3 | [observabilidade-agent-loop.md](./observabilidade-agent-loop.md) | Como enxergar o que o agente está decidindo passo a passo, já que ele não tem mais um `console.log` por nó — via callbacks do LangChain. |
-| 4 | [glossario.md](./glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
+| 1 | [01-mcp-multiplos-servidores.md](./01-mcp-multiplos-servidores.md) | Como dois servidores MCP (filesystem + MongoDB) são combinados no mesmo cliente, e como uma tool nativa do LangChain (`csv_to_json`) entra na mesma lista. Pressupõe que você já leu o `mcp.md` de `05-safeguard-prompt-injection`. |
+| 2 | [02-agente-autonomo-vs-orquestracao-explicita.md](./02-agente-autonomo-vs-orquestracao-explicita.md) | O núcleo do projeto: por que o grafo tem só 2 nós e como a responsabilidade de orquestrar o pipeline migrou do código para o loop de tool calling do agente. |
+| 3 | [03-observabilidade-agent-loop.md](./03-observabilidade-agent-loop.md) | Como enxergar o que o agente está decidindo passo a passo, já que ele não tem mais um `console.log` por nó — via callbacks do LangChain. |
+| 4 | [04-glossario.md](./04-glossario.md) | Referência rápida de todos os termos novos. Consulte quando encontrar algo que não reconhece. |
 
 ---
 
@@ -91,3 +91,7 @@ cat reports/total_revenue_report.txt
 ```
 
 Esse arquivo foi escrito pelo próprio agente, no último passo do prompt — não existe nenhuma linha de código no projeto que formate esse relatório.
+
+---
+
+⬅️ Anterior: [Documentação](./README.md) · **➡️ Próximo passo: [01 · MCP: Múltiplos Servidores + Tool Customizada](./01-mcp-multiplos-servidores.md)**
